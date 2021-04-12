@@ -113,6 +113,7 @@ export default {
 <style>
 @import 'colorui/main.css';
 @import 'colorui/icon.css';
+@import "colorui/icon2.css";
 
 .nav-list {
 	display: flex;

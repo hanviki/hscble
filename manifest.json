@@ -18,7 +18,8 @@
         },
         /* 模块配置 */
         "modules" : {
-            "Bluetooth" : {}
+            "Bluetooth" : {},
+            "OAuth" : {}
         },
         /* 应用发布信息 */
         "distribute" : {
@@ -57,7 +58,15 @@
                 "idfa" : false
             },
             /* SDK配置 */
-            "sdkConfigs" : {},
+            "sdkConfigs" : {
+                "oauth" : {
+                    "weixin" : {
+                        "appid" : "wx6a6791dc35f9cc61",
+                        "appsecret" : "ffd5490d5c393b33ef412614e8770b23",
+                        "UniversalLinks" : ""
+                    }
+                }
+            },
             "splashscreen" : {
                 "androidStyle" : "common"
             }

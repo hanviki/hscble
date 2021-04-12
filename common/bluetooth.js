@@ -51,7 +51,7 @@ class Bluetooth {
 			setTimeout(() => {
 				uni.startBluetoothDevicesDiscovery({
 					services: ['FEE7'],
-					//allowDuplicatesKey: true, // 启用重复上报方便删除后可快速拿到设备
+					allowDuplicatesKey: true, // 启用重复上报方便删除后可快速拿到设备
 					success: res => {
 						resolve(true)
 					},

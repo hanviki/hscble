@@ -1,0 +1,19 @@
+{
+  "name": "uni-ble",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "hsc",
+  "license": "ISC",
+  "devDependencies": {},
+  "dependencies": {
+    "uview-ui": "^1.6.3",
+    "vue": "2.0.0",
+    "vuex": "3.0.0",
+    "vuex-persistedstate": "^3.2.0"
+  }
+}
