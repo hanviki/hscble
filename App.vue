@@ -1,9 +1,20 @@
 <script>
 import Vue from 'vue';
+import { getToken, getUserInfo } from '@/utils/auth.js';
+	import { USER_LOGIN } from '@/store/module/user/mutations-type.js';
 export default {
+	
 	onLaunch: function() {
 		// 初始化蓝牙
 		this.$store.dispatch('initialization')
+		//登录的用户 再次进入直接登录 
+		const userInfo = getUserInfo();
+		//const appletInfo = getAppletInfo();
+		console.info(userInfo)
+		if (userInfo) {
+			this.$store.commit('user/' + USER_LOGIN, userInfo);
+		}
+		
 		uni.getSystemInfo({
 			success: function(e) {
 				// #ifndef MP

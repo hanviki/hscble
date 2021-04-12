@@ -1,13 +1,21 @@
 {
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		{
+		    "path" : "pages/Check/Check",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		},
+		{
 		    "path" : "pages/login/login",
 		    "style" :                                                                                    
 		    {
 		        "navigationBarTitleText": "登录",
 		        "enablePullDownRefresh": false
 		    }
-		    
 		},
 		{
 		    "path" : "pages/login/register",
@@ -37,15 +45,7 @@
             }
             
         }
-        ,{
-            "path" : "pages/Check/Check",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
+        
         ,{
             "path" : "pages/Check/CheckAdd",
             "style" :                                                                                    
@@ -57,14 +57,31 @@
         }
     ],
 	"globalStyle": {
-		"mp-alipay": {
-			/* 支付宝小程序特有相关 */
-			"transparentTitle": "always",
-			"allowsBounceVertical": "NO"
-		},
 		"navigationBarBackgroundColor": "#0081ff",
-		"navigationBarTitleText": "山星盛蓝牙电子秤",
+		"navigationBarTitleText": "蓝牙测试",
 		"navigationStyle": "custom",
 		"navigationBarTextStyle": "white"
+	},
+	"tabBar": {
+		"color": "#7a7e83",
+		"selectedColor": "#0faeff",
+		"backgroundColor": "#ffffff",
+		"list": [{
+			"pagePath": "pages/settings/settings",
+			"text": "检测",
+			"iconPath": "static/tabbar/basics.png",
+			"selectedIconPath": "static/tabbar/basics_cur.png"
+		}, {
+			"pagePath": "pages/Check/Check",
+			"text": "健康",
+			"iconPath": "static/tabbar/basics.png",
+			"selectedIconPath": "static/tabbar/basics_cur.png"
+		}, {
+			"pagePath": "pages/user/user",
+			"text": "我的",
+			"iconPath": "static/tabbar/about.png",
+			"selectedIconPath": "static/tabbar/about_cur.png"
+		}]
 	}
+	
 }

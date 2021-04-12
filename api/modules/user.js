@@ -5,6 +5,7 @@ import request from '@/utils/request.js'
  * 获取用户信息
  */
 export const user = (data) => {
+	
 	return request.get('/v1/tuser', data)
 }
 /** 

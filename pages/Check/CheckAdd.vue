@@ -1,17 +1,17 @@
 <template name="basics">
-	<view class="bg-white">
+	<view class="bg-white" style="height: 100%;">
 		<cu-custom bgColor="bg-gradual-blue" :isBack="true">
 			<block slot="backText"></block>
 			<block slot="content">添加数据</block>
 		</cu-custom>
-		<view class="cu-bar bg-white ">
-			<view class=" text-xxl ">
+		<view class="bg-white margin-top-sm">
+			<view class=" text-lg ">
 				<text class="cuIcon-title  text-green"></text>
-				<text class="text-xxl text-black text-bold">血糖数据</text>
-				<text class="text-xs">(请添加血糖数据及出汗情况)</text>
+				<text class="text-lg text-black text-bold">血糖数据</text>
+				<text class="text-sm">(请添加血糖数据及出汗情况)</text>
 			</view>
 		</view>
-		<view class="cu-bar bg-gray flex padding-sm r">
+		<view class="cu-bar bg-gray flex  r">
 			<view class="  flex-sub flex text-center">
 				<view class="flex-sub">
 					<view class="text-sl">
@@ -19,7 +19,7 @@
 							@tap="selectTimeIndex(0)" />
 					</view>
 					<view>
-						<text class="text-xs">上午</text>
+						<text class="text-sm">上午</text>
 					</view>
 				</view>
 				<view class="flex-sub">
@@ -28,23 +28,23 @@
 							@tap="selectTimeIndex(1)" />
 					</view>
 					<view>
-						<text class="text-xs">下午</text>
+						<text class="text-sm">下午</text>
 					</view>
 				</view>
 				<view class="flex-sub">
 					<view class="text-sl">
-						<button class="cu-btn cuIcon-yueliang " :class="timeIndex==2?'text-green':'text-gray'"
+						<button class="cu-btn cuIcon-yueliang2 " :class="timeIndex==2?'text-green':'text-gray'"
 							@tap="selectTimeIndex(2)" />
 					</view>
 					<view>
-						<text class="text-xs">晚上</text>
+						<text class="text-sm">晚上</text>
 					</view>
 				</view>
 			</view>
 		</view>
 		<view class="bg-white  padding-sm">
 		</view>
-		<view class="cu-bar flex bg-gray padding-sm  r">
+		<view class="cu-bar flex bg-gray   r">
 			<view class="  flex-sub flex text-center">
 				<view class="flex-sub">
 					<view class="text-sl">
@@ -52,7 +52,7 @@
 							@tap="selectFoodIndex(0)" />
 					</view>
 					<view>
-						<text class="text-xs">餐前</text>
+						<text class="text-sm">餐前</text>
 					</view>
 				</view>
 				<view class="flex-sub">
@@ -61,7 +61,7 @@
 							@tap="selectFoodIndex(1)" />
 					</view>
 					<view>
-						<text class="text-xs">餐后</text>
+						<text class="text-sm">餐后</text>
 					</view>
 				</view>
 				<view class="flex-sub">
@@ -70,39 +70,39 @@
 							@tap="selectFoodIndex(2)" />
 					</view>
 					<view>
-						<text class="text-xs">其他</text>
+						<text class="text-sm">其他</text>
 					</view>
 				</view>
 			</view>
 		</view>
 		<view class="bg-white  padding-sm">
 		</view>
-		<view class="cu-bar flex bg-gray padding-sm r">
-			<view class="  flex-sub flex text-center">
+		<view class="cu-bar flex bg-gray  r">
+			<view class="  flex-sub flex text-center" >
 				<view class="flex-sub text-sl">
 					<text class="cuIcon-shuidi text-green"></text>
 				</view>
-				<view class="flex-twice flex">
-					<view class="flex-sub text-right ">
-						<input type="number" class="text-xxl" placeholder="--" />
+				<view class="flex-twice flex padding-top-sm" >
+					<view class="flex-sub text-right " >
+						<input type="number" class="text-xxl text-bold" placeholder="--" />
 					</view>
-					<view class="flex-sub text-left padding-left">
-						<text class="text-xxl"> mg/dL</text>
+					<view class="flex-sub text-left padding-left text-xxl text-gray">
+						mg/dL
 					</view>
 				</view>
 			</view>
 		</view>
 		<view class="bg-white ">
-			<text class="text-xs margin-left">注意：每次血糖检测需要间隔2小时以上</text>
+			<text class="text-sm margin-left">注意：每次血糖检测需要间隔2小时以上</text>
 		</view>
-		<view class="cu-bar bg-white">
-			<view class=" text-xxl">
+		<view class=" bg-white margin-top-sm">
+			<view class=" text-lg">
 				<text class="cuIcon-title  text-green"></text>
-				<text class="text-xxl text-black text-bold">出汗情况</text>
-				<text class="text-xs">(请添加出汗情况)</text>
+				<text class="text-lg text-black text-bold">出汗情况</text>
+				<text class="text-sm">(请添加出汗情况)</text>
 			</view>
 		</view>
-		<view class="cu-bar flex bg-gray padding-sm  r">
+		<view class="cu-bar flex bg-gray   r">
 			<view class="  flex-sub flex text-center">
 				<view class="flex-sub">
 					<view class="text-sl">
@@ -110,16 +110,16 @@
 							@tap="selectSportIndex(0)" />
 					</view>
 					<view>
-						<text class="text-xs">高温</text>
+						<text class="text-sm">高温</text>
 					</view>
 				</view>
 				<view class="flex-sub">
 					<view class="text-sl">
-						<button class="cu-btn cuIcon-favor " :class="sportIndex==1?'text-green':'text-gray'"
+						<button class="cu-btn cuIcon-sport " :class="sportIndex==1?'text-green':'text-gray'"
 							@tap="selectSportIndex(1)" />
 					</view>
 					<view>
-						<text class="text-xs">运动</text>
+						<text class="text-sm">运动</text>
 					</view>
 				</view>
 				<view class="flex-sub">
@@ -128,7 +128,7 @@
 							@tap="selectSportIndex(2)" />
 					</view>
 					<view>
-						<text class="text-xs">饮食</text>
+						<text class="text-sm">饮食</text>
 					</view>
 				</view>
 				<view class="flex-sub">
@@ -137,14 +137,14 @@
 							@tap="selectSportIndex(3)" />
 					</view>
 					<view>
-						<text class="text-xs">其他</text>
+						<text class="text-sm">其他</text>
 					</view>
 				</view>
 			</view>
 		</view>
 		<view class="bg-white  padding-sm">
 		</view>
-		<view class="cu-bar flex bg-gray padding-sm  r">
+		<view class="cu-bar flex bg-gray   r">
 			<view class="  flex-sub flex text-center">
 				<view class="flex-sub">
 					<view class="text-sl">
@@ -152,38 +152,32 @@
 							@tap="selectSweatIndex(0)" />
 					</view>
 					<view>
-						<text class="text-xs">少量汗</text>
+						<text class="text-sm">少量汗</text>
 					</view>
 				</view>
 				<view class="flex-sub">
 					<view class="text-sl">
-						<button class="cu-btn cuIcon-dian1 " :class="sweatIndex==1?'text-green':'text-gray'"
+						<button class="cu-btn cuIcon-liangdian " :class="sweatIndex==1?'text-green':'text-gray'"
 							@tap="selectSweatIndex(1)" />
 					</view>
 					<view>
-						<text class="text-xs">较多汗</text>
+						<text class="text-sm">较多汗</text>
 					</view>
 				</view>
 				<view class="flex-sub ">
-					<view class="text-sl flex">
-						<view class="flex-sub text-right">
-							<button class="cu-btn cuIcon-dian1 " :class="sweatIndex==2?'text-green':'text-gray'"
-								@tap="selectSweatIndex(2)" />
-						</view>
-						<view class="flex-sub text-left">
-							<button class="cu-btn cuIcon-dian " :class="sweatIndex==2?'text-green':'text-gray'"
-								@tap="selectSweatIndex(2)" />
-						</view>
+					<view class="text-sl ">
+						<button class="cu-btn cuIcon-dian1  text-right" :class="sweatIndex==2?'text-green':'text-gray'"
+							@tap="selectSweatIndex(2)" />
 					</view>
 					<view>
-						<text class="text-xs">大量汗</text>
+						<text class="text-sm">大量汗</text>
 					</view>
 				</view>
 			</view>
 
 		</view>
 		<view class="bg-white ">
-			<text class="text-xs margin-left">注意：汗糖检测与血糖检测间隔间隔需在需在15分钟以内</text>
+			<text class="text-sm margin-left">注意：汗糖检测与血糖检测间隔间隔需在需在15分钟以内</text>
 		</view>
 	</view>
 </template>
@@ -220,5 +214,10 @@
 		border-radius: 10rpx;
 		width: 96%;
 		margin-left: 2%;
+	}
+
+	.padding0 {
+		padding-left: 0px;
+		padding-right: 0px;
 	}
 </style>

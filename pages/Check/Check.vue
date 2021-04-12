@@ -1,38 +1,37 @@
 <template>
-	<view>
-		<cu-custom bgColor="bg-gradual-blue" :isBack="true">
-			<block slot="backText"></block>
-			<block slot="content">检测</block>
+	<view class="bg-white">
+		<cu-custom bgColor="bg-gradual-blue" :isBack="false">
+			<block slot="content">检测数据</block>
 		</cu-custom>
-		<view class="cu-bar bg-white  margin-top">
-			<view class=" text-xxl padding-top">
+		<view class="bg-white margin-top-sm">
+			<view class=" text-lg">
 				<text class="cuIcon-title  text-green"></text>
-				<text class="text-xxl text-black text-bold">添加数据</text>
-				<text class="text-xs">(请添加血糖数据及出汗情况)</text>
+				<text class="text-lg text-black text-bold">添加数据</text>
+				<text class="text-sm">(请添加血糖数据及出汗情况)</text>
 			</view>
 		</view>
-		<view class="cu-bar flex padding-top">
+		<view class="cu-bar flex bg-gray r">
 			<view class="  flex-sub flex text-center">
-				<view class="flex-sub text-xsl">
+				<view class="flex-sub text-sl">
 					<text class="cuIcon-shuidi  text-grey"></text>
 				</view>
 
-				<view class="flex-sub text-xsl ">
+				<view class="flex-sub text-sl ">
 					<text class="cuIcon-sunfilling  text-grey"></text>
 				</view>
-				<view class="flex-sub text-xsl">
+				<view class="flex-sub text-sl">
 					<text class="cuIcon-roundadd  text-grey"></text>
 				</view>
 			</view>
 		</view>
-		<view class="cu-bar bg-white  margin-top">
-			<view class=" text-xxl padding-top">
+		<view class=" bg-white margin-top-sm">
+			<view class=" text-lg">
 				<text class="cuIcon-title  text-green"></text>
-				<text class="text-xxl text-black text-bold">今日血糖</text>
+				<text class="text-lg text-black text-bold">今日血糖</text>
 				<text class="text-xs">(正常值：74-106mg/dL)</text>
 			</view>
 		</view>
-		<view class="cu-bar bg-cuorange  flex padding-top">
+		<view class="cu-bar bg-cuorange  flex  r">
 			<view class="flex-sub flex">
 				<view class="flex-sub text-center">
 					<view>
@@ -61,16 +60,16 @@
 			</view>
 		</view>
 		<view class="bg-white ">
-			<text class="text-xs margin-left">注意：每次血糖检测需要间隔2小时以上</text>
+			<text class="text-sm margin-left">注意：每次血糖检测需要间隔2小时以上</text>
 		</view>
-		<view class="cu-bar bg-white  margin-top">
-			<view class=" text-xxl padding-top">
+		<view class=" bg-white margin-top-sm">
+			<view class=" text-lg ">
 				<text class="cuIcon-title  text-green"></text>
-				<text class="text-xxl text-black text-bold">今日汗糖</text>
-				<text class="text-xs">(正常值：74-106mg/dL)</text>
+				<text class="text-lg text-black text-bold">今日汗糖</text>
+				<text class="text-sm">(正常值：74-106mg/dL)</text>
 			</view>
 		</view>
-		<view class="cu-bar bg-cyan  flex padding-top">
+		<view class="cu-bar bg-cyan  flex r">
 			<view class="flex-sub flex">
 				<view class="flex-sub text-center">
 					<view>
@@ -99,15 +98,15 @@
 			</view>
 		</view>
 		<view class="bg-white ">
-			<text class="text-xs margin-left">注意：每次血糖检测需要间隔2小时以上</text>
+			<text class="text-sm margin-left">注意：每次血糖检测需要间隔2小时以上</text>
 		</view>
-		<view class="cu-bar bg-white">
-			<view class=" text-xxl padding-top">
+		<view class=" bg-white margin-top-sm">
+			<view class=" text-lg ">
 				<text class="cuIcon-title  text-green"></text>
-				<text class="text-xxl text-black text-bold">汗糖/血糖数据对比</text>
+				<text class="text-lg text-black text-bold">汗糖/血糖数据对比</text>
 			</view>
 		</view>
-		<view class="cu-bar bg-white flex">
+		<view class="bg-white flex">
 			<view class="bg-white nav text-center flex-sub">
 				<view class="cu-item" :class="0==TabCur?'text-blue cur':''" :data-id="0" @tap="tabSelect">
 					日
@@ -121,10 +120,12 @@
 			</view>
 		</view>
 		<view class="cu-bar bg-white">
-
 			<view class="charts-box ">
 				<qiun-data-charts type="line" :chartData="chartData" :echartsH5="true" :echartsApp="true" />
 			</view>
+		</view>
+		<view>
+			<button @tap="ceshi">跳转</button>
 		</view>
 	</view>
 </template>
@@ -191,7 +192,13 @@
 				if (e.currentTarget.dataset.id == 2) {
 					this.chartData = this.chartDataMonth
 				}
+			},
+			ceshi() {
+				uni.reLaunch({
+					url: '/pages/Check/CheckAdd'
+				});
 			}
+			
 		}
 	}
 </script>
@@ -204,5 +211,10 @@
 	.charts-box {
 		width: 100%;
 		height: 400rpx;
+	}
+	.r {
+		border-radius: 10rpx;
+		width: 96%;
+		margin-left: 2%;
 	}
 </style>

@@ -47,8 +47,8 @@ const handleCustomError = (res) => {
 
 request.interceptors.request.use((config) => {
 	let token = getToken();
-	console.info("token:"+ token)
-	if (token) {
+	console.info(config)
+	if (token && config.url!='/v1/tuser/login') {
 		config.header['token'] = token;
 	}
 	console.log(config)
