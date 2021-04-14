@@ -21,3 +21,9 @@ export const putuser = (data) => {
 export const login = (data) => {
 	return request.get('/v1/tuser/login', data)
 }
+
+
+export const uploadPhoto = (tempFile,data,successCb,errorCb) => {
+	return request.uploadPhoto('/v1/tuser/login',tempFile, data,successCb,errorCb)
+}
+

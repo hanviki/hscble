@@ -5,7 +5,7 @@
 			<view class="cu-avatar-group">
 				<view class="cu-avatar round xl"  :style="[{ backgroundImage:'url(' + pic+ ')' }]"></view>
 			</view>
-			<view class="padding-bottom-sm text-black">{{ userInfo.name==null?'张三':'历史' }}</view>
+			<view class="padding-bottom-sm text-black">{{ userInfo.Nickname==null?'张三':'历史' }}</view>
 		</view>
 		<view class="cu-list menu" >
 			<view class="cu-item" :class="menuArrow?'arrow':''">
@@ -21,7 +21,7 @@
 				</view>
 			</view>
 			<view class="cu-item" :class="menuArrow?'arrow':''">
-				<navigator class="content" hover-class="none" url="../list/list" open-type="redirect">
+				<navigator class="content" hover-class="none" url="../user/userInfo" open-type="navigate">
 					<text class="cuIcon-myfill text-orange"></text>
 					<text class="text-grey">个人资料</text>
 				</navigator>

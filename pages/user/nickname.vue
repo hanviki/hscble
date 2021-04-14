@@ -32,7 +32,7 @@
 			clearName() {
 				this.nickame =''
 			},
-			updateUserImage() {
+			updateNickName() {
 					var that = this
 					let uInfo = that.userInfo
 					that.$api.user.putuser({

@@ -9,7 +9,7 @@
 				<view class="content flex">
 					<view class="flex-sub"><text class="text-grey text-left">头像</text></view>
 					<view class="flex-sub text-right">
-						<view class="cu-avatar round lg " :style="[{ backgroundImage:'url(' + userInfo.photo + ')' }]">
+						<view class="cu-avatar round lg " :style="[{ backgroundImage:'url(' + userInfo.Photo + ')' }]">
 						</view>
 					</view>
 				</view>
@@ -37,7 +37,7 @@
 					<view class="flex-sub">
 						<text class="text-grey">性别</text>
 					</view>
-					<view class="flex-sub text-right">{{userInfo.Sex}}
+					<view class="flex-sub text-right">{{userInfo.Sexy==1?'男':'女'}}
 					</view>
 				</view>
 			</view>
@@ -75,9 +75,14 @@
 					<view class="action text-blue" @tap="hideModal">取消</view>
 					<view class="action text-green" @tap="updateUserImage">确定</view>
 				</view>
-
-				<view class="solids" @tap="ChooseImage" v-if="imgList.length<1">
-					<text class='cuIcon-cameraadd'></text>
+                 <view class="bg-img" v-for="(item,index) in imgList" :key="index" @tap="ViewImage" :data-url="imgList[index]">
+					 <image :src="imgList[index]" mode="aspectFill"></image>
+						<view class="cu-tag bg-red" @tap.stop="DelImg" :data-index="index">
+							<text class='cuIcon-close'></text>
+						</view>
+					</view>
+				<view class="solids text-sl" @tap="ChooseImage" v-if="imgList.length<1">
+					<text class='cuIcon-cameraadd text-xxl'></text>
 				</view>
 			</view>
 		</view>
@@ -196,6 +201,19 @@
 					}
 				});
 			},
+			DelImg(e) {
+				uni.showModal({
+					title: '头像',
+					content: '确定要删除这个图片吗？',
+					cancelText: '取消',
+					confirmText: '确定',
+					success: res => {
+						if (res.confirm) {
+							this.imgList.splice(e.currentTarget.dataset.index, 1)
+						}
+					}
+				})
+			},
 			openNick() {
 				uni.navigateTo({
 					url: '/pages/user/nickname'
@@ -213,16 +231,17 @@
 			},
 			updateUserSex() {
 				var that = this
+				let uInfo =that.userInfo
 				that.$api.user.putuser({
-						Id: that.userInfo.Id,
-						Sex: that.picker[that.index == -1 ? 0 : 1]
+						Id: uInfo.Id,
+						Sexy: that.index == -1 ? 1 : that.index+1
 					})
 					.then(res => {
 						if (res.code == '1') {
 							that.hideSexModal()
 							that.index = -1
-							that.userInfo.Sex = that.picker[that.index == -1 ? 0 : 1]
-							that.$store.dispatch('updateUser', userInfo)
+							uInfo.Sexy = that.index == -1 ? 1 : that.index+1
+							that.$store.dispatch('updateUser', uInfo)
 						} else {
 							uni.showToast({
 								icon: "none",
@@ -234,23 +253,29 @@
 			},
 			updateUserImage() {
 				var that = this
-				that.$api.user.putuser({
-						Id: that.userInfo.Id,
+				let uInfo =that.userInfo
+				that.$api.user.uploadPhoto({
+						Id: uInfo.Id,
 						pic: that.imgList[0]
-					})
-					.then(res => {
+					},(res)=>{
 						if (res.code == '1') {
 							that.hideModal()
 							that.imgList = []
-							that.userInfo.photo = that.imgList[0]
-							that.$store.dispatch('updateUser', userInfo)
+							uInfo.photo = that.imgList[0]
+							that.$store.dispatch('updateUser', uInfo)
 						} else {
 							uni.showToast({
 								icon: "none",
-								title: "提交数据出错，请联系管理员",
+								title: "上传失败，请联系管理员",
 							})
 						}
+					},(error)=>{
+						uni.showToast({
+							icon: "none",
+							title: "上传失败",
+						})
 					})
+					
 
 			}
 		}

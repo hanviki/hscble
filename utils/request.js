@@ -91,8 +91,42 @@ export default request
 export const create = () => {
 	return new Http();
 }
-
-
+/**
+ * 上传头像
+ */
+export const uploadPhoto = (url, tempFilePaths ,data,successCb,errorCb)=>{
+	uni.showLoading({
+		title: '上传中...'
+	});
+	uni.uploadFile({
+		url: baseURL + url,
+		filePath: tempFilePaths,
+		fileType: 'image',
+		name: 'file',
+		header: {
+			'token': token
+		},
+		formData: {
+			'method': 'images.upload',
+			'upfile': tempFilePaths,
+			...data
+		},
+		success: (uploadFileRes) => {
+			successCb(JSON.parse(uploadFileRes.data));
+		},
+		fail: (error) => {
+			if (error && error.response) {
+				errorToast(error.response);
+				errorCb && errorCb(error.response)
+			}
+		},
+		complete: () => {
+			setTimeout(function() {
+				uni.hideLoading();
+			}, 250);
+		},
+	});
+}
 /**
  * 上传图片
  * @param {string} url  

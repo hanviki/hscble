@@ -139,10 +139,10 @@
 					categories: ["1-1次", "1-2次", "1-3次"],
 					series: [{
 						name: "汗糖值",
-						data: [80, 87, 92]
+						data: [60, 87, 92]
 					}, {
 						name: "血糖值",
-						data: [76, 79, 73]
+						data: [86, 79, 73]
 					}]
 				},
 				chartDataDay: {

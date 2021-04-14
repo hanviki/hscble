@@ -24,8 +24,8 @@ const store = {
 	namespaced: true,
 	state: {
 		hasLogin: false,
-		token: null,
-		userInfo: {},
+		token: getToken(),
+		userInfo: getUserInfo(),
 		appletInfo: {}
 	},
 	mutations: {
@@ -63,7 +63,7 @@ const store = {
 				 //	console.info(loginResult.Message)
 				 // setToken(result.data.token)
 				 commit(USER_LOGIN, {
-				 	userInfo: loginResult.Data,
+				 	userInfo: loginResult.Data[0],
 				 	token: loginResult.Message
 				 })
 				uni.reLaunch({
