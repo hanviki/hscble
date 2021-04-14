@@ -1,10 +1,7 @@
 <template name="basics">
 	<view>
 
-		<nav-bar home :bgColor="['#f37402','#0f0']" bgColorAngle="90" :backState="1000" fontColor="#000" title="登录"></nav-bar>
-
 		<view class="UCenter-bg">
-
 			<view class="text-xl" style="margin-top: 5px;">
 				蘑菇博客
 			</view>
@@ -40,6 +37,7 @@
 						<text class="cuIcon-zhifubao radius"></text>
 					</button>
 				</view>
+				
 			</view>
 		</view>
 	</view>
@@ -118,9 +116,9 @@
 											let formdata = {};
 											if (loginType == "weixin") {
 												formdata = {
-													nickName: infoRes.userInfo.nickName,
-													gender: infoRes.userInfo.gender,
-													headImgUrl: infoRes.userInfo.avatarUrl,
+													Nickname: infoRes.userInfo.nickName,
+													Sexy: infoRes.userInfo.gender,
+													Photo: infoRes.userInfo.avatarUrl,
 													openId: infoRes.userInfo.openId,
 													unionId: infoRes.userInfo.unionId,
 													access_token: access_token,
@@ -128,9 +126,9 @@
 												};
 											} else if (loginType == "qq") {
 												formdata = {
-													nickName: infoRes.userInfo.nickname,
-													gender: infoRes.userInfo.gender == '男' ? 1 : 2,
-													headImgUrl: infoRes.userInfo.figureurl_qq_2,
+													Nickname: infoRes.userInfo.nickname,
+													Sexy: infoRes.userInfo.gender == '男' ? 1 : 2,
+													Photo: infoRes.userInfo.figureurl_qq_2,
 													openId: infoRes.userInfo.openId,
 													unionId: '',
 													access_token: access_token,
@@ -138,9 +136,9 @@
 												};
 											} else if (loginType == "sinaweibo") {
 												formdata = {
-													nickName: infoRes.userInfo.nickname,
-													gender: infoRes.userInfo.gender == 'm' ? 1 : 2,
-													headImgUrl: infoRes.userInfo.avatar_large,
+													Nickname: infoRes.userInfo.nickname,
+													Sexy: infoRes.userInfo.gender == 'm' ? 1 : 2,
+													Photo: infoRes.userInfo.avatar_large,
 													openId: infoRes.userInfo.id,
 													unionId: '',
 													access_token: access_token,

@@ -13,24 +13,16 @@
 			<radio-group class="block" @change="RadioChange">
 				<view class="cu-form-group flex">
 					<view class="flex-sub flex">
-						<view class="flex-sub flex ">
-							<view class=" flex-sub cuIcon text-blue text-right text-xxl">
-								<text class="cuIcon-male"></text>
-							</view>
-						</view>
-						<view class="flex-sub flex">
+						<view class="flex-sub text-center">
+							<view class="cu-avatar lg  bg-white margin-left margin-right-sm" style="background-image:url(static/image/man.png)"></view>
 							<radio class='flex-sub  radio text-left' :class="radio=='1'?'checked':''" :checked="radio=='1'?true:false" value="1"></radio>
 						</view>
 					</view>
 
 					<view class="flex-sub flex">
-						<view class="flex-sub flex ">
-							<view class=" flex-sub cuIcon text-red text-right text-xxl">
-								<text class="cuIcon-female"></text>
-							</view>
-						</view>
-						<view class="flex-sub flex">
+						<view class="flex-sub text-center ">
 							<radio class='flex-sub  radio text-left' :class="radio=='2'?'checked':''" :checked="radio=='2'?true:false" value="2"></radio>
+							<view class="cu-avatar lg  bg-white margin-right margin-left-sm" style="background-image:url(static/image/woman.png)"></view>
 						</view>
 					</view>
 
@@ -70,6 +62,7 @@
 					</picker>
 				</view>
 			</view>
+			<button class="cu-btn block bg-green margin-sm lg" @tap="submitUser"> 提交数据 </button>
 		</form>
 
 	</view>
@@ -78,7 +71,7 @@
 <script>
 	import scrollWeight from '@/components/weight/weight.vue'
 	import scrollHeight from '@/components/height/height.vue'
-
+	
 	export default {
 		name: "login",
 		components: {
@@ -105,6 +98,9 @@
 				],
 				multiIndex: [0, 0, 0],
 			}
+		},
+		computed:{
+			
 		},
 		mounted() {
 			console.info(22)
@@ -145,20 +141,16 @@
 				return days;
 			},
 			MultiColumnChange(e) {
-				// console.info(e.detail.column)
-				// let data = {
-				// 	multiArray: this.multiArray,
-				// 	multiIndex: this.multiIndex
-				// };
-				// data.multiIndex[e.detail.column] = e.detail.value;
-				// this.multiArray[2] = [];
-				// data.multiArray[2] = this.getDays(data.multiArray[0][data.multiIndex[0]], data.multiArray[1][data.multiIndex[1]]);
-				// this.multiIndex[2] = 0;
-				// data.multiIndex[2] = 0;
-				// this.multiArray = data.multiArray;
-				// this.multiIndex = data.multiIndex;
+				
 			},
-		
+		    submitUser () {
+				this.$api.user.postuser({
+					Phone: this.$store.getters.getTelphone,
+					Height: this.scrollLeftNow,
+					Weight: this.scrollLeftNow_weight,
+					Birthday: this.multiArray[0][this.multiIndex[0]]+'-'+this.multiArray[1][this.multiIndex[1]]+'-'+this.multiArray[2][this.multiIndex[2]]
+				})
+			}
 		}
 		}
 </script>

@@ -8,44 +8,44 @@
 		<form>
 			<view class="cu-form-group margin-top flex">
 				<view class="flex-sub flex flex-wrap" >
-					<view class="basis-xs text-left cuIcon text-xxl text-green">
+					<view class="basis-xs text-left cuIcon text-xl text-green">
 						<text class="cuIcon-mobile  radius"></text>
 					</view>
-					<view class="basis-xl bg-white"><input class="textCus" placeholder="请输入手机号" v-model="registerForm.telphone"></input></view>
+					<view class="basis-xl bg-white"><input  placeholder="请输入手机号" v-model="registerForm.telphone"></input></view>
 				</view>
 			</view>
 			
 			<view class="cu-form-group margin-top flex">
 				<view class="flex-sub flex flex-wrap">
 					<view class="basis-cu1 text-left bg-white">
-						<input placeholder="请输入验证码" class="textCus" v-model="registerForm.validCode"></input>
+						<input placeholder="请输入验证码"  v-model="registerForm.validCode"></input>
 					</view>
-					<view class="basis-cu2 text-center "><button class="cu-btn bg-green round" @tap="" >发送注册码</button> </view>
+					<view class="basis-cu2 text-center "><button class="cu-btn bg-green round text-sm" @tap="" >发送注册码</button> </view>
 				</view>
 				
 			</view>
 			
 			<view class="cu-form-group margin-top flex">
 				<view class="flex-sub flex flex-wrap">
-					<view class="basis-xs text-left cuIcon text-xxl text-green">
+					<view class="basis-xs text-left cuIcon text-xl text-green">
 						<text class="cuIcon-lock  radius"></text>
 					</view>
-					<view class="basis-xl bg-white"><input password="" class="textCus" placeholder="请输入密码" v-model="registerForm.password1"></input></view>
+					<view class="basis-xl bg-white"><input password=""  placeholder="请输入密码" v-model="registerForm.password1"></input></view>
 				</view>
 				
 			</view>
 			<view class="cu-form-group margin-top flex">
 			<view class="flex-sub flex flex-wrap">
-				<view class="basis-xs text-left cuIcon text-xxl text-green">
+				<view class="basis-xs text-left cuIcon text-xl text-green">
 					<text class="cuIcon-lock  radius"></text>
 				</view>
-				<view class="basis-xl bg-white"><input password="" class="textCus" placeholder="请再次输入密码" v-model="registerForm.password2"></input></view>
+				<view class="basis-xl bg-white"><input password=""  placeholder="请再次输入密码" v-model="registerForm.password2"></input></view>
 			</view>
 			</view>
 			
 			
-			<button class="cu-btn block bg-green margin-sm lg" @click="register"> 提交 </button>
-			<button class="cu-btn block bg-grey margin-sm lg" @click="goLogin"> 返回登录 </button>
+			<button class="cu-btn block bg-green margin-sm lg" @tap="register"> 提交 </button>
+			<button class="cu-btn block bg-grey margin-sm lg" @tap="goLogin"> 返回登录 </button>
 		</form>
 
 	</view>
@@ -89,10 +89,11 @@
 					return;
 				}
 				var params = {};
-				params.userName = this.registerForm.userName;
+				params.userName = this.registerForm.telphone;
 				params.passWord = this.registerForm.password1;
 				params.email = this.registerForm.email;
 				params.nickName = this.registerForm.nickName
+				
 				// localRegister(params).then(response => {
 				//   if (response.code == this.$ECode.SUCCESS) {
 				// 	uni.showToast({
@@ -108,6 +109,12 @@
 				// 	})
 				//   }
 				// });
+				console.info("11111111111")
+				this.$store.commit('setTelphone',this.registerForm.telphone)
+				uni.switchTab({
+					url: '/pages/user/user'
+				});
+				console.info("22222222")
 			},
 			goLogin() {
 				console.log("跳转到登录页面")

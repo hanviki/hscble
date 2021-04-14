@@ -121,7 +121,7 @@
 		</view>
 		<view class="cu-bar bg-white">
 			<view class="charts-box ">
-				<qiun-data-charts type="line" :chartData="chartData" :echartsH5="true" :echartsApp="true" />
+				<qiun-data-charts :type="chartType" :chartData="chartData" :echartsH5="true" :echartsApp="true" />
 			</view>
 		</view>
 		<view>
@@ -134,6 +134,7 @@
 	export default {
 		data() {
 			return {
+				chartType: 'column',
 				chartData: {
 					categories: ["1-1次", "1-2次", "1-3次"],
 					series: [{
@@ -184,12 +185,15 @@
 			tabSelect(e) {
 				this.TabCur = e.currentTarget.dataset.id;
 				if (e.currentTarget.dataset.id == 0) {
+					this.chartType= "column"
 					this.chartData = this.chartDataDay
 				}
 				if (e.currentTarget.dataset.id == 1) {
+					this.chartType= "column"
 					this.chartData = this.chartDataWeek
 				}
 				if (e.currentTarget.dataset.id == 2) {
+					this.chartType= "line"
 					this.chartData = this.chartDataMonth
 				}
 			},

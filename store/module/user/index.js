@@ -6,7 +6,8 @@ Vue.use(Vuex)
 import * as $userApi from '@/api/modules/user'
 import {
 	USER_LOGIN,
-	USER_LOGUT
+	USER_LOGUT,
+	USER_UPDATE
 } from './mutations-type'
 import {
 	setUserInfo,
@@ -45,6 +46,9 @@ const store = {
 			setToken("")
 			setUserInfo(null)
 			state.hasLogin = false;
+		},
+		[USER_UPDATE](state, userInfo) {
+			state.userInfo = userInfo;
 		}
 	},
 	actions: {
@@ -54,25 +58,18 @@ const store = {
 		}, data) {
 			try {
 			 $userApi.login(data).then(loginResult=>{
-				 console.info("hhhhhhhhh")
+				// console.info("hhhhhhhhh")
 				 if(loginResult.Code=="1"){
-				 	console.info(loginResult.Message)
+				 //	console.info(loginResult.Message)
 				 // setToken(result.data.token)
 				 commit(USER_LOGIN, {
-				 	userInfo: null,
+				 	userInfo: loginResult.Data,
 				 	token: loginResult.Message
 				 })
-				 
-				
-				 setTimeout(()=>{
-				 	$userApi.user({params:{Id:loginResult.Code}}).then(userResult=>{
-				 						 commit(USER_LOGIN, {
-				 						 	userInfo: userResult.data,
-				 							token: loginResult.Message
-				 						 })
-				 	})
-				 },1000);
-				 // setUserInfo(userInfo.data)
+				uni.reLaunch({
+					url: "/pages/Check/Check"
+				})
+				// setUserInfo(userInfo.data)
 				 }
 				 else{
 				 	uni.showToast({
@@ -99,6 +96,14 @@ const store = {
 			commit(USER_LOGUT)
 			uni.reLaunch({
 				url: "/pages/login/login"
+			})
+		},
+		async updateUser({
+			commit,
+			state
+		}, userInfo){
+			commit(USER_UPDATE, {
+				userInfo: userInfo
 			})
 		}
 	}

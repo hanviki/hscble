@@ -84,7 +84,7 @@
 				</view>
 				<view class="flex-twice flex padding-top-sm" >
 					<view class="flex-sub text-right " >
-						<input type="number" class="text-xxl text-bold" placeholder="--" />
+						<input type="number" class="text-xxl text-bold" v-model="measureNumber" placeholder="--" />
 					</view>
 					<view class="flex-sub text-left padding-left text-xxl text-gray">
 						mg/dL
@@ -179,6 +179,7 @@
 		<view class="bg-white ">
 			<text class="text-sm margin-left">注意：汗糖检测与血糖检测间隔间隔需在需在15分钟以内</text>
 		</view>
+			<button class="cu-btn block bg-green margin-sm lg" @tap="submitCheck"> 提交数据 </button>
 	</view>
 </template>
 
@@ -189,7 +190,8 @@
 				timeIndex: 0,
 				foodIndex: 0,
 				sportIndex: 0,
-				sweatIndex: 0
+				sweatIndex: 0,
+				measureNumber: ''
 			}
 		},
 		methods: {
@@ -204,6 +206,24 @@
 			},
 			selectSweatIndex(index) {
 				this.sweatIndex = index
+			},
+			submitCheck() {
+				var that = this
+				console.log("提交表单", this.loginForm)
+				if (that.measureNumber == "") {
+					uni.showToast({
+						icon: "none",
+						title: "请填写汗糖值",
+					})
+					return;
+				}
+				that.$api.check.addCheck({
+					timeIndex: this.timeIndex,
+					foodIndex: this.foodIndex,
+					sportIndex: this.foodIndex,
+					sweatIndex: this.sweatIndex,
+					measureNumber: this.measureNumber
+				})
 			}
 		}
 	}
