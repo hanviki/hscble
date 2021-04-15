@@ -1,24 +1,25 @@
 <template name="basics">
 	<view>
-		<nav-bar home :bgColor="['#f37402','#0f0']" bgColorAngle="90" :backState="1000" fontColor="#000" title="注册"></nav-bar>
 <cu-custom bgColor="bg-gradual-blue" :isBack="true">
 	<block slot="backText"></block>
 	<block slot="content">注册</block>
 </cu-custom>
 		<form>
 			<view class="cu-form-group margin-top flex">
-				<view class="flex-sub flex flex-wrap" >
+				
 					<view class="basis-xs text-left cuIcon text-xl text-green">
 						<text class="cuIcon-mobile  radius"></text>
 					</view>
-					<view class="basis-xl bg-white"><input  placeholder="请输入手机号" v-model="registerForm.telphone"></input></view>
-				</view>
+					<view class="basis-xl bg-white text-xxl"><input  placeholder="请输入手机号" v-model="registerForm.telphone"></input></view>
+				
 			</view>
 			
 			<view class="cu-form-group margin-top flex">
 				<view class="flex-sub flex flex-wrap">
-					<view class="basis-cu1 text-left bg-white">
-						<input placeholder="请输入验证码"  v-model="registerForm.validCode"></input>
+					<view class="basis-cu1 text-left bg-white text-sm">
+						<verification-code @Confirm='vcodeInput'
+						 inputType="number"  :itemNumber="6" :isPassword="false" class="activation-code" type="line">
+						</verification-code>
 					</view>
 					<view class="basis-cu2 text-center "><button class="cu-btn bg-green round text-sm" @tap="" >发送注册码</button> </view>
 				</view>
@@ -52,6 +53,7 @@
 </template>
 
 <script>
+	import verificationCode from '@/components/verification-code/verification-code.vue';
 	export default {
 		name: "login",
 		data() {
@@ -64,6 +66,9 @@
 					password2: ""
 				}
 			}
+		},
+		components:{
+			verificationCode 
 		},
 		created() {
 			
@@ -116,6 +121,9 @@
 				});
 				console.info("22222222")
 			},
+			vcodeInput(val) {
+			                console.log(val);
+			            },
 			goLogin() {
 				console.log("跳转到登录页面")
 				uni.navigateTo({

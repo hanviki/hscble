@@ -223,6 +223,19 @@
 					sportIndex: this.foodIndex,
 					sweatIndex: this.sweatIndex,
 					measureNumber: this.measureNumber
+				}).then(res=>{
+					if(res.data.code='1'){
+					uni.reLaunch({
+						url: '/pages/index/index'
+					});
+					}
+					else {
+						uni.showToast({
+							icon: "none",
+							title: "提交数据出错，请联系管理员",
+						})
+						return;
+					}
 				})
 			}
 		}

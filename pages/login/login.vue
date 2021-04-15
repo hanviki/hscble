@@ -97,6 +97,10 @@
 
 			appLogin(loginType) {
 				var that = this
+				if(loginType=='zhifubao'){
+					this.loginByAlipay()
+				}
+				else {
 				uni.getProvider({
 					service: 'oauth',
 					success: function(res) {
@@ -154,6 +158,42 @@
 
 						}
 					}
+				})
+				}
+			},
+			loginByAlipay() {
+				this.getAlipayCode().then((code) => {
+					console.info(code)
+					return uniCloud.callFunction({
+						name: 'uni-id-test',
+						data: {
+							action: 'loginByAlipay',
+							params: {
+								code,
+							}
+						}
+					})
+				}).then((res) => {
+					console.info(res)
+				}).catch((e) => {
+					console.error(e)
+					uni.showModal({
+						showCancel: false,
+						content: '支付宝登录失败，请稍后再试'
+					})
+				})
+			},
+			getAlipayCode() {
+				return new Promise((resolve, reject) => {
+					uni.login({
+						provider: 'alipay',
+						success(res) {
+							resolve(res.code)
+						},
+						fail(err) {
+							reject(new Error('支付宝登录失败'))
+						}
+					})
 				})
 			},
 			getApploginData(data) {
