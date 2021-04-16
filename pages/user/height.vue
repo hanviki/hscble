@@ -3,7 +3,7 @@
 		<cu-custom bgColor="bg-blue" :isBack="true">
 			<block slot="backText"></block>
 			<block slot="content">修改身高</block>
-			<block slot="right"><view style="float: right;"><button class="cu-btn bg-blue" @tap="updateNickName" >确定</button></view></block>
+			<block slot="right"><view style="float: right;"><button class="cu-btn bg-blue" @tap="updateUserHeight" >确定</button></view></block>
 		</cu-custom>
 		<view class="cu-form-group">
 			<input placeholder="请输入身高" type="number"  v-model="height" name="input" :focus="true"></input>
@@ -21,7 +21,7 @@
 			}
 		},
 		onLoad() {
-			this.height =userInfo.Height
+			this.height =this.userInfo.Height
 		},
 		computed: {
 			...mapState({
@@ -32,16 +32,16 @@
 			clearName() {
 				this.height =''
 			},
-			updateUserImage() {
+			updateUserHeight() {
 					var that = this
 					let uInfo = that.userInfo
+					uInfo.Height =parseFloat(that.height)
 					that.$api.user.putuser({
-							Id: uInfo.Id,
-							Height: that.height
+							...uInfo
 						})
 						.then(res => {
-							if (res.code == '1') {
-								uInfo.Height = that.height
+							if (res.Code == '1') {
+							//	uInfo.Height = that.height
 								that.$store.dispatch('updateUser', uInfo)
 								uni.navigateBack()
 							} else {

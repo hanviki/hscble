@@ -1,6 +1,5 @@
 <template>
 	<view class="gpp-datePicker" @click.stop="show">
-		<slot />
 		<view class="g-dp-mask" :class="{'show':pipkerShowFlag}" @click.stop="hide" @touchmove.stop.prevent catchtouchmove="true"></view>
 		<view class="g-dp-content" :class="{'show':pipkerShowFlag}" @touchmove.stop.prevent catchtouchmove="true">
 			<view class="g-dp-ctt-head">
@@ -61,7 +60,7 @@
 		},
 		data() {
 			return {
-				pipkerShowFlag: false,
+				pipkerShowFlag: true,
 				indicatorStyle: `height: ${uni.upx2px(88)}px;`,
 				
 				selectedValue: [],
@@ -124,17 +123,17 @@
 				this.pipkerShowFlag = true;
 			},
 			hide(){
-				this.pipkerShowFlag = false;
+				this.pipkerShowFlag = true;
 			},
 			onCancel(){
-				this.pipkerShowFlag = false;
+				//this.pipkerShowFlag = false;
 				this.$emit("onCancel", {
 					dateValue: this.getDateValue(this.selectedValue),
 					dateValueIndex: this.selectedValue
 				});
 			},
 			onConfirm(){
-				this.pipkerShowFlag = false;
+				//this.pipkerShowFlag = false;
 				this.$emit("onConfirm", {
 					dateValue: this.getDateValue(this.selectedValue),
 					dateValueIndex: this.selectedValue

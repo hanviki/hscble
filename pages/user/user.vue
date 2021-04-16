@@ -14,7 +14,7 @@
 				<view class="cu-form-group flex">
 					<view class="flex-sub flex">
 						<view class="flex-sub text-center">
-							<view class="cu-avatar lg  bg-white margin-left margin-right-sm" style="background-image:url(static/image/man.png)"></view>
+							<view class="cu-avatar lg  bg-white margin-left margin-right-sm" style="background-image:url(../../static/image/man.png)"></view>
 							<radio class='flex-sub  radio text-left' :class="radio=='1'?'checked':''" :checked="radio=='1'?true:false" value="1"></radio>
 						</view>
 					</view>
@@ -22,7 +22,7 @@
 					<view class="flex-sub flex">
 						<view class="flex-sub text-center ">
 							<radio class='flex-sub  radio text-left' :class="radio=='2'?'checked':''" :checked="radio=='2'?true:false" value="2"></radio>
-							<view class="cu-avatar lg  bg-white margin-right margin-left-sm" style="background-image:url(static/image/woman.png)"></view>
+							<view class="cu-avatar lg  bg-white margin-right margin-left-sm" style="background-image:url(../../static/image/woman.png)"></view>
 						</view>
 					</view>
 
@@ -50,33 +50,34 @@
 			</view>
 			<view class="cu-form-group text-center flex padding-xl">
 				<view class="text-center flex-sub">
-					<text class="text-center text-xxl">您的生日是:{{multiArray[0][multiIndex[0]]}}-{{multiArray[1][multiIndex[1]]}}-{{multiArray[2][multiIndex[2]]}}</text>
+					<text class="text-center text-xxl">您的生日是:{{pickerDate}}</text>
 				</view>
 			</view>
-			<view class="cu-form-group text-center flex">
-				<view class=" flex-sub flex">
-					<picker class="flex flex-sub" mode="multiSelector" @change="MultiChange" @columnchange="MultiColumnChange" :value="multiIndex" :range="multiArray">
-						<view class="picker flex-sub">
-							{{multiArray[0][multiIndex[0]]}}-{{multiArray[1][multiIndex[1]]}}-{{multiArray[2][multiIndex[2]]}}
-						</view>
-					</picker>
+			<view class="cu-form-group text-center flex" @tap="openBirModal">
+				<view class=" flex-sub text-center text-xxl">
+					{{pickerDate}}
 				</view>
 			</view>
 			<button class="cu-btn block bg-green margin-sm lg" @tap="submitUser"> 提交数据 </button>
 		</form>
-
+     <view class="cu-modal bottom-modal padding-bottom-xl" style="height: 100vh;" :class="birthShow?'show':''">
+		   <gpp-date-picker  @onCancel="onCancel" @onConfirm="onConfirm" :startDate="startDate"
+		   	:endDate="endDate" :defaultValue="pickerDate">
+		   </gpp-date-picker>
+		</view>
 	</view>
 </template>
 
 <script>
 	import scrollWeight from '@/components/weight/weight.vue'
 	import scrollHeight from '@/components/height/height.vue'
-	
+	import gppDatePicker from "@/components/gpp-datePicker/gpp-datePicker.vue"
 	export default {
 		name: "login",
 		components: {
 			scrollHeight,
-			scrollWeight
+			scrollWeight,
+			gppDatePicker
 		},
 		data() {
 			return {
@@ -91,30 +92,30 @@
 				NumValue: 0,
 				scrollLeftNow: 170, //页面显示
 				scrollLeftNow_weight: 60,
-				multiArray: [
-					[],
-					['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
-					['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12' ,'13' ,'14' ,'15' ,'16','17' ,'18','19' ,'20' ,'21', '22' ,'23' ,'24', '25' ,'26','27','28','29','30','31']
-				],
-				multiIndex: [0, 0, 0],
+				
+				birthShow: false,
+				startDate: "1920-01-01",
+				endDate: this.getCurrentDate(),
+				pickerDate: '1980-01-01'
 			}
 		},
 		computed:{
 			
 		},
 		mounted() {
-			console.info(22)
-			let now = (new Date()).getFullYear()
-			let year_arr = []
-			for (var i = 1920; i < now; i++) {
-				this.multiArray[0].push(i);
-			}
-			//this.multiArray[0] = year_arr
 		},
 		created() {
 
 		},
 		methods: {
+			getCurrentDate() {
+				var date = new Date();
+			
+				var year = date.getFullYear(); //年 ,从 Date 对象以四位数字返回年份
+				var month = date.getMonth() + 1; //月 ,从 Date 对象返回月份 (0 ~ 11) ,date.getMonth()比实际月份少 1 个月
+				var day = date.getDate();
+				return year + "-" + month + "-" + day;
+			},
 			RadioChange(e) {
 				this.radio = e.detail.value
 			},
@@ -127,9 +128,18 @@
 			scroll_weight(val) {
 				this.scrollLeftNow_weight = val
 			},
-			MultiChange(e) {
-				this.multiIndex = e.detail.value
+			
+			openBirModal() {
+				this.birthShow =true
 			},
+			onCancel(e) {
+				this.birthShow = false;
+			},
+			onConfirm(e) {
+				var that = this
+				that.pickerDate = e.dateValue;
+				this.birthShow = false;
+				},
 			getDays(year, month) {
 				let days = []
 
@@ -148,7 +158,7 @@
 					Phone: this.$store.getters.getTelphone,
 					Height: this.scrollLeftNow,
 					Weight: this.scrollLeftNow_weight,
-					Birthday: this.multiArray[0][this.multiIndex[0]]+'-'+this.multiArray[1][this.multiIndex[1]]+'-'+this.multiArray[2][this.multiIndex[2]]
+					Birthday: this.pickerDate
 				})
 			}
 		}

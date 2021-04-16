@@ -9,7 +9,7 @@
 				<view class="content flex">
 					<view class="flex-sub"><text class="text-grey text-left">头像</text></view>
 					<view class="flex-sub text-right">
-						<view class="cu-avatar round lg " :style="[{ backgroundImage:'url(' + userInfo.Photo + ')' }]">
+						<view class="cu-avatar round lg " :style="[{ backgroundImage:'url(' + pic+ ')' }]">
 						</view>
 					</view>
 				</view>
@@ -32,21 +32,30 @@
 					</view>
 				</view>
 			</view>
-			<view class="cu-item" :class="menuArrow?'arrow':''" @tap="showSexModal">
+			<view class="cu-item" :class="menuArrow?'arrow':''" @tap="">
 				<view class="content flex">
 					<view class="flex-sub">
 						<text class="text-grey">性别</text>
 					</view>
-					<view class="flex-sub text-right">{{userInfo.Sexy==1?'男':'女'}}
+					
+					<view class="flex-sub text-right">
+					<picker @change="PickerChange" :value="index" :range="picker">
+						<view class="picker">
+							{{userInfo.Sexy==1?'男':'女'}}
+						</view>
+					</picker>
 					</view>
 				</view>
 			</view>
-			<view class="cu-item" :class="menuArrow?'arrow':''" @tap="openBirModal">
+			<view class="cu-item" :class="menuArrow?'arrow':''" @tap="openBirModal" >
 				<view class="content flex">
 					<view class="flex-sub">
 						<text class="text-grey">出生日期</text>
 					</view>
-					<view class="flex-sub text-right">{{userInfo.Birthday}}
+					<view class="flex-sub text-right">
+					
+						{{userInfo.Birthday}}
+					
 					</view>
 				</view>
 			</view>
@@ -69,7 +78,7 @@
 				</view>
 			</view>
 		</view>
-		<view class="cu-modal bottom-modal" :class="modalName=='bottomModal'?'show':''">
+		<view class="cu-modal bottom-modal padding-bottom-xl" :class="modalName=='bottomModal'?'show':''">
 			<view class="cu-dialog">
 				<view class="cu-bar bg-white">
 					<view class="action text-blue" @tap="hideModal">取消</view>
@@ -86,7 +95,7 @@
 				</view>
 			</view>
 		</view>
-		<view class="cu-modal bottom-modal" :class="modalSexName=='bottomModal'?'show':''">
+		<!-- <view class="cu-modal bottom-modal padding-bottom-xl" :class="modalSexName=='bottomModal'?'show':''">
 			<view class="cu-dialog">
 				<view class="cu-bar bg-white">
 					<view class="action text-blue" @tap="hideSexModal">取消</view>
@@ -98,11 +107,10 @@
 					</view>
 				</picker>
 			</view>
-		</view>
-		<view class="cu-modal bottom-modal" :class="birthShow?'show':''">
+		</view> -->
+		<view class="cu-modal bottom-modal padding-bottom-xl" style="height: 100vh;" :class="birthShow?'show':''">
 		   <gpp-date-picker  @onCancel="onCancel" @onConfirm="onConfirm" :startDate="startDate"
 		   	:endDate="endDate" :defaultValue="pickerDate">
-		   	{{pickerDate}}
 		   </gpp-date-picker>
 		</view>
 	</view>
@@ -116,6 +124,7 @@
 	export default {
 		data() {
 			return {
+				pic: '',
 				menuArrow: true,
 				modalName: null,
 				modalSexName: null,
@@ -130,6 +139,9 @@
 		},
 		components: {
 			gppDatePicker
+		},
+		onLoad() {
+			this.pic =this.userInfo.Photo
 		},
 		computed: {
 			...mapState({
@@ -168,17 +180,16 @@
 			onConfirm(e) {
 				var that = this
 				that.pickerDate = e.dateValue;
-
-
+				let uInfo = that.userInfo
+				uInfo.Birthday = that.pickerDate
 				that.$api.user.putuser({
-						Id: that.userInfo.Id,
-						Birthday: that.pickerDate
+						...uInfo
 					})
 					.then(res => {
-						if (res.code == '1') {
+						if (res.Code == '1') {
 							that.birthShow = false;
-							that.userInfo.Birthday = that.pickerDate
-							that.$store.dispatch('updateUser', userInfo)
+							//that.userInfo.Birthday = that.pickerDate
+							that.$store.dispatch('updateUser', uInfo)
 							that.pickerDate ='1980-01-01'
 						} else {
 							uni.showToast({
@@ -190,6 +201,7 @@
 			},
 			PickerChange(e) {
 				this.index = e.detail.value
+				this.updateUserSex()
 			},
 			ChooseImage() {
 				uni.chooseImage({
@@ -231,16 +243,16 @@
 			},
 			updateUserSex() {
 				var that = this
-				let uInfo =that.userInfo
+				let uInfo = that.userInfo
+				uInfo.Sexy = (that.index == -1 ? 1 : that.index+1).toString()
 				that.$api.user.putuser({
-						Id: uInfo.Id,
-						Sexy: that.index == -1 ? 1 : that.index+1
+						...uInfo
 					})
 					.then(res => {
-						if (res.code == '1') {
+						if (res.Code == '1') {
 							that.hideSexModal()
 							that.index = -1
-							uInfo.Sexy = that.index == -1 ? 1 : that.index+1
+							//uInfo.Sexy = (that.index == -1 ? 1 : that.index+1
 							that.$store.dispatch('updateUser', uInfo)
 						} else {
 							uni.showToast({

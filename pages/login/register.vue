@@ -114,15 +114,14 @@
 				// 	})
 				//   }
 				// });
-				console.info("11111111111")
+				
 				this.$store.commit('setTelphone',this.registerForm.telphone)
-				uni.switchTab({
+				uni.navigateTo({
 					url: '/pages/user/user'
 				});
-				console.info("22222222")
 			},
 			vcodeInput(val) {
-			                console.log(val);
+			                this.registerForm.validCode =val
 			            },
 			goLogin() {
 				console.log("跳转到登录页面")

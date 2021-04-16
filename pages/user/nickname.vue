@@ -26,7 +26,7 @@
 			})
 		},
 		onLoad() {
-			this.nickame =userInfo.Nickname
+			this.nickame =this.userInfo.Nickname
 		},
 		methods: {
 			clearName() {
@@ -35,12 +35,12 @@
 			updateNickName() {
 					var that = this
 					let uInfo = that.userInfo
+					uInfo.Nickname = that.nickame
 					that.$api.user.putuser({
-							Id: uInfo.Id,
-							Nickname: that.nickame
+							...uInfo
 						})
 						.then(res => {
-							if (res.code == '1') {
+							if (res.Code == '1') {
 								uInfo.Nickname = that.nickame
 								that.$store.dispatch('updateUser', uInfo)
 								uni.navigateBack()

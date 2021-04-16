@@ -6,14 +6,14 @@ import request from '@/utils/request.js'
  */
 export const user = (data) => {
 	
-	return request.put('/v1/tuser/'+data.Id, data)
+	return request.get('/v1/tuser/', data)
 }
 export const postuser = (data) => {
 	
 	return request.post('/v1/tuser', data)
 }
 export const putuser = (data) => {
-	return request.put('/v1/tuser', data)
+	return request.put('/v1/tuser/'+data.Id, data)
 }
 /** 
  * 用户登录
