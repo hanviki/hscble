@@ -69,8 +69,8 @@
 		onLoad() {
 			console.info("开始了" + this.$store.state.user.hasLogin)
 			if (this.$store.state.user.hasLogin) {
-				uni.reLaunch({
-					url: '/pages/index/index'
+				uni.switchTab({
+					url: '/pages/settings/settings'
 				});
 			} else {
 				this.initProvider();
@@ -243,6 +243,7 @@
 				that.$store.dispatch('user/login', {
 					params: params
 				})
+				console.info("zheli了" + this.$store.state.user.hasLogin)
 			},
 			goRegister() {
 				console.log("跳转到注册页面")

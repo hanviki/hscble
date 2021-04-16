@@ -1,5 +1,5 @@
 <template name="basics">
-	<view class="bg-white" style="height: 100%;">
+	<view class="bg-white" style="height: 100vh;">
 		<cu-custom bgColor="bg-gradual-blue" :isBack="true">
 			<block slot="backText"></block>
 			<block slot="content">添加数据</block>
@@ -11,7 +11,7 @@
 				<text class="text-sm">(请添加血糖数据及出汗情况)</text>
 			</view>
 		</view>
-		<view class="cu-bar bg-gray flex  r">
+		<view class="cu-bar bg-gray flex  r padding-sm">
 			<view class="  flex-sub flex text-center">
 				<view class="flex-sub">
 					<view class="text-sl">
@@ -44,7 +44,7 @@
 		</view>
 		<view class="bg-white  padding-sm">
 		</view>
-		<view class="cu-bar flex bg-gray   r">
+		<view class="cu-bar flex bg-gray   r padding-sm">
 			<view class="  flex-sub flex text-center">
 				<view class="flex-sub">
 					<view class="text-sl">
@@ -77,7 +77,7 @@
 		</view>
 		<view class="bg-white  padding-sm">
 		</view>
-		<view class="cu-bar flex bg-gray  r">
+		<view class="cu-bar flex bg-gray  r padding-sm" style="min-height: 81px;">
 			<view class="  flex-sub flex text-center" >
 				<view class="flex-sub text-sl">
 					<text class="cuIcon-shuidi text-green"></text>
@@ -102,7 +102,7 @@
 				<text class="text-sm">(请添加出汗情况)</text>
 			</view>
 		</view>
-		<view class="cu-bar flex bg-gray   r">
+		<view class="cu-bar flex bg-gray   r padding-sm">
 			<view class="  flex-sub flex text-center">
 				<view class="flex-sub">
 					<view class="text-sl">
@@ -144,7 +144,7 @@
 		</view>
 		<view class="bg-white  padding-sm">
 		</view>
-		<view class="cu-bar flex bg-gray   r">
+		<view class="cu-bar flex bg-gray   r padding-sm">
 			<view class="  flex-sub flex text-center">
 				<view class="flex-sub">
 					<view class="text-sl">
@@ -179,7 +179,8 @@
 		<view class="bg-white ">
 			<text class="text-sm margin-left">注意：汗糖检测与血糖检测间隔间隔需在需在15分钟以内</text>
 		</view>
-			<button class="cu-btn block bg-green margin-sm lg" @tap="submitCheck"> 提交数据 </button>
+		
+			<button class="cu-btn block bg-green  lg btm" @tap="submitCheck"> 提交数据 </button>
 	</view>
 </template>
 
@@ -252,5 +253,12 @@
 	.padding0 {
 		padding-left: 0px;
 		padding-right: 0px;
+	}
+	.btm {
+		  position: fixed;
+		      width: 96%;
+		      bottom: 10rpx;
+		      z-index: 1024;
+			  margin-left: 2%;
 	}
 </style>

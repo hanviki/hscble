@@ -1,5 +1,5 @@
 <template name="basics">
-	<view>
+	<view style="height: 100vh;" class="bg-white">
 		<view class="bg-cyan text-center">
 			<view class="padding-xl"></view>
 			<view class="cu-avatar-group">
@@ -38,15 +38,17 @@
 					<text class="text-grey">关于</text>
 				</navigator>
 			</view>
-			<view class="margin-tb-sm text-center">
-				<button class="cu-btn round bg-cyan" @tap="bindLogout">退出登录</button>
-			</view>
+			
+		</view>
+		<view class=" text-center  cu-bar btm  padding-xl">
+			<button class="round bg-cyan" @tap="bindLogout">退出登录</button>
 		</view>
 		</view>
 </template>
 
 <script>
 	import { mapState } from 'vuex'
+	import { USER_LOGUT} from '@/store/module/user/mutations-type.js';
 	export default {
 		data() {
 			return {
@@ -65,20 +67,25 @@
 		},
 		methods: {
 			bindLogout() {
-				this.$store.dispatch('user/logout');
+				this.$store.commit('user/'+USER_LOGUT);
 				/**
 				 * 如果需要强制登录跳转回登录页面
 				 */
-				if (this.forcedLogin) {
+				
 					uni.reLaunch({
 						url: '../login/login'
 					});
-				}
+				
 			}
 		}
 	}
 </script>
 
 <style>
-
+  .btm {
+	  position: fixed;
+	      width: 100%;
+	      bottom: 0;
+	      z-index: 1024;
+  }
 </style>

@@ -1,7 +1,7 @@
 <script>
 import Vue from 'vue';
 import { getToken, getUserInfo } from '@/utils/auth.js';
-	import { USER_LOGIN } from '@/store/module/user/mutations-type.js';
+	import { USER_LOGIN, USER_UPDATE } from '@/store/module/user/mutations-type.js';
 export default {
 	
 	onLaunch: function() {
@@ -116,9 +116,11 @@ export default {
 		//登录的用户 再次进入直接登录 
 		const userInfo = getUserInfo();
 		//const appletInfo = getAppletInfo();
-		console.info(userInfo)
+		console.info("APP.vue")
+		
 		if (userInfo) {
-			this.$store.commit('user/' + USER_LOGIN, userInfo);
+			console.info(userInfo)
+			this.$store.commit('user/' + USER_UPDATE, userInfo);
 		}
 		
 		}

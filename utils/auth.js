@@ -28,6 +28,7 @@ export const removeToken = () => {
  * 获取用户信息 
  */
 export const getUserInfo = () => {
+	console.info("获取用户数据")
 	let userInfo = uni.getStorageSync(USER_INFO)
 	return userInfo ? JSON.parse(userInfo) : null
 }
@@ -35,6 +36,7 @@ export const getUserInfo = () => {
  * 保存用户信息 
  */
 export function setUserInfo(userData) {
+	console.info("设置用户信息")
 	return uni.setStorageSync(USER_INFO, JSON.stringify(userData))
 }
 /**

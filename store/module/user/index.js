@@ -24,8 +24,8 @@ const store = {
 	namespaced: true,
 	state: {
 		hasLogin: false,
-		token: getToken(),
-		userInfo: getUserInfo(),
+		token: null,
+		userInfo: {},
 		appletInfo: {}
 	},
 	mutations: {
@@ -33,22 +33,27 @@ const store = {
 			userInfo,
 			token
 		}) {
+			console.info("保存数据：");
+			console.info(userInfo)
 			state.userInfo = userInfo;
-			state.token=token
-			setToken(token)
-			setUserInfo(userInfo)
 			state.hasLogin = true;
+			setUserInfo(userInfo);
+			state.token=token;
+			setToken(token);
+			
+			
 		},
 		[USER_LOGUT](state) {
 			state.userInfo = {};
 			state.appletInfo = {};
 			state.token=null;
-			setToken("")
+			setToken({})
 			setUserInfo(null)
 			state.hasLogin = false;
 		},
 		[USER_UPDATE](state, userInfo) {
 			state.userInfo = userInfo;
+			state.hasLogin =true
 		}
 	},
 	actions: {

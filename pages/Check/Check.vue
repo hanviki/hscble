@@ -1,5 +1,5 @@
 <template>
-	<view class="bg-white">
+	<view class="bg-white" style="height: 100vh;">
 		<cu-custom bgColor="bg-gradual-blue" :isBack="false">
 			<block slot="content">检测数据</block>
 		</cu-custom>
@@ -10,7 +10,7 @@
 				<text class="text-sm">(请添加血糖数据及出汗情况)</text>
 			</view>
 		</view>
-		<view class="cu-bar flex bg-gray r">
+		<view class="cu-bar flex bg-gray r" style="min-height: 61px;">
 			<view class="  flex-sub flex text-center">
 				<view class="flex-sub text-sl">
 					<text class="cuIcon-shuidi  " :class="checkCount==3?'text-green':'text-gray'"></text>
@@ -124,16 +124,11 @@
 				<qiun-data-charts :type="chartType" :chartData="chartData" :echartsH5="true" :echartsApp="true" />
 			</view>
 		</view>
-		<view>
-			<button @tap="ceshi">跳转</button>
-		</view>
+		
 	</view>
 </template>
 
 <script>
-	import {
-		mapState
-	} from 'vuex'
 	export default {
 		data() {
 			return {
@@ -201,11 +196,9 @@
 			}
 		},
 		computed: {
-			...mapState({
-				userInfo: state => state.user.userInfo
-			})
+			
 		},
-		onShow() {
+		onLoad() {
 			this.fetch()
 		},
 		components: {
@@ -240,9 +233,9 @@
 			},
 			fetch() {
 				var that = this
-
+                 let userInfo=     that.$store.state.user.userInfo
 				that.$api.check.reportCheck({
-					userId: that.userInfo.Id
+					userId: userInfo.Id
 				}).then(res => {
 					if (res.Code == "1") {
 						let data = res.Data
@@ -320,6 +313,6 @@
 		padding-bottom: 10rpx;
 	}
 	.cuh{
-		min-height: 80rpx;
+		min-height: 45px;
 	}
 </style>
