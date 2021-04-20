@@ -67,14 +67,14 @@
 		},
 		methods: {
 			bindLogout() {
-				this.$store.commit('user/'+USER_LOGUT);
+				 this.$store.dispatch('user/logout');
 				/**
 				 * 如果需要强制登录跳转回登录页面
 				 */
 				
-					uni.reLaunch({
-						url: '../login/login'
-					});
+					// uni.reLaunch({
+					// 	url: '../login/login'
+					// });
 				
 			}
 		}

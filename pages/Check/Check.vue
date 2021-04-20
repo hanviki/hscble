@@ -233,7 +233,7 @@
 			},
 			fetch() {
 				var that = this
-                 let userInfo=     that.$store.state.user.userInfo
+                 let userInfo=    that.$store.getters['user/getUserInfo']
 				that.$api.check.reportCheck({
 					userId: userInfo.Id
 				}).then(res => {

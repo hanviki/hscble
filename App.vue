@@ -1,7 +1,7 @@
 <script>
 import Vue from 'vue';
 import { getToken, getUserInfo } from '@/utils/auth.js';
-	import { USER_LOGIN, USER_UPDATE } from '@/store/module/user/mutations-type.js';
+	import { USER_LOGIN, USER_UPDATE, LOGIN_STATUS } from '@/store/module/user/mutations-type.js';
 export default {
 	
 	onLaunch: function() {
@@ -121,6 +121,7 @@ export default {
 		if (userInfo) {
 			console.info(userInfo)
 			this.$store.commit('user/' + USER_UPDATE, userInfo);
+			this.$store.commit('user/' + LOGIN_STATUS, userInfo);
 		}
 		
 		}

@@ -9,7 +9,7 @@
 				<view class="content flex">
 					<view class="flex-sub"><text class="text-grey text-left">头像</text></view>
 					<view class="flex-sub text-right">
-						<view class="cu-avatar round lg " :style="[{ backgroundImage:'url(' + pic+ ')' }]">
+						<view class="cu-avatar round lg " :style="[{ backgroundImage:'url(' + userInfo.Photo+ ')' }]">
 						</view>
 					</view>
 				</view>
@@ -32,7 +32,7 @@
 					</view>
 				</view>
 			</view>
-			<view class="cu-item" :class="menuArrow?'arrow':''" @tap="">
+			<view class="cu-item" :class="menuArrow?'arrow':''">
 				<view class="content flex">
 					<view class="flex-sub">
 						<text class="text-grey">性别</text>
@@ -82,7 +82,7 @@
 			<view class="cu-dialog">
 				<view class="cu-bar bg-white">
 					<view class="action text-blue" @tap="hideModal">取消</view>
-					<view class="action text-green" @tap="updateUserImage">确定</view>
+					<view class="action text-green" @tap.stop="updateUserImage">确定</view>
 				</view>
                  <view class="bg-img" v-for="(item,index) in imgList" :key="index" @tap="ViewImage" :data-url="imgList[index]">
 					 <image :src="imgList[index]" mode="aspectFill"></image>
@@ -117,9 +117,7 @@
 </template>
 
 <script>
-	import {
-		mapState
-	} from 'vuex'
+
 	import gppDatePicker from "@/components/gpp-datePicker/gpp-datePicker.vue"
 	export default {
 		data() {
@@ -134,20 +132,27 @@
 				birthShow: false,
 				startDate: "1920-01-01",
 				endDate: this.getCurrentDate(),
-				pickerDate: '1980-01-01'
+				pickerDate: '1980-01-01',
+				userInfo: {}
 			}
 		},
 		components: {
 			gppDatePicker
 		},
 		onLoad() {
-			this.pic =this.userInfo.Photo
-		},
-		computed: {
-			...mapState({
-				userInfo: state => state.user.userInfo
-			})
-		},
+			this.pic =this.$store.getters['user/getUserInfo'].Photo
+			this.userInfo =this.$store.getters['user/getUserInfo']
+					},
+		// watch: {
+		// 	'$store.state.user.userInfo': {
+		// 		handler(e) {
+		// 			console.info(e)
+		// 			this.userInfo = this.$store.getters['user/getUserInfo'];
+		// 		},
+		// 		immediate: true,
+		// 		deep: true
+		// 	}
+		// },
 		methods: {
 			getCurrentDate() {
 				var date = new Date();
@@ -181,6 +186,7 @@
 				var that = this
 				that.pickerDate = e.dateValue;
 				let uInfo = that.userInfo
+				 let br =uInfo.Birthday
 				uInfo.Birthday = that.pickerDate
 				that.$api.user.putuser({
 						...uInfo
@@ -189,9 +195,10 @@
 						if (res.Code == '1') {
 							that.birthShow = false;
 							//that.userInfo.Birthday = that.pickerDate
-							that.$store.dispatch('updateUser', uInfo)
+							that.$store.dispatch('user/updateUser', uInfo)
 							that.pickerDate ='1980-01-01'
 						} else {
+							uInfo.Birthday =br
 							uni.showToast({
 								icon: "none",
 								title: "提交数据出错，请联系管理员",
@@ -244,6 +251,7 @@
 			updateUserSex() {
 				var that = this
 				let uInfo = that.userInfo
+				let sx =uInfo.Sexy
 				uInfo.Sexy = (that.index == -1 ? 1 : that.index+1).toString()
 				that.$api.user.putuser({
 						...uInfo
@@ -253,8 +261,10 @@
 							that.hideSexModal()
 							that.index = -1
 							//uInfo.Sexy = (that.index == -1 ? 1 : that.index+1
-							that.$store.dispatch('updateUser', uInfo)
+							that.$store.dispatch('user/updateUser', uInfo)
+							
 						} else {
+							uInfo.Sexy =sx
 							uni.showToast({
 								icon: "none",
 								title: "提交数据出错，请联系管理员",
@@ -263,19 +273,41 @@
 					})
 
 			},
+			putuserImage (uInfo) {
+				let that= this
+				that.$api.user.putuser({
+						...uInfo
+					})
+					.then(res => {
+						if (res.Code == '1') {
+							that.hideModal()
+								that.imgList = []
+							//	uInfo.photo = that.imgList[0]
+								that.$store.dispatch('user/updateUser', uInfo)
+							//	console.info(that.userInfo)
+						} else {
+							uni.showToast({
+								icon: "none",
+								title: "提交数据出错，请联系管理员",
+							})
+						}
+					})
+			},
 			updateUserImage() {
 				var that = this
 				let uInfo =that.userInfo
-				that.$api.user.uploadPhoto({
-						Id: uInfo.Id,
-						pic: that.imgList[0]
-					},(res)=>{
-						if (res.code == '1') {
-							that.hideModal()
-							that.imgList = []
-							uInfo.photo = that.imgList[0]
-							that.$store.dispatch('updateUser', uInfo)
+				let ph =uInfo.Photo
+				//uInfo.photo = that.imgList[0]
+				that.$api.user.uploadPhoto(
+						 that.imgList[0]
+					,(res)=>{
+						console.info(res.Code)
+						if (res.Code == '1') {
+							uInfo.Photo =that.$api.user.baseUrl2+ res.Message
+							that.putuserImage(uInfo)
+							
 						} else {
+							uInfo.Photo =ph
 							uni.showToast({
 								icon: "none",
 								title: "上传失败，请联系管理员",

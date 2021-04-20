@@ -88,7 +88,7 @@ export default {
 			} catch (err) {
 				commit('setIsOpenBle', false)
 				uni.showToast({
-					title: `蓝牙初始化失败: ${err.errMsg}`,
+					title: `蓝牙初始化失败，请检查是否打开手机蓝牙`,
 					icon: 'none',
 					position: 'bottom'
 				});

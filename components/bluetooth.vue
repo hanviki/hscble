@@ -70,6 +70,7 @@ export default {
 	watch: {
 		'$store.state.bluetooth': {
 			handler(e) {
+				console.info('33333333')
 				this.isOpenBle = e.isOpenBle;
 				this.paired = e.paired;
 				this.bledd = e.bledd;

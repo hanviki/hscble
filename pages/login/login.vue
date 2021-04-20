@@ -67,14 +67,15 @@
 		},
 		watch: {},
 		onLoad() {
-			console.info("开始了" + this.$store.state.user.hasLogin)
-			if (this.$store.state.user.hasLogin) {
+			console.info("开始了" + this.$store.getters['user/getHasLogin'])
+			if (this.$store.getters['user/getHasLogin']) {  //注释 登陆过直接登陆
 				uni.switchTab({
 					url: '/pages/settings/settings'
 				});
 			} else {
 				this.initProvider();
 			}
+			this.initProvider();
 		},
 		methods: {
 			includesArr(arr, val) {
@@ -120,13 +121,15 @@
 											let formdata = {};
 											if (loginType == "weixin") {
 												formdata = {
-													Nickname: infoRes.userInfo.nickName,
-													Sexy: infoRes.userInfo.gender,
-													Photo: infoRes.userInfo.avatarUrl,
+													nickname: infoRes.userInfo.nickName,
+													sexy: infoRes.userInfo.gender=1?'1':'2',
+													photo: infoRes.userInfo.avatarUrl,
 													openId: infoRes.userInfo.openId,
 													unionId: infoRes.userInfo.unionId,
 													access_token: access_token,
-													appLoginType: 'WEIXIN'
+													appLoginType: 'WEIXIN',
+													source: 'wx'+infoRes.userInfo.openId,
+													sourcetype: '1'
 												};
 											} else if (loginType == "qq") {
 												formdata = {
@@ -140,16 +143,19 @@
 												};
 											} else if (loginType == "sinaweibo") {
 												formdata = {
-													Nickname: infoRes.userInfo.nickname,
-													Sexy: infoRes.userInfo.gender == 'm' ? 1 : 2,
-													Photo: infoRes.userInfo.avatar_large,
+													nickname: infoRes.userInfo.nickname,
+													sexy: infoRes.userInfo.gender == 'm' ? '1' : '2',
+													photo: infoRes.userInfo.avatar_large,
 													openId: infoRes.userInfo.id,
 													unionId: '',
 													access_token: access_token,
-													appLoginType: 'SINAWEIBO'
+													appLoginType: 'SINAWEIBO',
+													source: 'sina'+infoRes.userInfo.id,
+													sourcetype: '2'
 												};
 											}
-											console.info(infoRes)
+											
+											that.$store.dispatch('user/thirdLogin', formdata)
 										}
 
 									})

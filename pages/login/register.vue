@@ -1,50 +1,54 @@
 <template name="basics">
 	<view>
-<cu-custom bgColor="bg-gradual-blue" :isBack="true">
-	<block slot="backText"></block>
-	<block slot="content">注册</block>
-</cu-custom>
+		<cu-custom bgColor="bg-gradual-blue" :isBack="true">
+			<block slot="backText"></block>
+			<block slot="content">注册</block>
+		</cu-custom>
 		<form>
 			<view class="cu-form-group margin-top flex">
-				
-					<view class="basis-xs text-left cuIcon text-xl text-green">
-						<text class="cuIcon-mobile  radius"></text>
-					</view>
-					<view class="basis-xl bg-white text-xxl"><input  placeholder="请输入手机号" v-model="registerForm.telphone"></input></view>
-				
+
+				<view class="basis-xs text-left cuIcon text-xl text-green">
+					<text class="cuIcon-mobile  radius"></text>
+				</view>
+				<view class="basis-xl bg-white text-xxl"><input placeholder="请输入手机号"
+						v-model="registerForm.telphone"></input></view>
+
 			</view>
-			
+
 			<view class="cu-form-group margin-top flex">
 				<view class="flex-sub flex flex-wrap">
 					<view class="basis-cu1 text-left bg-white text-sm">
-						<verification-code @Confirm='vcodeInput'
-						 inputType="number"  :itemNumber="6" :isPassword="false" class="activation-code" type="line">
+						<verification-code @Confirm='vcodeInput' inputType="number"  :autoFocus="false"  :itemNumber="4" :isPassword="false"
+							class="activation-code" type="line">
 						</verification-code>
 					</view>
-					<view class="basis-cu2 text-center "><button class="cu-btn bg-green round text-sm" @tap="" >发送注册码</button> </view>
+					<view class="basis-cu2 text-center "><button class="cu-btn bg-green round text-sm"
+							@tap="sendSms()">发送注册码</button> </view>
 				</view>
-				
+
 			</view>
-			
+
 			<view class="cu-form-group margin-top flex">
 				<view class="flex-sub flex flex-wrap">
 					<view class="basis-xs text-left cuIcon text-xl text-green">
 						<text class="cuIcon-lock  radius"></text>
 					</view>
-					<view class="basis-xl bg-white"><input password=""  placeholder="请输入密码" v-model="registerForm.password1"></input></view>
+					<view class="basis-xl bg-white"><input password="" placeholder="请输入密码"
+							v-model="registerForm.password1"></input></view>
 				</view>
-				
+
 			</view>
 			<view class="cu-form-group margin-top flex">
-			<view class="flex-sub flex flex-wrap">
-				<view class="basis-xs text-left cuIcon text-xl text-green">
-					<text class="cuIcon-lock  radius"></text>
+				<view class="flex-sub flex flex-wrap">
+					<view class="basis-xs text-left cuIcon text-xl text-green">
+						<text class="cuIcon-lock  radius"></text>
+					</view>
+					<view class="basis-xl bg-white"><input password="" placeholder="请再次输入密码"
+							v-model="registerForm.password2"></input></view>
 				</view>
-				<view class="basis-xl bg-white"><input password=""  placeholder="请再次输入密码" v-model="registerForm.password2"></input></view>
 			</view>
-			</view>
-			
-			
+
+
 			<button class="cu-btn block bg-green margin-sm lg" @tap="register"> 提交 </button>
 			<button class="cu-btn block bg-grey margin-sm lg" @tap="goLogin"> 返回登录 </button>
 		</form>
@@ -67,38 +71,72 @@
 				}
 			}
 		},
-		components:{
-			verificationCode 
+		components: {
+			verificationCode
 		},
 		created() {
-			
+
 		},
 		methods: {
 			register() {
-				console.log("提交表单", this.registerForm)
-				if(this.registerForm.telphone == "" || this.registerForm.password1 == "" || this.registerForm.password2 == "" || this.registerForm.validCode == "") {
+				let loginRules = [{
+						name: 'telphone',
+						required: true,
+						type: 'phone',
+						errmsg: '请输入正确的手机号'
+					},
+					{
+						name: 'password1',
+						type: 'required',
+						errmsg: '请输入密码'
+					},
+					{
+						name: 'password1',
+						type: 'pwd',
+						errmsg: '密码须是6～16位字符'
+					},
+					{
+						name: 'password2',
+						type: 'eq',
+						eqName: 'password1',
+						required: true,
+						errmsg: '两次输入密码不一致'
+					},
+					{
+						name: 'validCode',
+						type: 'required',
+						errmsg: '请输入验证码'
+					},
+					{
+						name: 'validCode',
+						type: 'lengthRange',
+						min: 4,
+						max: 4,
+						errmsg: '请正确输入验证码'
+					}
+				]
+				let valLoginRes = this.$validate.validate(this.registerForm, loginRules)
+				if (!valLoginRes.isOk) {
 					uni.showToast({
-						icon: "none",
-						title: "请先完善表单~",
+						icon: 'none',
+						title: valLoginRes.errmsg
 					})
-					return;
+					return false
 				}
-
-				let passWord = this.registerForm.password1;
-				let passWord2 = this.registerForm.password2;
-				if(passWord != passWord2) {
+				if(this.validCode!=this.registerForm.validCode)
+				{
 					uni.showToast({
-						icon: "none",
-						title: "两次密码不一致~",
+						icon: 'none',
+						title: '验证码输入有误'
 					})
-					return;
+					return false
 				}
 				var params = {};
 				params.userName = this.registerForm.telphone;
 				params.passWord = this.registerForm.password1;
 				params.email = this.registerForm.email;
 				params.nickName = this.registerForm.nickName
-				
+
 				// localRegister(params).then(response => {
 				//   if (response.code == this.$ECode.SUCCESS) {
 				// 	uni.showToast({
@@ -114,15 +152,53 @@
 				// 	})
 				//   }
 				// });
-				
-				this.$store.commit('setTelphone',this.registerForm.telphone)
+
+				this.$store.commit('setTelphone', this.registerForm.telphone)
 				uni.navigateTo({
 					url: '/pages/user/user'
 				});
 			},
+			//验证码
+			getValidCode() {
+				var str = '0123456789';
+				var res = '';
+				for (var i = 0; i < 4; i++) {
+					//随机产生字符串的下标
+					var n = parseInt(Math.random() * str.length)
+					res += str[n]
+				}
+				console.log(res)
+				return res
+			},
 			vcodeInput(val) {
-			                this.registerForm.validCode =val
-			            },
+				this.registerForm.validCode = val;
+			},
+			sendSms() {
+
+				if (!this.$validate.isPhone(this.registerForm.telphone)) {
+					uni.showToast({
+						icon: 'none',
+						title: '请输入正确的手机号'
+					})
+					return
+				}
+				this.validCode = this.getValidCode()
+
+				if (this.registerForm.telphone != '') {
+					let params = {
+						phone: this.registerForm.telphone,
+						value: this.validCode
+					}
+					this.$api.user.sendSms({
+						params: params
+					}).then(() => {
+						uni.showToast({
+							icon: "none",
+							title: "短信已发送,请接收",
+						})
+					})
+				}
+			},
 			goLogin() {
 				console.log("跳转到登录页面")
 				uni.navigateTo({
@@ -164,17 +240,19 @@
 		height: 200rpx;
 	}
 
-.textCus{
-	font-size: 20px!important;
-}
-.basis-cu1 {
-    -webkit-flex-basis: 70%;
-    flex-basis: 70%;
-}
-.basis-cu2 {
-    -webkit-flex-basis: 30%;
-    flex-basis: 30%;
-}
+	.textCus {
+		font-size: 20px !important;
+	}
+
+	.basis-cu1 {
+		-webkit-flex-basis: 70%;
+		flex-basis: 70%;
+	}
+
+	.basis-cu2 {
+		-webkit-flex-basis: 30%;
+		flex-basis: 30%;
+	}
 
 	.UCenter-bg .gif-wave {
 		position: absolute;

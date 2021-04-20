@@ -4,7 +4,7 @@ Copyright 2020.02.02 cxjfun. All Rights Reserved
 <template>
     <view class="verification-code">
         <view class="flex-box">
-            <input v-model="inputValue" :type="input_type" :focus="autoFocus==true" :maxlength="itemNumber" class="hide-input" @input="getVal" />
+            <input v-model="inputValue" :type="input_type" @blur="reduceCodeIndex" @focus="addCodeIndex"  :focus="autoFocus==true" :maxlength="itemNumber" class="hide-input" @input="getVal" />
 
             <view class="boxs">
                 <view
@@ -29,7 +29,7 @@ export default {
     data() {
         return {
             inputValue: [],
-            codeIndex: 0,
+            codeIndex: -1,
             ranges: new Array(this.itemNumber),
             input_type: this.inputType,
             ispassword: this.isPassword
@@ -66,6 +66,17 @@ export default {
         }
     },
     methods: {
+		addCodeIndex () {
+			if(this.codeIndex==-1){
+				this.codeIndex =0
+			}
+		},
+		reduceCodeIndex () {
+			
+			if(this.codeIndex ==0){
+			this.codeIndex=-1
+			}
+		},
         getVal(e) {
             var value = e.detail.value;
             if (this.codeIndex > this.inputValue.length) {
@@ -86,11 +97,11 @@ export default {
         }
     },
     mounted() {
-        if (this.ispassword) {
-            this.input_type = 'password';
-        }else if(this.inputType='password'){
-            this.ispassword=true;
-        }
+        // if (this.ispassword) {
+        //     this.input_type = 'password';
+        // }else if(this.inputType='password'){
+        //     this.ispassword=true;
+        // }
     }
 };
 </script>

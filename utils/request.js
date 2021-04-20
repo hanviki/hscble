@@ -9,14 +9,16 @@ import Http from '@/js_sdk/luch-request/luch-request/index.js'
 import {
 	getToken
 } from './auth'
-const request = new Http({
+export const request = new Http({
 	timeout: 300000 //超时时长5分钟
 })
 // 环境前缀添加
 let baseURL = null;
 if (process.env.NODE_ENV === 'development') {
 	// 开发环境
-	baseURL = 'http://119.45.34.150:8080/'
+	baseURL = 'http://1.15.180.40:80/'
+	//baseURL = 'http://119.45.34.150:8080/'
+
 } else {
 	// 生产环境
 	// baseURL = 'https://movie.lzzzero.com/api'
@@ -56,8 +58,8 @@ const handleCustomError = (res) => {
 request.interceptors.request.use((config) => {
 	let token = getToken();
 	console.info(config)
-	if (token && config.url!='/v1/tuser/login') {
-		//config.header['token'] = token;
+	if (token && config.url!='/v1/tuser/login' && config.url!='/v1/tuser/sendsms') {
+		config.header['Authorization'] = token;
 	}
 	console.log(config)
    
@@ -85,7 +87,7 @@ request.interceptors.response.use((response) => {
 })
 
 
-export default request
+//export default request
 
 // 创建新的实例请求对象
 export const create = () => {
@@ -94,7 +96,8 @@ export const create = () => {
 /**
  * 上传头像
  */
-export const uploadPhoto = (url, tempFilePaths ,data,successCb,errorCb)=>{
+export const uploadPhoto2 = (url, tempFilePaths ,successCb,errorCb)=>{
+	let token = getToken()
 	uni.showLoading({
 		title: '上传中...'
 	});
@@ -102,16 +105,16 @@ export const uploadPhoto = (url, tempFilePaths ,data,successCb,errorCb)=>{
 		url: baseURL + url,
 		filePath: tempFilePaths,
 		fileType: 'image',
-		name: 'file',
+		name: 'myfile',
 		header: {
-			'token': token
+			'Authorization': token
 		},
 		formData: {
 			'method': 'images.upload',
-			'upfile': tempFilePaths,
-			...data
+			'myfile': tempFilePaths
 		},
 		success: (uploadFileRes) => {
+			console.info(uploadFileRes)
 			successCb(JSON.parse(uploadFileRes.data));
 		},
 		fail: (error) => {

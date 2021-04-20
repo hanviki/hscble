@@ -27,6 +27,27 @@ class Bluetooth {
 		uni.closeBluetoothAdapter();
 	}
 	/**
+	 * @param {Object} succ_fn
+	 * 蓝牙断开
+	 */
+	onBluetoothAdapterStateChange (succ_fn) {
+		console.info("onBluetoothAdapterStateChange")
+		uni.onBluetoothAdapterStateChange(function (res) {
+		  console.log('adapterState changed, now is', res)
+		  succ_fn(res)
+		})
+	}
+	/**
+	             * 监听低功耗蓝牙连接状态的改变事件。包括开发者主动连接或断开连接，设备丢失，连接异常断开等等
+	             */
+	            onBLEConnectionStateChange(succ_fn) {
+	                uni.onBLEConnectionStateChange(res => {
+	                    succ_fn(res);
+	                    })
+					}
+							
+
+	/**
 	 * 根据 uuid 获取处于已连接状态的设备。
 	 * @param {Object} services
 	 */

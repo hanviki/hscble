@@ -1,5 +1,5 @@
-import request from '@/utils/request.js'
-
+import {request,uploadPhoto2} from '@/utils/request.js'
+//import uploadPhoto2 from '@/utils/request.js'
 
 /** 
  * 获取用户信息
@@ -21,9 +21,17 @@ export const putuser = (data) => {
 export const login = (data) => {
 	return request.get('/v1/tuser/login', data)
 }
+/** * 发送短信 */export const sendSms = (data) => {	//http://119.45.34.150:8080/v1/tuser/sendsms?phone=13297021213&value=1234	return request.get('/v1/tuser/sendsms',data)}
 
-
-export const uploadPhoto = (tempFile,data,successCb,errorCb) => {
-	return request.uploadPhoto('/v1/tuser/login',tempFile, data,successCb,errorCb)
+export const uploadPhoto = (tempFile,successCb,errorCb) => {
+	return uploadPhoto2('/v1/tupload/upload',tempFile,successCb,errorCb)
 }
+/**
+ * 第三方登陆 微信\支付宝\微博
+ */
+export const loginThrid = (data) => {
+	return request.post('/v1/tuser/tplogin',  data)
+}
+
+export const baseUrl2 = request.config.baseURL
 

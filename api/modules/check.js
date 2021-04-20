@@ -1,15 +1,13 @@
-import request from '@/utils/request.js'
+import {request} from '@/utils/request.js'
 
 
 /** 
- * 新增检测信息
+ * 新增汉糖和出汗
  */
-export const addsweat= (data) => {
-	return request.post('/v1/tsweat', data)
-}
 export const addsweatsugar= (data) => {
-	return request.post('/v1/bloodsugar', data)
+	return request.post('/v1/tpackage', data)
 }
+
 export const addbloodsugar= (data) => {
 	return request.post('/v1/sweatsugar', data)
 }

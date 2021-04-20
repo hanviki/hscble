@@ -192,8 +192,24 @@
 				foodIndex: 0,
 				sportIndex: 0,
 				sweatIndex: 0,
-				measureNumber: ''
+				measureNumber: '',
+				userInfo: {}
 			}
+		},
+		onLoad (){
+		  this.userInfo= this.$store.getters['user/getUserInfo']
+		},
+		// watch: {
+		// 	'$store.state.user.userInfo': {
+		// 		handler(e) {
+		// 			this.userInfo = e;
+		// 		},
+		// 		immediate: true,
+		// 		deep: true
+		// 	}
+		// },
+		computed:{
+			
 		},
 		methods: {
 			selectTimeIndex(index) {
@@ -218,16 +234,22 @@
 					})
 					return;
 				}
-				that.$api.check.addCheck({
-					timeIndex: this.timeIndex,
-					foodIndex: this.foodIndex,
-					sportIndex: this.foodIndex,
-					sweatIndex: this.sweatIndex,
-					measureNumber: this.measureNumber
+				that.$api.check.addsweatsugar({
+					BloodSugar: {
+						User_id: that.userInfo.Id,
+						time: that.timeIndex.toString(),
+						type: that.foodIndex.toString(),
+						value: parseFloat(that.measureNumber)
+					},
+					Sweat: {
+						User_id: that.userInfo.Id,
+						type: that.sportIndex.toString(),
+						value: that.sweatIndex.toString()
+					}
 				}).then(res=>{
-					if(res.data.code='1'){
+					if(res.Code='1'){
 					uni.reLaunch({
-						url: '/pages/index/index'
+						url: '/pages/Check/Check'
 					});
 					}
 					else {

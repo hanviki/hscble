@@ -13,21 +13,14 @@
 </template>
 
 <script>
-	import { mapState } from 'vuex'
 	export default {
 		data() {
 			return {
-				nickame: ''
+				nickame: this.$store.getters['user/getUserInfo'].Nickname,
+				userInfo: this.$store.getters['user/getUserInfo']
 			}
 		},
-		computed: {
-			...mapState({
-				userInfo: state => state.user.userInfo
-			})
-		},
-		onLoad() {
-			this.nickame =this.userInfo.Nickname
-		},
+		
 		methods: {
 			clearName() {
 				this.nickame =''
@@ -35,6 +28,7 @@
 			updateNickName() {
 					var that = this
 					let uInfo = that.userInfo
+					let nm= uInfo.Nickname
 					uInfo.Nickname = that.nickame
 					that.$api.user.putuser({
 							...uInfo
@@ -42,9 +36,10 @@
 						.then(res => {
 							if (res.Code == '1') {
 								uInfo.Nickname = that.nickame
-								that.$store.dispatch('updateUser', uInfo)
+								that.$store.dispatch('user/updateUser', uInfo)
 								uni.navigateBack()
 							} else {
+								uInfo.Nickname =nm
 								uni.showToast({
 									icon: "none",
 									title: "提交数据出错，请联系管理员",

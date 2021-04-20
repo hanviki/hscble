@@ -13,20 +13,16 @@
 </template>
 
 <script>
-	import { mapState } from 'vuex'
 	export default {
 		data() {
 			return {
-				height: ''
+				height: '',
+				userInfo: {}
 			}
 		},
 		onLoad() {
-			this.height =this.userInfo.Weight
-		},
-		computed: {
-			...mapState({
-				userInfo: state => state.user.userInfo
-			})
+			this.height= this.$store.getters['user/getUserInfo'].Weight
+			this.userInfo= this.$store.getters['user/getUserInfo']
 		},
 		methods: {
 			clearName() {
@@ -35,6 +31,7 @@
 			updateUserWeight() {
 					var that = this
 					let uInfo = that.userInfo
+					let wt= uInfo.Weight
 					uInfo.Weight = parseFloat(that.height)
 					that.$api.user.putuser({
 							...uInfo
@@ -42,9 +39,10 @@
 						.then(res => {
 							if (res.Code == '1') {
 								//uInfo.Weight = that.height
-								that.$store.dispatch('updateUser', uInfo)
+								that.$store.dispatch('user/updateUser', uInfo)
 								uni.navigateBack()
 							} else {
+								uInfo.Weight =wt
 								uni.showToast({
 									icon: "none",
 									title: "提交数据出错，请联系管理员",

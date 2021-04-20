@@ -1,7 +1,6 @@
 <template>
 	<view>
-		<cu-custom bgColor="bg-gradual-blue" :isBack="true">
-			<block slot="backText">返回</block>
+		<cu-custom bgColor="bg-gradual-blue" :isBack="false">
 			<block slot="content">蓝牙设置</block>
 		</cu-custom>
 		<view class="bg-gray text-black padding-xl">
@@ -30,6 +29,33 @@ export default {
 	},
 	components: {
 		bluetoothSettings
+	},
+	onLoad() {
+		let that= this
+		/**
+		 * 关闭手机蓝牙时候 关闭蓝牙适配器
+		 * @param {Object} res
+		 */
+		uni.onBluetoothAdapterStateChange(function (res) {
+		  if(!res.available){
+			  that.$store.dispatch('closeBluetoothAdapter')
+		  }
+		})
+		uni.onBLEConnectionStateChange(function (res) {
+		  // 该方法回调中可以用于处理连接意外断开等异常情况
+		  if(!res.connected)
+		  {
+			  if(that.$store.getters.getPaired.length>0){
+				  for (let item in that.$store.getters.getPaired) {
+				  	if(item.deviceId==res.deviceId){
+						if(item.status){
+							that.$store.dispatch('disconnect', item)
+						}
+					}
+				  }
+			  }
+		  }
+		})
 	},
 	props: {
 		show: {

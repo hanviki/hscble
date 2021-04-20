@@ -4,6 +4,10 @@ import App from './App'
 import store from '@/store';
 import apis from '@/api/index'
 import * as common from '@/utils/common'
+import validate from '@/utils/ys-validate.js'
+
+// 挂载到全局
+
 
 import cuCustom from './colorui/components/cu-custom.vue'
 Vue.component('cu-custom', cuCustom)
@@ -20,6 +24,7 @@ Vue.use(uView)
 Vue.prototype.$store = store;
 Vue.prototype.$api = apis;
 Vue.prototype.$common = common;
+Vue.prototype.$validate = validate
 
 Vue.config.productionTip = false
 
