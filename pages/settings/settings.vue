@@ -41,21 +41,21 @@ export default {
 			  that.$store.dispatch('closeBluetoothAdapter')
 		  }
 		})
-		uni.onBLEConnectionStateChange(function (res) {
-		  // 该方法回调中可以用于处理连接意外断开等异常情况
-		  if(!res.connected)
-		  {
-			  if(that.$store.getters.getPaired.length>0){
-				  for (let item in that.$store.getters.getPaired) {
-				  	if(item.deviceId==res.deviceId){
-						if(item.status){
-							that.$store.dispatch('disconnect', item)
-						}
-					}
-				  }
-			  }
-		  }
-		})
+		// uni.onBLEConnectionStateChange(function (res) {
+		//   // 该方法回调中可以用于处理连接意外断开等异常情况
+		//   if(!res.connected)
+		//   {
+		// 	  if(that.$store.getters.getPaired.length>0){
+		// 		  for (let item in that.$store.getters.getPaired) {
+		// 		  	if(item.deviceId==res.deviceId){
+		// 				if(item.status){
+		// 					that.$store.dispatch('disconnect', item)
+		// 				}
+		// 			}
+		// 		  }
+		// 	  }
+		//   }
+		// })
 	},
 	props: {
 		show: {

@@ -3,7 +3,7 @@
 
 		<view class="UCenter-bg">
 			<view class="text-xl" style="margin-top: 5px;">
-				蘑菇博客
+				RF-STAR-SMMT
 			</view>
 
 		</view>

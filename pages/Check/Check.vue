@@ -153,43 +153,43 @@
 				checkCount: 0,
 				chartType: 'column',
 				chartData: {
-					categories: ["1-1次", "1-2次", "1-3次"],
+					categories: [],
 					series: [{
 						name: "汗糖值",
-						data: [60, 87, 92]
+						data: []
 					}, {
 						name: "血糖值",
-						data: [86, 79, 73]
+						data: []
 					}]
 				},
 				chartDataDay: {
-					categories: ["1-1次", "1-2次", "1-3次"],
+					categories: [],
 					series: [{
 						name: "汗糖值",
-						data: [60, 87, 92]
+						data: []
 					}, {
 						name: "血糖值",
-						data: [86, 79, 73]
+						data: []
 					}]
 				},
 				chartDataWeek: {
-					categories: ["1-1次", "1-2次", "1-3次"],
+					categories: [],
 					series: [{
 						name: "汗糖值",
-						data: [80, 87, 92]
+						data: []
 					}, {
 						name: "血糖值",
-						data: [76, 79, 73]
+						data: []
 					}]
 				},
 				chartDataMonth: {
-					categories: ["1-1次", "1-2次", "1-3次"],
+					categories: [],
 					series: [{
 						name: "汗糖值",
-						data: [80, 102, 92]
+						data: []
 					}, {
 						name: "血糖值",
-						data: [76, 79, 50]
+						data: []
 					}]
 				},
 				TabCur: 0,

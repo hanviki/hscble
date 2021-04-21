@@ -20,6 +20,7 @@ if (process.env.NODE_ENV === 'development') {
 	//baseURL = 'http://119.45.34.150:8080/'
 
 } else {
+	baseURL = 'http://1.15.180.40:80/'
 	// 生产环境
 	// baseURL = 'https://movie.lzzzero.com/api'
 }

@@ -30,22 +30,22 @@ class Bluetooth {
 	 * @param {Object} succ_fn
 	 * 蓝牙断开
 	 */
-	onBluetoothAdapterStateChange (succ_fn) {
+	onBluetoothAdapterStateChange(succ_fn) {
 		console.info("onBluetoothAdapterStateChange")
-		uni.onBluetoothAdapterStateChange(function (res) {
-		  console.log('adapterState changed, now is', res)
-		  succ_fn(res)
+		uni.onBluetoothAdapterStateChange(function(res) {
+			console.log('adapterState changed, now is', res)
+			succ_fn(res)
 		})
 	}
 	/**
-	             * 监听低功耗蓝牙连接状态的改变事件。包括开发者主动连接或断开连接，设备丢失，连接异常断开等等
-	             */
-	            onBLEConnectionStateChange(succ_fn) {
-	                uni.onBLEConnectionStateChange(res => {
-	                    succ_fn(res);
-	                    })
-					}
-							
+	 * 监听低功耗蓝牙连接状态的改变事件。包括开发者主动连接或断开连接，设备丢失，连接异常断开等等
+	 */
+	onBLEConnectionStateChange(succ_fn) {
+		uni.onBLEConnectionStateChange(res => {
+			succ_fn(res);
+		})
+	}
+
 
 	/**
 	 * 根据 uuid 获取处于已连接状态的设备。
@@ -150,7 +150,8 @@ class Bluetooth {
 						}
 						let sure = false;
 						for (let i = 0; i < res.services.length; i++) {
-							if (res.services[i].uuid.toUpperCase().indexOf(serviceId) != -1) {
+							if (res.services[i].uuid.toUpperCase().indexOf(serviceId) !=
+								-1) {
 								sure = true
 								break;
 							}
@@ -184,7 +185,8 @@ class Bluetooth {
 					}
 					let sure = false;
 					for (var i = 0; i < res.characteristics.length; i++) {
-						if (res.characteristics[i].uuid.toUpperCase().indexOf(characteristicId) != -1) {
+						if (res.characteristics[i].uuid.toUpperCase().indexOf(
+							characteristicId) != -1) {
 							sure = true
 							break;
 						}
@@ -261,6 +263,7 @@ class Bluetooth {
 	 * @param {Buffer} value
 	 */
 	writeBLECharacteristicValue(deviceId, serviceId, characteristicId, value) {
+		console.info("writeBLECharacteristicValue")
 		uni.writeBLECharacteristicValue({
 			deviceId, //蓝牙设备 id
 			serviceId, //蓝牙特征值对应服务的 uuid
@@ -270,6 +273,55 @@ class Bluetooth {
 				console.log(res)
 			}
 		})
+	}
+
+
+	/**
+	 * 读取设备更改值
+	 */
+	getCharacteristicChangeValue() {
+		//let bluetooth2 = new Bluetooth()
+
+		uni.onBLECharacteristicValueChange(function(res) {
+			//resolve(res)
+			let str = this.ab2Weight(res.value)
+			console.info("str:" + str)
+		})
+
+	}
+	/**
+	 * 字符串转buffer  写入
+	 * @param {Object} str
+	 */
+	string2buffer(str) {
+		// 首先将字符串转为16进制
+
+		let val = ""
+
+		for (let i = 0; i < str.length; i++) {
+
+			if (val === '') {
+
+				val = str.charCodeAt(i).toString(16)
+
+			} else {
+
+				val += ',' + str.charCodeAt(i).toString(16)
+
+			}
+
+		}
+
+		// console.log(val)
+
+		// 将16进制转化为ArrayBuffer
+
+		return new Uint8Array(val.match(/[\da-f]{2}/gi).map(function(h) {
+
+			return parseInt(h, 16)
+
+		})).buffer
+
 	}
 	/**
 	 * ArrayBuffer转16进度字符串示例
@@ -297,13 +349,17 @@ class Bluetooth {
 			trimedStr;
 		var len = rawStr.length;
 		if (len % 2 !== 0) {
-			return "Illegal Format ASCII Code!";
+			alert("Illegal Format ASCII Code!");
+			return "";
 		}
 		var curCharCode;
 		var resultStr = [];
 		for (var i = 0; i < len; i = i + 2) {
 			curCharCode = parseInt(rawStr.substr(i, 2), 16); // ASCII Code Value
-			resultStr.push(String.fromCharCode(curCharCode));
+			let str5 = String.fromCharCode(curCharCode)
+			if (str5.startsWith('\n') == false) {
+				resultStr.push(String.fromCharCode(curCharCode));
+				}
 		}
 		return resultStr.join("");
 	}

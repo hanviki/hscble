@@ -46,7 +46,7 @@
 				</view>
 				<!-- 设备信息 -->
 				<!-- 服务特征 -->
-				<view class="margin bg-white shadow r" @tap.stop="" v-if="paired.length > 0 && (index || index == 0)">
+				<view class="margin bg-white shadow r" @tap.stop="" v-if="paired.length > 0 && (index || index == 0) && paired[index].status">
 					<view class="padding solid-bottom">设备服务特征</view>
 					<scroll-view scroll-y="true r" style="max-height: 40vh;" show-scrollbar="true">
 						<view class="padding solid-bottom flex" v-for="(item, i) in manufacturer" :key="i" @tap.stop="">
@@ -57,38 +57,45 @@
 								<view>{{item.name}}</view>
 								<view>{{item.manufacturer_name}}</view>
 								<view class="flex">
-									<view class="flex-sub" v-if="item.properties.read">
+									<view class="flex-sub" v-if="item.properties.read"
+										@tap.stop="readManufacturer(paired[index], item)">
 										<text class="cu-tag round bg-green">R</text>
 									</view>
 									<view class="flex-sub" v-if="item.properties.write"
-										@tap.stop="write(paired[index], item)"> <text
+										@tap.stop="showModal(item)"> <text
 											class="cu-tag round bg-green">W</text> </view>
 									<view class="flex-sub" v-if="item.properties.notify"
-										@tap.stop="notify(paired[index], item)"> <text class="cu-tag round"
-											:class="item.notify">{{item.notify?'N->开':'N->关'}}</text> </view>
+										@tap.stop="notifyHandle(paired[index], item)">
+										<text class="cu-tag round" :class="item.notify?'bg-green':'bg-gray'">
+											{{item.notify?'N->开':'N->关'}}
+										</text>
+									</view>
+									
 								</view>
+								<view >{{item.value}}</view>
 							</view>
 						</view>
 					</scroll-view>
 				</view>
 			</view>
-			<view class="cu-modal" :class="modalName=='DialogModal1'?'show':''">
-				<view class="cu-dialog">
-					<view class="cu-bar bg-white justify-end">
-						<view class="content">请输入AT命令或字符</view>
-						<view class="action" @tap="hideModal">
-							<text class="cuIcon-close text-red"></text>
-						</view>
+			
+		</view>
+		<view class="cu-modal" :class="modalName=='DialogModal1'?'show':''">
+			<view class="cu-dialog">
+				<view class="cu-bar bg-white justify-end">
+					<view class="content">请输入AT命令或字符</view>
+					<view class="action" @tap="hideModal">
+						<text class="cuIcon-close text-red"></text>
 					</view>
-					<view class="padding-xl">
-						<input v-model="numberValue" placeholder="输入属性值" />
-					</view>
-					<view class="cu-bar bg-white justify-end">
-						<view class="action">
-							<button class="cu-btn line-green text-green" @tap="hideModal">取消</button>
-							<button class="cu-btn bg-green margin-left"
-								@tap="writeManufacturer(paired[index])">确定</button>
-						</view>
+				</view>
+				<view class="padding-xl">
+					<input v-model="numberValue" placeholder="输入属性值" />
+				</view>
+				<view class="cu-bar bg-white justify-end">
+					<view class="action">
+						<button class="cu-btn line-green text-green" @tap="hideModal">取消</button>
+						<button class="cu-btn bg-green margin-left"
+							@tap="writeManufacturer(paired[index])">确定</button>
 					</view>
 				</view>
 			</view>
@@ -109,6 +116,9 @@
 				numberValue: '',
 				writeItem: {} //特征项
 			};
+		},
+		onLoad() {
+			console.info("这里无效呢")
 		},
 		props: {
 			setting: {
@@ -157,13 +167,15 @@
 					position: 'bottom'
 				});
 			},
-			async writeManufacturer(paired) {
-				let manufacturer = this.writeItem
-				await this.$store.dispatch('writeManufacturer', {
-					paired,
-					manufacturer,
-					writeCode: this.numberValue
+			// 修改配置
+			async readManufacturer(item, manufacturer) {
+				await this.$store.dispatch('readManufacturer', {
+					item,
+					manufacturer
 				}).then(res => {
+					console.info("读取数据")
+					console.info(res)
+					console.info("readManufacturer")
 					uni.showToast({
 						title: res.errMsg,
 						icon: 'none',
@@ -171,11 +183,83 @@
 					});
 				});
 			},
+			async writeManufacturer(item) { // 发送命令或字符串給蓝牙  如果有notify功能，则打开
+			let that= this
+				let manufacturer = that.writeItem
+				if (manufacturer.properties.notify) {
+					console.info("notify:true")
+					await that.openNotify(item, manufacturer) //每次发送时 
+				}
+				setTimeout(()=>{
+					 that.$store.dispatch('writeManufacturer', {
+						item,
+						manufacturer,
+						writeCode: that.numberValue
+					}).then(res => {
+						uni.showToast({
+							title: res.errMsg,
+							icon: 'none',
+							position: 'bottom'
+						});
+					});
+				},300)
+				
+				that.modalName =null
+			},
+		   notifyHandle(item, manufacturer2) {
+				console.info(manufacturer2.notify)
+				if (manufacturer2.notify) {
+					this.closeNotify(item, manufacturer2)
+					
+				} else {
+					this.openNotify(item, manufacturer2)
+				}
+			},
+			 openNotify(item, manufacturer2) { //打开通知
+			  manufacturer2.notify= true
+			//  console.info(item.deviceId)
+				bluetooth.notifyBLECharacteristicValueChange(item.deviceId, manufacturer2.serviceId, manufacturer2.characteristicId)
+					.then(res => {
+						//console.info(44444444)
+							uni.onBLECharacteristicValueChange(function(res) {
+								//console.info("ffffffffff")
+								let str = bluetooth.ab2Weight(res.value)
+								manufacturer2.value = str.substr(0,str.length-3)
+							})
+					});
+
+			},
+			 closeNotify(item, manufacturer2) {
+				 manufacturer2.notify= false
+				uni.notifyBLECharacteristicValueChange({
+					state: false, // 启用 notify 功能
+					deviceId: item.deviceId,
+					serviceId: manufacturer2.serviceId,
+					characteristicId: manufacturer2.characteristicId,
+					success: async res => {
+						
+						console.info(res)
+					},
+					fail(err) {
+						console.info(err)
+					}
+				});
+			},
+			// setManufacturValue (deviceId,serviceId,characteristicId,value){
+			// 	manufacturer.filter(p=>p.serviceId==serviceId && p.characteristicId==characteristicId).forEach(function (item) {
+			//                  item.value =value
+			//              })
+			// }
+			handleChangeValue(res) {
+				let str = bluetooth.bufferString(res.value)
+				console.info("str:" + str)
+			},
 			// 设置配置
 			hide(index = null) {
 				this.$emit('hide');
 			},
 			showModal(item) {
+				this.numberValue= ''
 				this.writeItem = item
 				this.modalName = "DialogModal1"
 			},

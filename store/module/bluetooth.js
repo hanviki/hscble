@@ -381,6 +381,33 @@ export default {
 					reject(err)
 				}
 			})
-		}
+		},
+		/**
+		 * 蓝牙设备发送命令或字符
+		 */
+	    writeManufacturer({
+	        	commit,
+	        	state
+	        }, {
+	        	item,
+	        	manufacturer,
+	    		writeCode
+	        }) {
+				console.info(writeCode)
+	    		 
+				 console.info(manufacturer)
+	    		 let buffer= bluetooth.string2buffer(writeCode)
+	    		console.info(buffer)
+	        	return new Promise(async (resolve, reject) => {
+	        		try {
+	        			//var paired = state.paired
+	        			await bluetooth.writeBLECharacteristicValue(item.deviceId, manufacturer.serviceId, manufacturer.characteristicId, buffer)
+	        			resolve(true)
+	        		} catch (err) {
+	        			reject(err)
+	        		}
+	        	})
+	        }
+	    
 	}
 }
