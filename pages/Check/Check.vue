@@ -37,7 +37,7 @@
 					<view class="cuh">
 						<text class="text-black  text-sl">80</text>
 					</view>
-					<view >
+					<view>
 						<text class="text-white text-sm">第一次数据</text>
 					</view>
 				</view>
@@ -45,7 +45,7 @@
 					<view class="cuh">
 						<text class="text-black  text-sl">{{sweetSugar_2.Value}}</text>
 					</view>
-					<view >
+					<view>
 						<text class="text-white text-sm">第二次数据</text>
 					</view>
 				</view>
@@ -53,7 +53,7 @@
 					<view class="cuh">
 						<text class="text-black  text-sl">{{sweetSugar_3.Value}}</text>
 					</view>
-					<view >
+					<view>
 						<text class="text-white text-sm">第三次数据</text>
 					</view>
 				</view>
@@ -124,7 +124,7 @@
 				<qiun-data-charts :type="chartType" :chartData="chartData" :echartsH5="true" :echartsApp="true" />
 			</view>
 		</view>
-		
+
 	</view>
 </template>
 
@@ -196,10 +196,15 @@
 			}
 		},
 		computed: {
-			
+
 		},
 		onLoad() {
 			this.fetch()
+			uni.$on("handleFun", () => {
+			    this.fetch()
+			    // 清除监听
+			   // uni.$off('handleFun');
+			})
 		},
 		components: {
 
@@ -232,8 +237,9 @@
 				});
 			},
 			fetch() {
+				console.info("fetch")
 				var that = this
-                 let userInfo=    that.$store.getters['user/getUserInfo']
+				let userInfo = that.$store.getters['user/getUserInfo']
 				that.$api.check.reportCheck({
 					userId: userInfo.Id
 				}).then(res => {
@@ -274,9 +280,8 @@
 						//this.checkCount = SweetSugarData.length
 
 						let WeeklyData_SweetSugarData = data.WeeklyData.SweetSugarData
-						if(WeeklyData_SweetSugarData!=null)
-						{
-							
+						if (WeeklyData_SweetSugarData != null) {
+
 						}
 						// for (var i = 0; i < WeeklyData_SweetSugarData.length; i++) {
 						// 	WeeklyData_SweetSugarData[i]
@@ -312,7 +317,8 @@
 		margin-left: 2%;
 		padding-bottom: 10rpx;
 	}
-	.cuh{
+
+	.cuh {
 		min-height: 45px;
 	}
 </style>

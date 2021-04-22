@@ -20,7 +20,7 @@ let data = [{
 	type: 'get', // 设备类型
 	manufacturer_name: '蓝牙->APP', // 厂商
 	serviceId: "6E400001-B5A3-F393-E0A9-E50E24DCCA9E", // 蓝牙特征值对应服务的 uuid
-	characteristicId: "6E400004-B5A3-F393-E0A9-E50E24DCCA9E", // 蓝牙特征值的 uuid
+	characteristicId: "6E400003-B5A3-F393-E0A9-E50E24DCCA9E", // 蓝牙特征值的 uuid
 	properties:{
 		read: false,
 		write: false,

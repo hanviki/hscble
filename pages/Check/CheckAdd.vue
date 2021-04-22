@@ -193,11 +193,11 @@
 				sportIndex: 0,
 				sweatIndex: 0,
 				measureNumber: '',
-				userInfo: {}
+				userInfo: this.$store.getters['user/getUserInfo']
 			}
 		},
 		onLoad (){
-		  this.userInfo= this.$store.getters['user/getUserInfo']
+		 // this.userInfo= this.$store.getters['user/getUserInfo']
 		},
 		// watch: {
 		// 	'$store.state.user.userInfo': {
@@ -226,7 +226,8 @@
 			},
 			submitCheck() {
 				var that = this
-				console.log("提交表单", this.loginForm)
+				
+				//console.log("提交表单", this.loginForm)
 				if (that.measureNumber == "") {
 					uni.showToast({
 						icon: "none",
@@ -247,10 +248,10 @@
 						value: that.sweatIndex.toString()
 					}
 				}).then(res=>{
-					if(res.Code='1'){
-					uni.reLaunch({
-						url: '/pages/Check/Check'
-					});
+					if(res.Code=='1'){
+					uni.$emit("handleFun");
+					uni.navigateBack();
+					return;
 					}
 					else {
 						uni.showToast({

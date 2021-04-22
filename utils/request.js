@@ -59,7 +59,7 @@ const handleCustomError = (res) => {
 request.interceptors.request.use((config) => {
 	let token = getToken();
 	console.info(config)
-	if (token && config.url!='/v1/tuser/login' && config.url!='/v1/tuser/sendsms') {
+	if (token && config.url!='/v1/tuser/login' && config.url!='/v1/tuser/sendsms' && !(config.method=='POST' && config.url=='/v1/tuser')  ) {
 		config.header['Authorization'] = token;
 	}
 	console.log(config)
