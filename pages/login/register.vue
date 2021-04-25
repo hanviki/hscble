@@ -18,8 +18,8 @@
 			<view class="cu-form-group margin-top flex">
 				<view class="flex-sub flex flex-wrap">
 					<view class="basis-cu1 text-left bg-white text-sm">
-						<verification-code @Confirm='vcodeInput' inputType="number"  :autoFocus="false"  :itemNumber="4" :isPassword="false"
-							class="activation-code" type="line">
+						<verification-code @Confirm='vcodeInput' inputType="number" :autoFocus="false" :itemNumber="4"
+							:isPassword="false" class="activation-code" type="line">
 						</verification-code>
 					</view>
 					<view class="basis-cu2 text-center "><button class="cu-btn bg-green round text-sm"
@@ -52,7 +52,10 @@
 			<button class="cu-btn block bg-green margin-sm lg" @tap="register"> 提交 </button>
 			<button class="cu-btn block bg-grey margin-sm lg" @tap="goLogin"> 返回登录 </button>
 		</form>
-
+		<view class="bg-img padding-top-xl flex align-end" style="background-image: url('../../static/image/login.jpg');height: 440upx;">
+			<view class="bg-shadeBottom padding padding-top-xl flex-sub">
+			</view>
+		</view>
 	</view>
 </template>
 
@@ -123,8 +126,7 @@
 					})
 					return false
 				}
-				if(this.validCode!=this.registerForm.validCode)
-				{
+				if (this.validCode != this.registerForm.validCode) {
 					uni.showToast({
 						icon: 'none',
 						title: '验证码输入有误'
@@ -154,8 +156,9 @@
 				// });
 
 				this.$store.commit('setTelphone', this.registerForm.telphone)
+				this.$store.commit('setPwd', this.registerForm.password1)
 				uni.navigateTo({
-					url: '/pages/user/user'
+					url: '/pages/login/conduct'
 				});
 			},
 			//验证码
@@ -191,11 +194,20 @@
 					}
 					this.$api.user.sendSms({
 						params: params
-					}).then(() => {
-						uni.showToast({
-							icon: "none",
-							title: "短信已发送,请接收",
-						})
+					}).then((res) => {
+						if (res.Message == "手机号已注册") {
+							uni.showToast({
+								icon: "none",
+								title: "手机号已注册",
+							})
+						} else {
+							if (res.Code == '1') {
+								uni.showToast({
+									icon: "none",
+									title: "短信已发送,请接收",
+								})
+							}
+						}
 					})
 				}
 			},

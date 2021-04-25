@@ -153,6 +153,7 @@ const store = {
 			commit,
 			state
 		}) {
+			console.info(3333333333)
 			commit(USER_LOGUT)
 			uni.reLaunch({
 				url: "/pages/login/login"

@@ -104,6 +104,15 @@
             }
             
         }
+        ,{
+            "path" : "pages/login/conduct",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"navigationBarBackgroundColor": "#0081ff",

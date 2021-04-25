@@ -5,6 +5,7 @@
 
 //  导入封装的request框架
 import Http from '@/js_sdk/luch-request/luch-request/index.js'
+import store from '@/store';
 
 import {
 	getToken
@@ -70,9 +71,23 @@ request.interceptors.request.use((config) => {
 
 request.interceptors.response.use((response) => {
 	uni.hideNavigationBarLoading()
-	//console.log(response)
+	console.log(response)
 	//  服务器正确响应拦截逻辑处理 
 	//  code = 200 是逻辑正确响应的状态码可自行修改
+	if(response.data!=null){
+		if(response.data.Message=="服务器繁忙"){
+			// uni.navigateTo({
+			// 	url: '/pages/login/login'
+			// })
+			uni.showToast({
+				icon: "none",
+				title: "连接已过期,请重新登陆",
+			})
+			store.dispatch('user/logout');
+			return Promise.reject(new Error("连接已过期,请重新登陆"))
+		}
+	}
+	
 	if ( response.statusCode !== 200) {
 		//handleCustomError(response);
 		return Promise.reject(new Error(response.msg))

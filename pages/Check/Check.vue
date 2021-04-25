@@ -35,7 +35,7 @@
 			<view class="flex-sub flex">
 				<view class="flex-sub text-center">
 					<view class="cuh">
-						<text class="text-black  text-sl">80</text>
+						<text class="text-black  text-sl">{{sweetSugar_1.Value}}</text>
 					</view>
 					<view>
 						<text class="text-white text-sm">第一次数据</text>
@@ -121,7 +121,9 @@
 		</view>
 		<view class="cu-bar bg-white">
 			<view class="charts-box ">
-				<qiun-data-charts :type="chartType" :chartData="chartData" :echartsH5="true" :echartsApp="true" />
+				<qiun-data-charts type="column" v-if="TabCur==0" :chartData="chartDataDay" :echartsH5="true" :echartsApp="true" />
+				<qiun-data-charts type="column" v-if="TabCur==1" :chartData="chartDataWeek" :echartsH5="true" :echartsApp="true" />
+				<qiun-data-charts type="line" v-if="TabCur==2" :chartData="chartDataMonth" :echartsH5="true" :echartsApp="true" />
 			</view>
 		</view>
 
@@ -217,19 +219,7 @@
 			},
 			tabSelect(e) {
 				this.TabCur = e.currentTarget.dataset.id;
-				if (e.currentTarget.dataset.id == 0) {
-					this.chartType = "column"
-					this.chartData = this.chartDataDay
-				}
-				if (e.currentTarget.dataset.id == 1) {
-					this.chartType = "column"
-					this.chartData = this.chartDataWeek
-				}
-				if (e.currentTarget.dataset.id == 2) {
-					this.chartType = "line"
-					this.chartData = this.chartDataMonth
-				}
-
+				
 			},
 			ceshi() {
 				uni.reLaunch({
@@ -249,34 +239,37 @@
 						let SweetSugarData = data.DailyData.SweetSugarData
 						if (SweetSugarData != null) {
 							if (SweetSugarData.length > 0) {
-								this.sweetSugar_1 = SweetSugarData[0]
-								this.chartData.series[0].data[0] = SweetSugarData[0].Value
+								that.sweetSugar_1 = SweetSugarData[0]
+								that.$set(that.chartDataDay.categories,0,'1-1次')
+								that.$set(that.chartDataDay.series[0].data,0 , SweetSugarData[0].Value)
 							}
 							if (SweetSugarData.length > 1) {
-								this.sweetSugar_2 = SweetSugarData[1]
-								this.chartData.series[0].data[1] = SweetSugarData[1].Value
+								that.sweetSugar_2 = SweetSugarData[1]
+								that.$set(that.chartDataDay.categories,1,'1-2次')
+								that.$set(that.chartDataDay.series[0].data,1 , SweetSugarData[1].Value)
 							}
 							if (SweetSugarData.length > 2) {
-								this.sweetSugar_3 = SweetSugarData[2]
-								this.chartData.series[0].data[2] = SweetSugarData[2].Value
+								that.sweetSugar_3 = SweetSugarData[2]
+								that.$set(that.chartDataDay.categories,2,'1-3次')
+								that.$set(that.chartDataDay.series[0].data,2 , SweetSugarData[2].Value)
 							}
 						}
 						let BloodSugarData = data.DailyData.BloodSugarData
 						if (BloodSugarData != null) {
 							if (BloodSugarData.length > 0) {
-								this.bloodSugar_1 = BloodSugarData[0]
-								this.chartData.series[1].data[0] = BloodSugarData[0].Value
+								that.bloodSugar_1 = BloodSugarData[0]
+								that.$set(that.chartDataDay.series[1].data,0 , BloodSugarData[0].Value)
 							}
-							if (BloodSugarData.length > 1) {
-								this.bloodSugar_2 = BloodSugarData[1]
-								this.chartData.series[1].data[1] = BloodSugarData[1].Value
+					if (BloodSugarData.length > 1) {
+								that.bloodSugar_2 = BloodSugarData[1]
+								that.$set(that.chartDataDay.series[1].data,1, BloodSugarData[1].Value)
 							}
 							if (BloodSugarData.length > 2) {
-								this.bloodSugar_3 = BloodSugarData[2]
-								this.chartData.series[1].data[2] = BloodSugarData[2].Value
+								that.bloodSugar_3 = BloodSugarData[2]
+								that.$set(that.chartDataDay.series[1].data,2 , BloodSugarData[2].Value)
 							}
 						}
-						this.chartDataDay = this.chartData
+						//that.chartDataDay = that.chartData
 						//this.checkCount = SweetSugarData.length
 
 						let WeeklyData_SweetSugarData = data.WeeklyData.SweetSugarData

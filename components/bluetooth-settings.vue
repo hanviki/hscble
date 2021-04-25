@@ -14,7 +14,7 @@
 					<view class="padding-xs solid-bottom flex">
 						<view class="flex-sub">设备名称：</view>
 						<view class="flex-sub text-left">{{ paired[index].name }}</view>
-						<view class="flex-sub text-right"><button @tap="$store.dispatch('delpaired', paired[index])"
+						<view class="flex-sub text-right"><button @tap="delpaired"
 								class="cu-btn cuIcon bg-red cuIcon-deletefill" /></view>
 					</view>
 					<view class="padding-xs solid-bottom flex">
@@ -25,7 +25,7 @@
 						</view>
 						<view class="flex-sub text-right">
 							<button class="cu-btn bg-orange cuIcon cuIcon-infofill"
-								@tap="$store.dispatch('disconnect', paired[index])" v-if="paired[index].status" />
+								@tap="disconnect(paired[index])" v-if="paired[index].status" />
 							<button class="cu-btn cuIcon bg-green cuIcon-roundaddfill"
 								@tap="$store.dispatch('createBLEConnection', paired[index])" v-else />
 						</view>
@@ -70,7 +70,6 @@
 											{{item.notify?'N->开':'N->关'}}
 										</text>
 									</view>
-									
 								</view>
 								<view >{{item.value}}</view>
 							</view>
@@ -111,7 +110,7 @@
 			return {
 				eqpServices: [], // 设备所有服务特征
 				paired: this.$store.getters.getPaired,
-				manufacturer: this.$store.getters.getManufacturer,
+				manufacturer: this.getManufacturer(),
 				modalName: null,
 				numberValue: '',
 				writeItem: {} //特征项
@@ -160,12 +159,30 @@
 			}
 		},
 		methods: {
-			tips() {
-				uni.showToast({
-					title: '请连接后再操作',
-					icon: 'none',
-					position: 'bottom'
+			getManufacturer() {
+				let manu= this.$store.getters.getManufacturer
+				
+				manu.forEach(function(element) {
+				  element.notify =false
+				  element.value =''
 				});
+				return manu
+			},
+			delpaired() {
+				this.$store.dispatch('delpaired', this.paired[this.index])
+				this.manufacturer.forEach(function(element) {
+				  element.notify =false
+				  element.value =''
+				});
+			},
+			disconnect(item) {
+				this.$store.dispatch('disconnect', item)
+				this.manufacturer.forEach(function(element) {
+				  element.notify =false
+				  element.value =''
+				});
+				
+				
 			},
 			// 修改配置
 			async readManufacturer(item, manufacturer) {
@@ -218,16 +235,16 @@
 			 openNotify(item, manufacturer2) { //打开通知
 			  manufacturer2.notify= true
 			//  console.info(item.deviceId)
-				bluetooth.notifyBLECharacteristicValueChange(item.deviceId, manufacturer2.serviceId, manufacturer2.characteristicId)
+			 bluetooth.notifyBLECharacteristicValueChange(item.deviceId, manufacturer2.serviceId, manufacturer2.characteristicId)
 					.then(res => {
-						//console.info(44444444)
-							uni.onBLECharacteristicValueChange(function(res) {
-								//console.info("ffffffffff")
-								let str = bluetooth.ab2Weight(res.value)
-								manufacturer2.value = str.substr(0,str.length-3)
-							})
+						console.info(manufacturer2.characteristicId)
+						uni.onBLECharacteristicValueChange(function(res) {
+														console.info("ffffffffff")
+														let str = bluetooth.ab2Weight(res.value)
+														manufacturer2.value = str.substr(0,str.length-3)
+													})	
 					});
-
+                  
 			},
 			 closeNotify(item, manufacturer2) {
 				 manufacturer2.notify= false

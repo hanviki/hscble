@@ -11,10 +11,14 @@
 				</view>
 			</view>
 			<radio-group class="block" @change="RadioChange">
-				<view class="cu-form-group flex">
+				<view class=" flex">
 					<view class="flex-sub flex">
 						<view class="flex-sub text-center">
-							<view class="cu-avatar lg  bg-white margin-left margin-right-sm" style="background-image:url(../../static/image/man.png)"></view>
+							<!-- style="background-image:url(../../static/image/man.png);background-repeat: no-repeat;background-position: center;background-size: contain;-->
+							<view class=" lg  bg-white margin-left margin-right-sm">
+									<image src="../../static/image/man.png"
+									 mode="widthFix">
+							</view>
 							<radio class='flex-sub  radio text-left' :class="radio=='1'?'checked':''" :checked="radio=='1'?true:false" value="1"></radio>
 						</view>
 					</view>
@@ -22,7 +26,7 @@
 					<view class="flex-sub flex">
 						<view class="flex-sub text-center ">
 							<radio class='flex-sub  radio text-left' :class="radio=='2'?'checked':''" :checked="radio=='2'?true:false" value="2"></radio>
-							<view class="cu-avatar lg  bg-white margin-right margin-left-sm" style="background-image:url(../../static/image/woman.png)"></view>
+							<view class=" lg  bg-white margin-right margin-left-sm" style="background-image:url(../../static/image/woman.png);height: 100upx;"></view>
 						</view>
 					</view>
 
@@ -156,9 +160,23 @@
 		    submitUser () {
 				this.$api.user.postuser({
 					Phone: this.$store.getters.getTelphone,
+					Account: this.$store.getters.getTelphone,
+					Pwd: this.$store.getters.getPwd,
 					Height: this.scrollLeftNow,
 					Weight: this.scrollLeftNow_weight,
 					Birthday: this.pickerDate
+				}).then(res=>{
+					if(res.Code=='1'){
+						uni.navigateTo({
+							url:'/pages/login/login'
+						})
+					}
+					else {
+						uni.showToast({
+							icon: "none",
+							title: "提交数据出错，请联系管理员",
+						})
+					}
 				})
 			}
 		}

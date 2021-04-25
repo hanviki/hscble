@@ -18,8 +18,8 @@ Vue.component('drawer-settings', drawerSettings)
 import bluetooth from './components/bluetooth.vue'
 Vue.component('bluetooth', bluetooth)
 
-import uView from 'uview-ui'
-Vue.use(uView)
+//import uView from 'uview-ui'
+//Vue.use(uView)
 
 Vue.prototype.$store = store;
 Vue.prototype.$api = apis;

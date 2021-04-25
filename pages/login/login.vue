@@ -1,11 +1,7 @@
 <template name="basics">
 	<view>
 
-		<view class="UCenter-bg">
-			<view class="text-xl" style="margin-top: 5px;">
-				RF-STAR-SMMT
-			</view>
-
+		<view class="UCenter-bg bg-img" style="background-image: url('../../static/image/login.jpg');height: 440upx;">
 		</view>
 
 		<form>
