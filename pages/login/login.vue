@@ -1,15 +1,15 @@
 <template name="basics">
-	<view>
+	<view class="bg-white" style="height: 100vh;">
 
 		<view class="UCenter-bg bg-img" style="background-image: url('../../static/image/login.jpg');height: 440upx;">
 		</view>
 
 		<form>
-			<view class="cu-form-group margin-top">
+			<view class="cu-form-group margin-top solid margin-left-sm margin-right-sm">
 				<input placeholder="请输入用户名或手机号" v-model="loginForm.userName"></input>
 			</view>
 
-			<view class="cu-form-group margin-top">
+			<view class="cu-form-group margin-top solid margin-left-sm margin-right-sm">
 				<input password="" placeholder="请输入密码" v-model="loginForm.password"></input>
 			</view>
 

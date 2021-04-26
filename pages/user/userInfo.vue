@@ -1,5 +1,5 @@
 <template>
-	<view>
+	<view >
 		<cu-custom bgColor="bg-gradual-blue" :isBack="true">
 			<block slot="backText"></block>
 			<block slot="content">个人信息</block>

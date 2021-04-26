@@ -1,5 +1,5 @@
 <template name="basics">
-	<view>
+	<view class="bg-white" style="height: 100vh;">
 		<cu-custom bgColor="bg-gradual-blue" :isBack="true">
 			<block slot="backText"></block>
 			<block slot="content">注册</block>
@@ -52,9 +52,8 @@
 			<button class="cu-btn block bg-green margin-sm lg" @tap="register"> 提交 </button>
 			<button class="cu-btn block bg-grey margin-sm lg" @tap="goLogin"> 返回登录 </button>
 		</form>
-		<view class="bg-img padding-top-xl flex align-end" style="background-image: url('../../static/image/login.jpg');height: 440upx;">
-			<view class="bg-shadeBottom padding padding-top-xl flex-sub">
-			</view>
+		<view class="bg-img padding-top-xl flex align-end " style="background-image: url('../../static/image/login.jpg');height: 440upx; width: 100%; ">
+			
 		</view>
 	</view>
 </template>

@@ -1,5 +1,5 @@
 <template name="basics">
-	<view>
+	<view class="bg-white">
 		<cu-custom bgColor="bg-gradual-blue" :isBack="true">
 			<block slot="backText"></block>
 			<block slot="content">个人资料</block>
@@ -15,20 +15,28 @@
 					<view class="flex-sub flex">
 						<view class="flex-sub text-center">
 							<!-- style="background-image:url(../../static/image/man.png);background-repeat: no-repeat;background-position: center;background-size: contain;-->
-							<view class=" lg  bg-white margin-left margin-right-sm">
-									<image src="../../static/image/man.png"
-									 mode="widthFix">
+							<view class="bg-white  margin-right-sm flex justify-center" style="width: 100%;height:100px;background-image:url(../../static/image/man.png);background-repeat: no-repeat;background-position: center;background-size: contain;">
+									
 							</view>
 							<radio class='flex-sub  radio text-left' :class="radio=='1'?'checked':''" :checked="radio=='1'?true:false" value="1"></radio>
 						</view>
 					</view>
-
+					<view class="flex-sub flex">
+						<view class="flex-sub text-center">
+							<!-- style="background-image:url(../../static/image/man.png);background-repeat: no-repeat;background-position: center;background-size: contain;-->
+							<view class="bg-white  margin-right-sm flex justify-center" style="width: 100%;height:100px;background-image:url(../../static/image/woman.png);background-repeat: no-repeat;background-position: center;background-size: contain;">
+									
+							</view>
+							<radio class='flex-sub  radio text-left' :class="radio=='2'?'checked':''" :checked="radio=='2'?true:false" value="2"></radio>
+						</view>
+					</view>
+<!-- 
 					<view class="flex-sub flex">
 						<view class="flex-sub text-center ">
 							<radio class='flex-sub  radio text-left' :class="radio=='2'?'checked':''" :checked="radio=='2'?true:false" value="2"></radio>
 							<view class=" lg  bg-white margin-right margin-left-sm" style="background-image:url(../../static/image/woman.png);height: 100upx;"></view>
 						</view>
-					</view>
+					</view> -->
 
 				</view>
 			</radio-group>

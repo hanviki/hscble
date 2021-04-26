@@ -1,5 +1,5 @@
 <template>
-	<view>
+	<view class="bg-white" style="height: 100vh;">
 		<cu-custom bgColor="bg-gradual-blue" :isBack="true">
 			<block slot="backText"></block>
 			<block slot="content">健康档案</block>
@@ -50,6 +50,10 @@
 			</view>
 
 		</view>
+	     <view class="bg-img padding-top-xl flex align-end " style="background-image: url('../../static/image/register.jpg');height: 440upx;">
+	     	<view class="bg-shadeBottom padding padding-top-xl flex-sub">
+	     	</view>
+	     </view>
 	</view>
 </template>
 
