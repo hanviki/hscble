@@ -146,6 +146,7 @@ class Bluetooth {
 					success: async res => {
 						// 未传则直接返回所有服务
 						if (!serviceId) {
+							console.info(res.services)
 							return resolve(res.services)
 						}
 						let sure = false;
@@ -186,7 +187,7 @@ class Bluetooth {
 					let sure = false;
 					for (var i = 0; i < res.characteristics.length; i++) {
 						if (res.characteristics[i].uuid.toUpperCase().indexOf(
-							characteristicId) != -1) {
+								characteristicId) != -1) {
 							sure = true
 							break;
 						}
@@ -324,6 +325,25 @@ class Bluetooth {
 		})).buffer
 
 	}
+	stringbuffer(hexCharCodeStr) {
+		var trimedStr = hexCharCodeStr.trim();
+		var len = trimedStr.length;
+		var val = '';
+		for (var i = 0; i < len; i = i + 2) {
+			if (val === '') {
+				val = trimedStr.substr(i, 2);
+			} else {
+				val += ',' + trimedStr.substr(i, 2);
+			}
+		}
+		console.info(val);
+		return new Uint8Array(val.match(/[\da-f]{2}/gi).map(function(h) {
+
+			return parseInt(h, 16)
+
+		})).buffer
+	}
+
 	/**
 	 * ArrayBuffer转16进度字符串示例
 	 * @param {Buffer} abValue
@@ -360,9 +380,23 @@ class Bluetooth {
 			let str5 = String.fromCharCode(curCharCode)
 			if (str5.startsWith('\n') == false) {
 				resultStr.push(String.fromCharCode(curCharCode));
-				}
+			}
 		}
 		return resultStr.join("");
+	}
+	hexCharCodeToInt(hexCharCodeStr) {
+		var trimedStr = hexCharCodeStr.trim();
+		var rawStr =
+			trimedStr.substr(0, 2).toLowerCase() === "0x" ?
+			trimedStr.substr(2) :
+			trimedStr;
+		var len = rawStr.length;
+		if (len % 2 !== 0) {
+			alert("Illegal Format ASCII Code!");
+			return "";
+		}
+		return parseInt(rawStr, 16)
+		//return resultStr.join("");
 	}
 }
 

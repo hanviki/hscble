@@ -255,8 +255,15 @@
 						console.info(manufacturer2.characteristicId)
 						uni.onBLECharacteristicValueChange(function(res) {
 														console.info("ffffffffff")
-														let str = bluetooth.ab2Weight(res.value)
-														manufacturer2.value = str.substr(0,str.length-3)
+														//let str = bluetooth.ab2Weight(res.value)
+														// 数组组数
+													   // let str_h ='0x'+ bluetooth.ab2hex(res.value).substr(6,2)	
+													   // let str_l = '0x' + bluetooth.ab2hex(res.value).substr(8,2)
+													   // console.info(str_h)
+													   // let str2= parseInt(str_h,16)*256 + parseInt(str_l,16)
+													   
+													   let str2= bluetooth.ab2hex(res.value)
+														manufacturer2.value = str2.toString()
 													})	
 					});
                   
