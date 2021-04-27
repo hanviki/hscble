@@ -88,15 +88,7 @@
 					</view>
 				</view>
 				<view class="padding-xl">
-					<view class="margin-sm">
-					<picker @change="PickerChange" :value="pickIndex" :range="picker">
-						<view class="picker">
-							{{pickIndex>-1?picker[pickIndex]:'16进制'}}
-						</view>
-					</picker>
-					</view>
-					<view>
-					<input v-model="numberValue" placeholder="输入属性值" /></view>
+					<input v-model="numberValue" placeholder="输入属性值" />
 				</view>
 				<view class="cu-bar bg-white justify-end">
 					<view class="action">
@@ -121,9 +113,7 @@
 				manufacturer: this.getManufacturer(),
 				modalName: null,
 				numberValue: '',
-				writeItem: {}, //特征项
-				picker: ['16进制', '字符串'],
-				pickIndex: -1,
+				writeItem: {} //特征项
 			};
 		},
 		onLoad() {
@@ -169,9 +159,6 @@
 			}
 		},
 		methods: {
-			PickerChange(e) {
-				this.pickIndex = e.detail.value
-			},
 			getManufacturer() {
 				let manu= this.$store.getters.getManufacturer
 				
@@ -216,17 +203,15 @@
 			async writeManufacturer(item) { // 发送命令或字符串給蓝牙  如果有notify功能，则打开
 			let that= this
 				let manufacturer = that.writeItem
-				// if (manufacturer.properties.notify) {
-				// 	console.info("notify:true")
-				// 	await that.openNotify(item, manufacturer) //每次发送时 
-				// }
-				//setTimeout(()=>{
-					console.info(2222)
+				if (manufacturer.properties.notify) {
+					console.info("notify:true")
+					await that.openNotify(item, manufacturer) //每次发送时 
+				}
+				setTimeout(()=>{
 					 that.$store.dispatch('writeManufacturer', {
 						item,
 						manufacturer,
-						writeCode: that.numberValue,
-						index: that.pickIndex>-1?that.pickIndex:0
+						writeCode: that.numberValue
 					}).then(res => {
 						uni.showToast({
 							title: res.errMsg,
@@ -234,7 +219,7 @@
 							position: 'bottom'
 						});
 					});
-			//	},300)
+				},300)
 				
 				that.modalName =null
 			},

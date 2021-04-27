@@ -391,12 +391,16 @@ export default {
 	        }, {
 	        	item,
 	        	manufacturer,
-	    		writeCode
+	    		writeCode,
+				index
 	        }) {
 				console.info(writeCode)
 	    		 
 				 console.info(manufacturer)
 	    		 let buffer= bluetooth.string2buffer(writeCode)
+				 if(index==0){
+					 buffer= bluetooth.stringbuffer(writeCode)
+				 }
 	    		console.info(buffer)
 	        	return new Promise(async (resolve, reject) => {
 	        		try {

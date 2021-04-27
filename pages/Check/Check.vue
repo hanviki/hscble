@@ -35,7 +35,7 @@
 			<view class="flex-sub flex">
 				<view class="flex-sub text-center">
 					<view class="cuh">
-						<text class="text-black  text-sl">{{sweetSugar_1.Value}}</text>
+						<text class="text-black  text-sl">{{bloodSugar_1.Value}}</text>
 					</view>
 					<view>
 						<text class="text-white text-sm">第一次数据</text>
@@ -43,7 +43,7 @@
 				</view>
 				<view class="flex-sub text-center">
 					<view class="cuh">
-						<text class="text-black  text-sl">{{sweetSugar_2.Value}}</text>
+						<text class="text-black  text-sl">{{bloodSugar_2.Value}}</text>
 					</view>
 					<view>
 						<text class="text-white text-sm">第二次数据</text>
@@ -51,7 +51,7 @@
 				</view>
 				<view class="flex-sub text-center">
 					<view class="cuh">
-						<text class="text-black  text-sl">{{sweetSugar_3.Value}}</text>
+						<text class="text-black  text-sl">{{bloodSugar_3.Value}}</text>
 					</view>
 					<view>
 						<text class="text-white text-sm">第三次数据</text>
@@ -73,7 +73,7 @@
 			<view class="flex-sub flex">
 				<view class="flex-sub text-center">
 					<view class="cuh">
-						<text class="text-black  text-sl">{{bloodSugar_1.Value}}</text>
+						<text class="text-black  text-sl">{{sweetSugar_1.Value}}</text>
 					</view>
 					<view>
 						<text class="text-white text-sm">第一次数据</text>
@@ -81,7 +81,7 @@
 				</view>
 				<view class="flex-sub text-center">
 					<view class="cuh">
-						<text class="text-black  text-sl">{{bloodSugar_2.Value}}</text>
+						<text class="text-black  text-sl">{{sweetSugar_2.Value}}</text>
 					</view>
 					<view>
 						<text class="text-white text-sm">第二次数据</text>
@@ -89,7 +89,7 @@
 				</view>
 				<view class="flex-sub text-center">
 					<view class="cuh">
-						<text class="text-black  text-sl">{{bloodSugar_3.Value}}</text>
+						<text class="text-black  text-sl">{{sweetSugar_3.Value}}</text>
 					</view>
 					<view>
 						<text class="text-white text-sm">第三次数据</text>
