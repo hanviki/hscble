@@ -24,8 +24,8 @@
 								:class="paired[index].status ? 'bg-green' : 'bg-red'">{{ paired[index].status ? '已连接' : '未连接' }}</text>
 						</view>
 						<view class="flex-sub text-right">
-							<button class="cu-btn bg-orange cuIcon cuIcon-infofill"
-								@tap="disconnect(paired[index])" v-if="paired[index].status" />
+							<button class="cu-btn bg-orange cuIcon cuIcon-infofill" @tap="disconnect(paired[index])"
+								v-if="paired[index].status" />
 							<button class="cu-btn cuIcon bg-green cuIcon-roundaddfill"
 								@tap="$store.dispatch('createBLEConnection', paired[index])" v-else />
 						</view>
@@ -43,10 +43,16 @@
 						<view class="flex-sub">设备ID：</view>
 						<view class="flex-sub text-left">{{ paired[index].deviceId }}</view>
 					</view>
+
+					<view class="padding-xs flex">
+						<button class="cu-btn bg-green lg" @tap.stop="uploadData(paired[index])"
+							v-if="paired[index].status">上传汗糖数据</button>
+					</view>
 				</view>
 				<!-- 设备信息 -->
 				<!-- 服务特征 -->
-				<view class="margin bg-white shadow r" @tap.stop="" v-if="paired.length > 0 && (index || index == 0) && paired[index].status">
+				<view class="margin bg-white shadow r" @tap.stop=""
+					v-if="paired.length > 0 && (index || index == 0) && paired[index].status">
 					<view class="padding solid-bottom">设备服务特征</view>
 					<scroll-view scroll-y="true r" style="max-height: 40vh;" show-scrollbar="true">
 						<view class="padding solid-bottom flex" v-for="(item, i) in manufacturer" :key="i" @tap.stop="">
@@ -61,9 +67,8 @@
 										@tap.stop="readManufacturer(paired[index], item)">
 										<text class="cu-tag round bg-green">R</text>
 									</view>
-									<view class="flex-sub" v-if="item.properties.write"
-										@tap.stop="showModal(item)"> <text
-											class="cu-tag round bg-green">W</text> </view>
+									<view class="flex-sub" v-if="item.properties.write" @tap.stop="showModal(item)">
+										<text class="cu-tag round bg-green">W</text> </view>
 									<view class="flex-sub" v-if="item.properties.notify"
 										@tap.stop="notifyHandle(paired[index], item)">
 										<text class="cu-tag round" :class="item.notify?'bg-green':'bg-gray'">
@@ -71,13 +76,13 @@
 										</text>
 									</view>
 								</view>
-								<view >{{item.value}}</view>
+								<view>{{item.value}}</view>
 							</view>
 						</view>
 					</scroll-view>
 				</view>
 			</view>
-			
+
 		</view>
 		<view class="cu-modal" :class="modalName=='DialogModal1'?'show':''">
 			<view class="cu-dialog">
@@ -89,20 +94,20 @@
 				</view>
 				<view class="padding-xl">
 					<view class="margin-sm">
-					<picker @change="PickerChange" :value="pickIndex" :range="picker">
-						<view class="picker">
-							{{pickIndex>-1?picker[pickIndex]:'16进制'}}
-						</view>
-					</picker>
+						<picker @change="PickerChange" :value="pickIndex" :range="picker">
+							<view class="picker">
+								{{pickIndex>-1?picker[pickIndex]:'16进制'}}
+							</view>
+						</picker>
 					</view>
 					<view>
-					<input v-model="numberValue" placeholder="输入属性值" /></view>
+						<input v-model="numberValue" placeholder="输入属性值" />
+					</view>
 				</view>
 				<view class="cu-bar bg-white justify-end">
 					<view class="action">
 						<button class="cu-btn line-green text-green" @tap="hideModal">取消</button>
-						<button class="cu-btn bg-green margin-left"
-							@tap="writeManufacturer(paired[index])">确定</button>
+						<button class="cu-btn bg-green margin-left" @tap="writeManufacturer(paired[index])">确定</button>
 					</view>
 				</view>
 			</view>
@@ -173,29 +178,29 @@
 				this.pickIndex = e.detail.value
 			},
 			getManufacturer() {
-				let manu= this.$store.getters.getManufacturer
-				
+				let manu = this.$store.getters.getManufacturer
+
 				manu.forEach(function(element) {
-				  element.notify =false
-				  element.value =''
+					element.notify = false
+					element.value = ''
 				});
 				return manu
 			},
 			delpaired() {
 				this.$store.dispatch('delpaired', this.paired[this.index])
 				this.manufacturer.forEach(function(element) {
-				  element.notify =false
-				  element.value =''
+					element.notify = false
+					element.value = ''
 				});
 			},
 			disconnect(item) {
 				this.$store.dispatch('disconnect', item)
 				this.manufacturer.forEach(function(element) {
-				  element.notify =false
-				  element.value =''
+					element.notify = false
+					element.value = ''
 				});
-				
-				
+
+
 			},
 			// 修改配置
 			async readManufacturer(item, manufacturer) {
@@ -213,70 +218,118 @@
 					});
 				});
 			},
+			async uploadData(item) {
+				let that = this
+				let manufacturer = that.manufacturer
+				//装在数据 
+				await that.$store.dispatch('writeManufacturer', {
+					item,
+					manufacturer[2],
+					writeCode: '0110100400020400030001002F',
+					index: 0
+				}).then(res => {
+					uni.showToast({
+						title: res.errMsg,
+						icon: 'none',
+						position: 'bottom'
+					});
+				});
+				await bluetooth.notifyBLECharacteristicValueChange(item.deviceId, manufacturer2.serviceId,
+						manufacturer2.characteristicId)
+					.then(res => {
+						console.info(manufacturer2.characteristicId)
+						uni.onBLECharacteristicValueChange(function(res) {
+							//let str = bluetooth.ab2Weight(res.value)
+							// 数组组数
+							// let str_h ='0x'+ bluetooth.ab2hex(res.value).substr(6,2)	
+							// let str_l = '0x' + bluetooth.ab2hex(res.value).substr(8,2)
+							// console.info(str_h)
+							// let str2= parseInt(str_h,16)*256 + parseInt(str_l,16)
+
+							let str2 = bluetooth.ab2hex(res.value)
+							manufacturer2.value = str2.toString()
+						})
+					});
+
+				//获取组数
+				await that.$store.dispatch('writeManufacturer', {
+					item,
+					manufacturer[2],
+					writeCode: '01030FD0000400E7',
+					index: 0
+				}).then(res => {
+					uni.showToast({
+						title: res.errMsg,
+						icon: 'none',
+						position: 'bottom'
+					});
+				});
+
+			},
 			async writeManufacturer(item) { // 发送命令或字符串給蓝牙  如果有notify功能，则打开
-			let that= this
+				let that = this
 				let manufacturer = that.writeItem
 				// if (manufacturer.properties.notify) {
 				// 	console.info("notify:true")
 				// 	await that.openNotify(item, manufacturer) //每次发送时 
 				// }
 				//setTimeout(()=>{
-					console.info(2222)
-					 that.$store.dispatch('writeManufacturer', {
-						item,
-						manufacturer,
-						writeCode: that.numberValue,
-						index: that.pickIndex>-1?that.pickIndex:0
-					}).then(res => {
-						uni.showToast({
-							title: res.errMsg,
-							icon: 'none',
-							position: 'bottom'
-						});
+				that.$store.dispatch('writeManufacturer', {
+					item,
+					manufacturer,
+					writeCode: that.numberValue,
+					index: that.pickIndex > -1 ? that.pickIndex : 0
+				}).then(res => {
+					uni.showToast({
+						title: res.errMsg,
+						icon: 'none',
+						position: 'bottom'
 					});
-			//	},300)
-				
-				that.modalName =null
+				});
+				//	},300)
+
+				that.modalName = null
 			},
-		   notifyHandle(item, manufacturer2) {
+			notifyHandle(item, manufacturer2) {
 				console.info(manufacturer2.notify)
 				if (manufacturer2.notify) {
 					this.closeNotify(item, manufacturer2)
-					
+
 				} else {
 					this.openNotify(item, manufacturer2)
 				}
 			},
-			 openNotify(item, manufacturer2) { //打开通知
-			  manufacturer2.notify= true
-			//  console.info(item.deviceId)
-			 bluetooth.notifyBLECharacteristicValueChange(item.deviceId, manufacturer2.serviceId, manufacturer2.characteristicId)
+			openNotify(item, manufacturer2) { //打开通知
+				manufacturer2.notify = true
+				//  console.info(item.deviceId)
+				bluetooth.notifyBLECharacteristicValueChange(item.deviceId, manufacturer2.serviceId, manufacturer2
+						.characteristicId)
 					.then(res => {
 						console.info(manufacturer2.characteristicId)
 						uni.onBLECharacteristicValueChange(function(res) {
-														console.info("ffffffffff")
-														//let str = bluetooth.ab2Weight(res.value)
-														// 数组组数
-													   // let str_h ='0x'+ bluetooth.ab2hex(res.value).substr(6,2)	
-													   // let str_l = '0x' + bluetooth.ab2hex(res.value).substr(8,2)
-													   // console.info(str_h)
-													   // let str2= parseInt(str_h,16)*256 + parseInt(str_l,16)
-													   
-													   let str2= bluetooth.ab2hex(res.value)
-														manufacturer2.value = str2.toString()
-													})	
+							console.info("ffffffffff")
+							//let str = bluetooth.ab2Weight(res.value)
+							// 数组组数
+							// let str_h ='0x'+ bluetooth.ab2hex(res.value).substr(6,2)	
+							// let str_l = '0x' + bluetooth.ab2hex(res.value).substr(8,2)
+							// console.info(str_h)
+							// let str2= parseInt(str_h,16)*256 + parseInt(str_l,16)
+
+							let str2 = bluetooth.ab2hex(res.value)
+							manufacturer2.value = str2.toString()
+						})
 					});
-                  
+
 			},
-			 closeNotify(item, manufacturer2) {
-				 manufacturer2.notify= false
+			closeNotify(item, manufacturer2) {
+				manufacturer2.notify = false
 				uni.notifyBLECharacteristicValueChange({
 					state: false, // 启用 notify 功能
 					deviceId: item.deviceId,
 					serviceId: manufacturer2.serviceId,
 					characteristicId: manufacturer2.characteristicId,
 					success: async res => {
-						
+
 						console.info(res)
 					},
 					fail(err) {
@@ -298,7 +351,7 @@
 				this.$emit('hide');
 			},
 			showModal(item) {
-				this.numberValue= ''
+				this.numberValue = ''
 				this.writeItem = item
 				this.modalName = "DialogModal1"
 			},
