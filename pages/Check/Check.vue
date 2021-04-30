@@ -76,7 +76,7 @@
 						<text class="text-black  text-sl">{{sweetSugar_1.Value}}</text>
 					</view>
 					<view>
-						 <text class="text-white text-sm">第一次数据{{isShow?'':'生成中...'}}</text> 
+						 <text class="text-white text-sm">第一次数据{{!isShow&&opIndex==1?'生成中...':''}}</text> 
 						<button class="cu-btn text-green" v-if="isShow" @tap="uploadData">第一次数据</button>
 					</view>
 				</view>
@@ -85,7 +85,7 @@
 						<text class="text-black  text-sl">{{sweetSugar_2.Value}}</text>
 					</view>
 					<view>
-						<text class="text-white text-sm">第二次数据{{isShow?'':'生成中...'}}</text>
+						<text class="text-white text-sm">第二次数据{{!isShow&&opIndex==2?'生成中...':''}}</text>
 						<button class="cu-btn text-green" v-if="isShow" @tap="uploadData2">第二次数据</button>
 					</view>
 				</view>
@@ -94,7 +94,7 @@
 						<text class="text-black  text-sl">{{sweetSugar_3.Value}}</text>
 					</view>
 					<view>
-						<text class="text-white text-sm">第三次数据{{isShow?'':'生成中...'}}</text>
+						<text class="text-white text-sm">第三次数据{{!isShow&&opIndex==3?'生成中...':''}}</text>
 						<button class="cu-btn text-green" v-if="isShow" @tap="uploadData3">第三次数据</button>
 					</view>
 				</view>
@@ -209,7 +209,14 @@
 					}]
 				},
 				chartDataWeek: {
-					
+					categories: [],
+					series: [{
+						name: "汗糖值",
+						data: []
+					}, {
+						name: "血糖值",
+						data: []
+					}]
 				},
 				chartDataMonth: {
 					categories: [],
@@ -243,9 +250,11 @@
 				that.onceStr = ''
 				console.info(newValue)
 				if (newValue > 81) {
-					console.info('jieshu')
-					console.info(that.dataUx.toString())
+					//console.info('jieshu')
+					//console.info(that.dataUx.toString())
+					if(newValue==82){
 					that.loadDataToserver()
+					}
 				} else {
 					
 					setTimeout(() => {
@@ -290,23 +299,22 @@
 			loadDataToserver() {
 				let that = this
 				let userInfo = that.$store.getters['user/getUserInfo']
-				let strU=that.dataUx.join(",")
+				let strU = that.dataUx.join(",")
 				that.$api.check.addsweatsugarpkg({
 					User_id: userInfo.Id,
 					pkg: strU.replace(/,/g,'')
 				}).then(res => {
-					console.info("haha")
+					console.info(res)
 					this.isShow = true
 					if (res.Code == "1") {
-						
 						if (that.opIndex == 1) {
-							that.sweetSugar_1.value = res.CalVal
+							that.sweetSugar_1.Value =parseInt(parseFloat(res.CalVal))
 						}
-						if (that.opIndex == 2) {
-							that.sweetSugar_2.value = res.CalVal
+						if (that.opIndex == 2) { 
+							that.sweetSugar_2.Value =parseInt(parseFloat(res.CalVal))
 						}
 						if (that.opIndex == 3) {
-							that.sweetSugar_3.value = res.CalVal
+							that.sweetSugar_3.Value =parseInt(parseFloat(res.CalVal))
 						}
 					}
 				})
@@ -321,51 +329,58 @@
 					if (res.Code == "1") {
 						let data = res.Data
 						console.info(data)
-						let SweetSugarData = data.DailyData.SweetSugarData
-						if (SweetSugarData != null) {
-							if (SweetSugarData.length > 0) {
-								that.sweetSugar_1 = SweetSugarData[0]
-								that.$set(that.chartDataDay.categories, 0, '1-1次')
-								that.$set(that.chartDataDay.series[0].data, 0, SweetSugarData[0].Value)
+						let SweetSugarData = data.DailyData
+						let monthlyData =data.MonthlyData
+						let weeklyData =data.WeeklyDat
+						let threeData =data.Top3DailyData
+						if(threeData!=null) {
+							for (let i=0;i<threeData.length;i++) {
+								
+								if(i==0){
+									this.sweetSugar_1.Value=  threeData[i].SweetSugarData
+									this.bloodSugar_1.Value = threeData[i].BloodSugarData
+								}
+								if(i==1){
+									this.sweetSugar_2.Value=  threeData[i].SweetSugarData
+									this.bloodSugar_2.Value = threeData[i].BloodSugarData
+								}
+								if(i==2){
+									this.sweetSugar_3.Value=  threeData[i].SweetSugarData
+									this.bloodSugar_3.Value = threeData[i].BloodSugarData
+								}
+								
+								
 							}
-							if (SweetSugarData.length > 1) {
-								that.sweetSugar_2 = SweetSugarData[1]
-								that.$set(that.chartDataDay.categories, 1, '1-2次')
-								that.$set(that.chartDataDay.series[0].data, 1, SweetSugarData[1].Value)
 							}
-							if (SweetSugarData.length > 2) {
-								that.sweetSugar_3 = SweetSugarData[2]
-								that.$set(that.chartDataDay.categories, 2, '1-3次')
-								that.$set(that.chartDataDay.series[0].data, 2, SweetSugarData[2].Value)
-							}
+						
+						if(SweetSugarData!=null){
+						for (let i=0;i<SweetSugarData.length;i++) {
+							that.$set(that.chartDataDay.categories, i, SweetSugarData[i].Point)
+							
+							that.$set(that.chartDataDay.series[0].data, i, SweetSugarData[i].SweetSugarData)
+							that.$set(that.chartDataDay.series[1].data, i, SweetSugarData[i].BloodSugarData)
 						}
-						let BloodSugarData = data.DailyData.BloodSugarData
-						if (BloodSugarData != null) {
-							if (BloodSugarData.length > 0) {
-								that.bloodSugar_1 = BloodSugarData[0]
-								that.$set(that.chartDataDay.series[1].data, 0, BloodSugarData[0].Value)
-							}
-							if (BloodSugarData.length > 1) {
-								that.bloodSugar_2 = BloodSugarData[1]
-								that.$set(that.chartDataDay.series[1].data, 1, BloodSugarData[1].Value)
-							}
-							if (BloodSugarData.length > 2) {
-								that.bloodSugar_3 = BloodSugarData[2]
-								that.$set(that.chartDataDay.series[1].data, 2, BloodSugarData[2].Value)
-							}
+						}
+						if(monthlyData!=null) {
+						for (let i=0;i<monthlyData.length;i++) {
+							that.$set(that.chartDataMonth.categories, i, monthlyData[i].Point)
+							
+							that.$set(that.chartDataMonth.series[0].data, i, monthlyData[i].SweetSugarData)
+							that.$set(that.chartDataMonth.series[1].data, i, monthlyData[i].BloodSugarData)
+						}
+						}
+						if(weeklyData!=null) {
+						for (let i=0;i<weeklyData.length;i++) {
+							that.$set(that.chartDataWeek.categories, i, weeklyData[i].Point)
+							
+							that.$set(that.chartDataWeek.series[0].data, i, weeklyData[i].SweetSugarData)
+							that.$set(that.chartDataWeek.series[1].data, i, weeklyData[i].BloodSugarData)
+						}
 						}
 						//that.chartDataDay = that.chartData
 						//this.checkCount = SweetSugarData.length
 
-						let WeeklyData_SweetSugarData = data.WeeklyData.SweetSugarData
-						if (WeeklyData_SweetSugarData != null) {
-
-						}
-						// for (var i = 0; i < WeeklyData_SweetSugarData.length; i++) {
-						// 	WeeklyData_SweetSugarData[i]
-						// 	this.chartDataWeek.categories.push()
-						// }
-
+						                                                                                                                                                                                                         
 					} else {
 						uni.showToast({
 							icon: "none",
@@ -458,7 +473,7 @@
 			},
 			async uploadData2() {
 				this.isShow =false
-				this.opIndex = 1
+				this.opIndex = 2
 				//console.info('88888')
 				let that = this
 				that.pakgeNum = 0
@@ -540,7 +555,7 @@
 			},
 			async uploadData3() {
 				this.isShow =false
-				this.opIndex = 1
+				this.opIndex = 3
 				//console.info('88888')
 				let that = this
 				that.pakgeNum = 0
