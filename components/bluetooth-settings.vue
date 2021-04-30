@@ -43,11 +43,6 @@
 						<view class="flex-sub">设备ID：</view>
 						<view class="flex-sub text-left">{{ paired[index].deviceId }}</view>
 					</view>
-
-					<view class="padding-xs flex">
-						<button class="cu-btn bg-green lg" @tap.stop="uploadData(paired[index])"
-							v-if="paired[index].status">上传汗糖数据</button>
-					</view>
 				</view>
 				<!-- 设备信息 -->
 				<!-- 服务特征 -->
@@ -76,7 +71,7 @@
 										</text>
 									</view>
 								</view>
-								<view>{{item.value}}</view>
+								<view >{{item.value}}</view>
 							</view>
 						</view>
 					</scroll-view>
@@ -129,6 +124,7 @@
 				writeItem: {}, //特征项
 				picker: ['16进制', '字符串'],
 				pickIndex: -1,
+				constr: ''
 			};
 		},
 		onLoad() {
@@ -174,6 +170,13 @@
 			}
 		},
 		methods: {
+			showStr() {
+				uni.showToast({
+					title: this.constr,
+					icon: 'none',
+					position: 'bottom'
+				});
+			},
 			PickerChange(e) {
 				this.pickIndex = e.detail.value
 			},
@@ -224,7 +227,7 @@
 				//装在数据 
 				await that.$store.dispatch('writeManufacturer', {
 					item,
-					manufacturer[2],
+					manufacturer: manufacturer[2],
 					writeCode: '0110100400020400030001002F',
 					index: 0
 				}).then(res => {
@@ -254,7 +257,7 @@
 				//获取组数
 				await that.$store.dispatch('writeManufacturer', {
 					item,
-					manufacturer[2],
+					manufacturer: manufacturer[2],
 					writeCode: '01030FD0000400E7',
 					index: 0
 				}).then(res => {
@@ -268,6 +271,7 @@
 			},
 			async writeManufacturer(item) { // 发送命令或字符串給蓝牙  如果有notify功能，则打开
 				let that = this
+				that.constr =''
 				let manufacturer = that.writeItem
 				// if (manufacturer.properties.notify) {
 				// 	console.info("notify:true")
@@ -300,6 +304,7 @@
 				}
 			},
 			openNotify(item, manufacturer2) { //打开通知
+			 let that= this
 				manufacturer2.notify = true
 				//  console.info(item.deviceId)
 				bluetooth.notifyBLECharacteristicValueChange(item.deviceId, manufacturer2.serviceId, manufacturer2
@@ -316,6 +321,7 @@
 							// let str2= parseInt(str_h,16)*256 + parseInt(str_l,16)
 
 							let str2 = bluetooth.ab2hex(res.value)
+							that.constr+=str2.toString()
 							manufacturer2.value = str2.toString()
 						})
 					});

@@ -76,7 +76,8 @@
 						<text class="text-black  text-sl">{{sweetSugar_1.Value}}</text>
 					</view>
 					<view>
-						<text class="text-white text-sm">第一次数据</text>
+						<!-- <text class="text-white text-sm">第一次数据</text> -->
+						<button class="cu-btn text-green" @tap="uploadData">第一次数据</button>
 					</view>
 				</view>
 				<view class="flex-sub text-center">
@@ -85,6 +86,7 @@
 					</view>
 					<view>
 						<text class="text-white text-sm">第二次数据</text>
+						<button class="cu-btn text-green" @tap="uploadData2">第一次数据</button>
 					</view>
 				</view>
 				<view class="flex-sub text-center">
@@ -93,6 +95,7 @@
 					</view>
 					<view>
 						<text class="text-white text-sm">第三次数据</text>
+						<button class="cu-btn text-green" @tap="uploadData3">第一次数据</button>
 					</view>
 				</view>
 			</view>
@@ -121,9 +124,12 @@
 		</view>
 		<view class="cu-bar bg-white">
 			<view class="charts-box ">
-				<qiun-data-charts type="column" v-if="TabCur==0" :chartData="chartDataDay" :echartsH5="true" :echartsApp="true" />
-				<qiun-data-charts type="column" v-if="TabCur==1" :chartData="chartDataWeek" :echartsH5="true" :echartsApp="true" />
-				<qiun-data-charts type="line" v-if="TabCur==2" :chartData="chartDataMonth" :echartsH5="true" :echartsApp="true" />
+				<qiun-data-charts type="column" v-if="TabCur==0" :chartData="chartDataDay" :echartsH5="true"
+					:echartsApp="true" />
+				<qiun-data-charts type="column" v-if="TabCur==1" :chartData="chartDataWeek" :echartsH5="true"
+					:echartsApp="true" />
+				<qiun-data-charts type="line" v-if="TabCur==2" :chartData="chartDataMonth" :echartsH5="true"
+					:echartsApp="true" />
 			</view>
 		</view>
 
@@ -131,9 +137,17 @@
 </template>
 
 <script>
+	import Bluetooth from '@/common/bluetooth.js';
+	let bluetooth = new Bluetooth();
 	export default {
 		data() {
 			return {
+				paired: [],
+				manufacturer: this.$store.getters.getManufacturer,
+				pakgeNum: 0,
+				onceStr: '',
+				opIndex: 0,
+				dataUx: [], //存放返回的字符串
 				sweetSugar_1: {
 					Value: ''
 				},
@@ -200,18 +214,53 @@
 		computed: {
 
 		},
+		watch: {
+			'$store.state.bluetooth.paired': {
+				handler(e) {
+					this.paired = e;
+					if (e[0] && e[0].status) {
+
+					}
+				},
+				immediate: true,
+				deep: true
+			},
+			pakgeNum(newValue) {
+				if(newValue>81){
+					
+				}
+				else {
+				let num = parseInt(newValue - 1) * 50 + 54
+				let code = this.pad(num.toString(16), 4)
+				let middleNum = parseInt(newValue - 1) * 50
+				let middleCode = this.pad(middleNum.toString(16), 4)
+				console.info(code)
+				let that = this
+				setTimeout(() => {
+					that.readManufacturerReadData("0103" + middleCode + "0032" + code)
+				}, 200)
+			  }
+			}
+		},
 		onLoad() {
 			this.fetch()
 			uni.$on("handleFun", () => {
-			    this.fetch()
-			    // 清除监听
-			   // uni.$off('handleFun');
+				this.fetch()
+				// 清除监听
+				// uni.$off('handleFun');
 			})
 		},
 		components: {
 
 		},
 		methods: {
+			pad(num, n) {
+				var tbl = [];
+				var len = n - num.toString().length;
+				if (len <= 0) return num;
+				if (!tbl[len]) tbl[len] = (new Array(len + 1)).join('0');
+				return tbl[len] + num;
+			},
 			showAdd() {
 				uni.navigateTo({
 					url: '/pages/Check/CheckAdd'
@@ -219,12 +268,32 @@
 			},
 			tabSelect(e) {
 				this.TabCur = e.currentTarget.dataset.id;
-				
+
 			},
 			ceshi() {
 				uni.reLaunch({
 					url: '/pages/Check/CheckAdd'
 				});
+			},
+			loadDataToserver() {
+				let that= this
+				let userInfo = that.$store.getters['user/getUserInfo']
+				that.$api.check.addpackage({
+					userId: userInfo.Id,
+					pkg: that.dataUx.join("")
+				}).then(res=>{
+					if(res.Code=="1"){
+						if(that.opIndex==1){
+						that.sweetSugar_1.value = res.CalVal
+						}
+						if(that.opIndex==2){
+						that.sweetSugar_2.value = res.CalVal
+						}
+						if(that.opIndex==3){
+						that.sweetSugar_3.value = res.CalVal
+						}
+					}
+				})
 			},
 			fetch() {
 				console.info("fetch")
@@ -240,33 +309,33 @@
 						if (SweetSugarData != null) {
 							if (SweetSugarData.length > 0) {
 								that.sweetSugar_1 = SweetSugarData[0]
-								that.$set(that.chartDataDay.categories,0,'1-1次')
-								that.$set(that.chartDataDay.series[0].data,0 , SweetSugarData[0].Value)
+								that.$set(that.chartDataDay.categories, 0, '1-1次')
+								that.$set(that.chartDataDay.series[0].data, 0, SweetSugarData[0].Value)
 							}
 							if (SweetSugarData.length > 1) {
 								that.sweetSugar_2 = SweetSugarData[1]
-								that.$set(that.chartDataDay.categories,1,'1-2次')
-								that.$set(that.chartDataDay.series[0].data,1 , SweetSugarData[1].Value)
+								that.$set(that.chartDataDay.categories, 1, '1-2次')
+								that.$set(that.chartDataDay.series[0].data, 1, SweetSugarData[1].Value)
 							}
 							if (SweetSugarData.length > 2) {
 								that.sweetSugar_3 = SweetSugarData[2]
-								that.$set(that.chartDataDay.categories,2,'1-3次')
-								that.$set(that.chartDataDay.series[0].data,2 , SweetSugarData[2].Value)
+								that.$set(that.chartDataDay.categories, 2, '1-3次')
+								that.$set(that.chartDataDay.series[0].data, 2, SweetSugarData[2].Value)
 							}
 						}
 						let BloodSugarData = data.DailyData.BloodSugarData
 						if (BloodSugarData != null) {
 							if (BloodSugarData.length > 0) {
 								that.bloodSugar_1 = BloodSugarData[0]
-								that.$set(that.chartDataDay.series[1].data,0 , BloodSugarData[0].Value)
+								that.$set(that.chartDataDay.series[1].data, 0, BloodSugarData[0].Value)
 							}
-					if (BloodSugarData.length > 1) {
+							if (BloodSugarData.length > 1) {
 								that.bloodSugar_2 = BloodSugarData[1]
-								that.$set(that.chartDataDay.series[1].data,1, BloodSugarData[1].Value)
+								that.$set(that.chartDataDay.series[1].data, 1, BloodSugarData[1].Value)
 							}
 							if (BloodSugarData.length > 2) {
 								that.bloodSugar_3 = BloodSugarData[2]
-								that.$set(that.chartDataDay.series[1].data,2 , BloodSugarData[2].Value)
+								that.$set(that.chartDataDay.series[1].data, 2, BloodSugarData[2].Value)
 							}
 						}
 						//that.chartDataDay = that.chartData
@@ -288,7 +357,261 @@
 						})
 					}
 				})
-			}
+			},
+			async uploadData() {
+				this.opIndex=1
+				//console.info('88888')
+				let that = this
+				that.pakgeNum=0
+				that.dataUx =[]
+				let manufacturer = that.manufacturer
+				let item = that.paired[0]
+				await bluetooth.notifyBLECharacteristicValueChange(item.deviceId, manufacturer[0].serviceId,
+						manufacturer[0].characteristicId)
+					.then(res => {
+						//console.info(manufacturer[0].characteristicId)
+						uni.onBLECharacteristicValueChange(function(res) {
+							//console.info(3222)
+
+							let str = bluetooth.ab2hex(res.value)
+							//	console.info(str)
+							// 数组组数
+							// let str_h ='0x'+ bluetooth.ab2hex(res.value).substr(6,2)	
+							// let str_l = '0x' + bluetooth.ab2hex(res.value).substr(8,2)
+							// console.info(str_h)
+							// let str2= parseInt(str_h,16)*256 + parseInt(str_l,16)
+
+							if (str.indexOf('01101004') == 0) {
+								that.pakgeNum = 1
+								that.dataUx = []
+							}
+							else {
+								console.info(str)
+								that.dataUx.push(str)
+							if (str.indexOf('0103') == 0) {
+								setTimeout(()=>{
+									that.pakgeNum += 1
+								},1000)
+							
+								
+							}
+							// else {
+							// 	console.info(str)
+							// 	console.info(that.onceStr)
+							// 	that.onceStr += str
+							// 	let calcStr= that.onceStr
+							// 	let str2= calcStr.substr(5, 100)
+							// 	if(str2.length==100) {
+							// 	  that.dataUx[that.pakgeNum-1].push(str2)
+							// 	  that.pakgeNum += 1
+							// 	  that.onceStr =''
+							// 	}
+							// }
+							}
+
+						})
+					});
+				setTimeout(() => {
+					//装在数据
+					that.$store.dispatch('writeManufacturer', {
+						item: that.paired[0],
+						manufacturer: manufacturer[1],
+						writeCode: '0110100400020400030001002F',
+						index: 0
+					}).then(res => {
+						uni.showToast({
+							title: res.errMsg,
+							icon: 'none',
+							position: 'bottom'
+						});
+					});
+				}, 2000)
+
+
+			},
+			async uploadData2() {
+				//console.info('88888')
+				this.opIndex=2
+				let that = this
+				that.pakgeNum=0
+				that.dataUx =[]
+				let manufacturer = that.manufacturer
+				let item = that.paired[0]
+				await bluetooth.notifyBLECharacteristicValueChange(item.deviceId, manufacturer[0].serviceId,
+						manufacturer[0].characteristicId)
+					.then(res => {
+						//console.info(manufacturer[0].characteristicId)
+						uni.onBLECharacteristicValueChange(function(res) {
+							//console.info(3222)
+			
+							let str = bluetooth.ab2hex(res.value)
+							//	console.info(str)
+							// 数组组数
+							// let str_h ='0x'+ bluetooth.ab2hex(res.value).substr(6,2)	
+							// let str_l = '0x' + bluetooth.ab2hex(res.value).substr(8,2)
+							// console.info(str_h)
+							// let str2= parseInt(str_h,16)*256 + parseInt(str_l,16)
+			
+							if (str.indexOf('01101004') == 0) {
+								that.pakgeNum = 1
+								that.dataUx = []
+							}
+							else {
+								console.info(str)
+								that.dataUx.push(str)
+							if (str.indexOf('0103') == 0) {
+								setTimeout(()=>{
+									that.pakgeNum += 1
+								},1000)
+							
+								
+							}
+							// else {
+							// 	console.info(str)
+							// 	console.info(that.onceStr)
+							// 	that.onceStr += str
+							// 	let calcStr= that.onceStr
+							// 	let str2= calcStr.substr(5, 100)
+							// 	if(str2.length==100) {
+							// 	  that.dataUx[that.pakgeNum-1].push(str2)
+							// 	  that.pakgeNum += 1
+							// 	  that.onceStr =''
+							// 	}
+							// }
+							}
+			
+						})
+					});
+				setTimeout(() => {
+					//装在数据
+					that.$store.dispatch('writeManufacturer', {
+						item: that.paired[0],
+						manufacturer: manufacturer[1],
+						writeCode: '01101004000204000300020030',
+						index: 0
+					}).then(res => {
+						uni.showToast({
+							title: res.errMsg,
+							icon: 'none',
+							position: 'bottom'
+						});
+					});
+				}, 2000)
+			
+			
+			},
+			async uploadData3() {
+				//console.info('88888')
+				this.opIndex=3
+				let that = this
+				that.pakgeNum=0
+				that.dataUx =[]
+				let manufacturer = that.manufacturer
+				let item = that.paired[0]
+				await bluetooth.notifyBLECharacteristicValueChange(item.deviceId, manufacturer[0].serviceId,
+						manufacturer[0].characteristicId)
+					.then(res => {
+						//console.info(manufacturer[0].characteristicId)
+						uni.onBLECharacteristicValueChange(function(res) {
+							//console.info(3222)
+			
+							let str = bluetooth.ab2hex(res.value)
+							//	console.info(str)
+							// 数组组数
+							// let str_h ='0x'+ bluetooth.ab2hex(res.value).substr(6,2)	
+							// let str_l = '0x' + bluetooth.ab2hex(res.value).substr(8,2)
+							// console.info(str_h)
+							// let str2= parseInt(str_h,16)*256 + parseInt(str_l,16)
+			
+							if (str.indexOf('01101004') == 0) {
+								that.pakgeNum = 1
+								that.dataUx = []
+							}
+							else {
+								console.info(str)
+								that.dataUx.push(str)
+							if (str.indexOf('0103') == 0) {
+								setTimeout(()=>{
+									that.pakgeNum += 1
+								},1000)
+							
+								
+							}
+							// else {
+							// 	console.info(str)
+							// 	console.info(that.onceStr)
+							// 	that.onceStr += str
+							// 	let calcStr= that.onceStr
+							// 	let str2= calcStr.substr(5, 100)
+							// 	if(str2.length==100) {
+							// 	  that.dataUx[that.pakgeNum-1].push(str2)
+							// 	  that.pakgeNum += 1
+							// 	  that.onceStr =''
+							// 	}
+							// }
+							}
+			
+						})
+					});
+				setTimeout(() => {
+					//装在数据
+					that.$store.dispatch('writeManufacturer', {
+						item: that.paired[0],
+						manufacturer: manufacturer[1],
+						writeCode: '01101004000204000300030031',
+						index: 0
+					}).then(res => {
+						uni.showToast({
+							title: res.errMsg,
+							icon: 'none',
+							position: 'bottom'
+						});
+					});
+				}, 2000)
+			
+			
+			},
+			
+			readManufacturerReadData(num16) { // 读取包数 当前包数+1
+				let that = this
+				let item = that.paired[0]
+				let manufacturer = that.manufacturer
+				// bluetooth.notifyBLECharacteristicValueChange(item.deviceId, manufacturer[0].serviceId, manufacturer[0]
+				// 		.characteristicId)
+				// 	.then(res => {
+				// 		uni.onBLECharacteristicValueChange(function(res) {
+				// 			//	console.info('000000000')
+
+				// 			let str = bluetooth.ab2hex(res.value)
+				// 			//  console.info(str)
+				// 			if (str.indexOf('010364') == 0) {
+				// 				console.info(str)
+				// 				that.dataUx.push(str.sub(5, 50 * 2))
+				// 				that.pakgeNum += 1
+				// 			}
+
+				// 		})
+				// 	});
+				setTimeout(() => {
+					that.$store.dispatch('writeManufacturer', {
+						item,
+						manufacturer: manufacturer[1],
+						writeCode: num16,
+						index: 0
+					}).then(res => {
+						uni.showToast({
+							title: res.errMsg,
+							icon: 'none',
+							position: 'bottom'
+						});
+					});
+				}, 2000)
+
+				//	},300)
+
+				//that.modalName = null
+			},
+
 
 		}
 	}
