@@ -76,8 +76,8 @@
 						<text class="text-black  text-sl">{{sweetSugar_1.Value}}</text>
 					</view>
 					<view>
-						<!-- <text class="text-white text-sm">第一次数据</text> -->
-						<button class="cu-btn text-green" @tap="uploadData">第一次数据</button>
+						 <text class="text-white text-sm">第一次数据{{isShow?'':'生成中...'}}</text> 
+						<button class="cu-btn text-green" v-if="isShow" @tap="uploadData">第一次数据</button>
 					</view>
 				</view>
 				<view class="flex-sub text-center">
@@ -85,8 +85,8 @@
 						<text class="text-black  text-sl">{{sweetSugar_2.Value}}</text>
 					</view>
 					<view>
-						<text class="text-white text-sm">第二次数据</text>
-						<button class="cu-btn text-green" @tap="uploadData2">第一次数据</button>
+						<text class="text-white text-sm">第二次数据{{isShow?'':'生成中...'}}</text>
+						<button class="cu-btn text-green" v-if="isShow" @tap="uploadData2">第二次数据</button>
 					</view>
 				</view>
 				<view class="flex-sub text-center">
@@ -94,8 +94,8 @@
 						<text class="text-black  text-sl">{{sweetSugar_3.Value}}</text>
 					</view>
 					<view>
-						<text class="text-white text-sm">第三次数据</text>
-						<button class="cu-btn text-green" @tap="uploadData3">第一次数据</button>
+						<text class="text-white text-sm">第三次数据{{isShow?'':'生成中...'}}</text>
+						<button class="cu-btn text-green" v-if="isShow" @tap="uploadData3">第三次数据</button>
 					</view>
 				</view>
 			</view>
@@ -144,10 +144,30 @@
 			return {
 				paired: [],
 				manufacturer: this.$store.getters.getManufacturer,
+				isShow: true,
 				pakgeNum: 0,
-				onceStr: '',
+				onceStr: '', //81 包 ，存储每一包的数据
 				opIndex: 0,
 				dataUx: [], //存放返回的字符串
+				cmdArr: [
+					'0103000000320036', '0103003200320068', '010300640032009A', '01030096003200CC', '010300C8003200FE',
+					'010300FA00320130', '0103012C00320063', '0103015E00320095', '01030190003200C7', '010301C2003200F9',
+					'010301F40032012B', '010302260032005E', '0103025800320090', '0103028A003200C2', '010302BC003200F4',
+					'010302EE00320126', '0103032000320059', '010303520032008B', '01030384003200BD', '010303B6003200EF',
+					'010303E800320121', '0103041A00320054', '0103044C00320086', '0103047E003200B8', '010304B0003200EA',
+					'010304E20032011C', '010305140032004F', '0103054600320081', '01030578003200B3', '010305AA003200E5',
+					'010305DC00320117', '0103060E0032004A', '010306400032007C', '01030672003200AE', '010306A4003200E0',
+					'010306D600320112', '0103070800320045', '0103073A00320077', '0103076C003200A9', '0103079E003200DB',
+					'010307D00032010D', '0103080200320040', '0103083400320072', '01030866003200A4', '01030898003200D6',
+					'010308CA00320108', '010308FC0032013A', '0103092E0032006D', '010309600032009F', '01030992003200D1',
+					'010309C400320103', '010309F600320135', '01030A2800320068', '01030A5A0032009A', '01030A8C003200CC',
+					'01030ABE003200FE', '01030AF000320130', '01030B2200320063', '01030B5400320095', '01030B86003200C7',
+					'01030BB8003200F9', '01030BEA0032012B', '01030C1C0032005E', '01030C4E00320090', '01030C80003200C2',
+					'01030CB2003200F4', '01030CE400320126', '01030D1600320059', '01030D480032008B', '01030D7A003200BD',
+					'01030DAC003200EF', '01030DDE00320121', '01030E1000320054', '01030E4200320086', '01030E74003200B8',
+					'01030EA6003200EA', '01030ED80032011C', '01030F0A0032004F', '01030F3C00320081', '01030F6E003200B3',
+					'01030FA0000C00BF'
+				],
 				sweetSugar_1: {
 					Value: ''
 				},
@@ -189,14 +209,7 @@
 					}]
 				},
 				chartDataWeek: {
-					categories: [],
-					series: [{
-						name: "汗糖值",
-						data: []
-					}, {
-						name: "血糖值",
-						data: []
-					}]
+					
 				},
 				chartDataMonth: {
 					categories: [],
@@ -226,20 +239,19 @@
 				deep: true
 			},
 			pakgeNum(newValue) {
-				if(newValue>81){
-					
-				}
-				else {
-				let num = parseInt(newValue - 1) * 50 + 54
-				let code = this.pad(num.toString(16), 4)
-				let middleNum = parseInt(newValue - 1) * 50
-				let middleCode = this.pad(middleNum.toString(16), 4)
-				console.info(code)
 				let that = this
-				setTimeout(() => {
-					that.readManufacturerReadData("0103" + middleCode + "0032" + code)
-				}, 200)
-			  }
+				that.onceStr = ''
+				console.info(newValue)
+				if (newValue > 81) {
+					console.info('jieshu')
+					console.info(that.dataUx.toString())
+					that.loadDataToserver()
+				} else {
+					
+					setTimeout(() => {
+						that.readManufacturerReadData(that.cmdArr[newValue - 1])
+					}, 100)
+				}
 			}
 		},
 		onLoad() {
@@ -276,21 +288,25 @@
 				});
 			},
 			loadDataToserver() {
-				let that= this
+				let that = this
 				let userInfo = that.$store.getters['user/getUserInfo']
-				that.$api.check.addpackage({
-					userId: userInfo.Id,
-					pkg: that.dataUx.join("")
-				}).then(res=>{
-					if(res.Code=="1"){
-						if(that.opIndex==1){
-						that.sweetSugar_1.value = res.CalVal
+				let strU=that.dataUx.join(",")
+				that.$api.check.addsweatsugarpkg({
+					User_id: userInfo.Id,
+					pkg: strU.replace(/,/g,'')
+				}).then(res => {
+					console.info("haha")
+					this.isShow = true
+					if (res.Code == "1") {
+						
+						if (that.opIndex == 1) {
+							that.sweetSugar_1.value = res.CalVal
 						}
-						if(that.opIndex==2){
-						that.sweetSugar_2.value = res.CalVal
+						if (that.opIndex == 2) {
+							that.sweetSugar_2.value = res.CalVal
 						}
-						if(that.opIndex==3){
-						that.sweetSugar_3.value = res.CalVal
+						if (that.opIndex == 3) {
+							that.sweetSugar_3.value = res.CalVal
 						}
 					}
 				})
@@ -359,11 +375,12 @@
 				})
 			},
 			async uploadData() {
-				this.opIndex=1
+				this.isShow =false
+				this.opIndex = 1
 				//console.info('88888')
 				let that = this
-				that.pakgeNum=0
-				that.dataUx =[]
+				that.pakgeNum = 0
+				that.dataUx = []
 				let manufacturer = that.manufacturer
 				let item = that.paired[0]
 				await bluetooth.notifyBLECharacteristicValueChange(item.deviceId, manufacturer[0].serviceId,
@@ -384,29 +401,39 @@
 							if (str.indexOf('01101004') == 0) {
 								that.pakgeNum = 1
 								that.dataUx = []
-							}
-							else {
-								console.info(str)
-								that.dataUx.push(str)
-							if (str.indexOf('0103') == 0) {
-								setTimeout(()=>{
+							} else {
+								that.onceStr += str
+								if(that.pakgeNum==81) {
+									setTimeout(() => {
+										console.info(that.onceStr)
+										let le=parseInt(that.onceStr.length)
+									that.dataUx.push(that.onceStr.substr(6,le-10))
 									that.pakgeNum += 1
-								},1000)
-							
+									}, 500)
+								}
+								else {
+								if (str.indexOf('010364') == 0) {
+									setTimeout(() => {
+										that.dataUx.push(that.onceStr.substr(6, 200))
+										that.pakgeNum += 1
+									}, 500)
 								
-							}
-							// else {
-							// 	console.info(str)
-							// 	console.info(that.onceStr)
-							// 	that.onceStr += str
-							// 	let calcStr= that.onceStr
-							// 	let str2= calcStr.substr(5, 100)
-							// 	if(str2.length==100) {
-							// 	  that.dataUx[that.pakgeNum-1].push(str2)
-							// 	  that.pakgeNum += 1
-							// 	  that.onceStr =''
-							// 	}
-							// }
+								
+								 }
+								}
+								
+								// else {
+								// 	console.info(str)
+								// 	console.info(that.onceStr)
+								// 	that.onceStr += str
+								// 	let calcStr= that.onceStr
+								// 	let str2= calcStr.substr(6, 100)
+								// 	if(str2.length==100) {
+								// 	  that.dataUx[that.pakgeNum-1].push(str2)
+								// 	  that.pakgeNum += 1
+								// 	  that.onceStr =''
+								// 	}
+								// }
 							}
 
 						})
@@ -430,11 +457,12 @@
 
 			},
 			async uploadData2() {
+				this.isShow =false
+				this.opIndex = 1
 				//console.info('88888')
-				this.opIndex=2
 				let that = this
-				that.pakgeNum=0
-				that.dataUx =[]
+				that.pakgeNum = 0
+				that.dataUx = []
 				let manufacturer = that.manufacturer
 				let item = that.paired[0]
 				await bluetooth.notifyBLECharacteristicValueChange(item.deviceId, manufacturer[0].serviceId,
@@ -455,29 +483,39 @@
 							if (str.indexOf('01101004') == 0) {
 								that.pakgeNum = 1
 								that.dataUx = []
-							}
-							else {
-								console.info(str)
-								that.dataUx.push(str)
-							if (str.indexOf('0103') == 0) {
-								setTimeout(()=>{
+							} else {
+								that.onceStr += str
+								if(that.pakgeNum==81) {
+									setTimeout(() => {
+										console.info(that.onceStr)
+										let le=parseInt(that.onceStr.length)
+									that.dataUx.push(that.onceStr.substr(6,le-10))
 									that.pakgeNum += 1
-								},1000)
-							
+									}, 500)
+								}
+								else {
+								if (str.indexOf('010364') == 0) {
+									setTimeout(() => {
+										that.dataUx.push(that.onceStr.substr(6, 200))
+										that.pakgeNum += 1
+									}, 500)
 								
-							}
-							// else {
-							// 	console.info(str)
-							// 	console.info(that.onceStr)
-							// 	that.onceStr += str
-							// 	let calcStr= that.onceStr
-							// 	let str2= calcStr.substr(5, 100)
-							// 	if(str2.length==100) {
-							// 	  that.dataUx[that.pakgeNum-1].push(str2)
-							// 	  that.pakgeNum += 1
-							// 	  that.onceStr =''
-							// 	}
-							// }
+								
+								 }
+								}
+								
+								// else {
+								// 	console.info(str)
+								// 	console.info(that.onceStr)
+								// 	that.onceStr += str
+								// 	let calcStr= that.onceStr
+								// 	let str2= calcStr.substr(6, 100)
+								// 	if(str2.length==100) {
+								// 	  that.dataUx[that.pakgeNum-1].push(str2)
+								// 	  that.pakgeNum += 1
+								// 	  that.onceStr =''
+								// 	}
+								// }
 							}
 			
 						})
@@ -501,11 +539,12 @@
 			
 			},
 			async uploadData3() {
+				this.isShow =false
+				this.opIndex = 1
 				//console.info('88888')
-				this.opIndex=3
 				let that = this
-				that.pakgeNum=0
-				that.dataUx =[]
+				that.pakgeNum = 0
+				that.dataUx = []
 				let manufacturer = that.manufacturer
 				let item = that.paired[0]
 				await bluetooth.notifyBLECharacteristicValueChange(item.deviceId, manufacturer[0].serviceId,
@@ -526,29 +565,39 @@
 							if (str.indexOf('01101004') == 0) {
 								that.pakgeNum = 1
 								that.dataUx = []
-							}
-							else {
-								console.info(str)
-								that.dataUx.push(str)
-							if (str.indexOf('0103') == 0) {
-								setTimeout(()=>{
+							} else {
+								that.onceStr += str
+								if(that.pakgeNum==81) {
+									setTimeout(() => {
+										console.info(that.onceStr)
+										let le=parseInt(that.onceStr.length)
+									that.dataUx.push(that.onceStr.substr(6,le-10))
 									that.pakgeNum += 1
-								},1000)
-							
+									}, 500)
+								}
+								else {
+								if (str.indexOf('010364') == 0) {
+									setTimeout(() => {
+										that.dataUx.push(that.onceStr.substr(6, 200))
+										that.pakgeNum += 1
+									}, 500)
 								
-							}
-							// else {
-							// 	console.info(str)
-							// 	console.info(that.onceStr)
-							// 	that.onceStr += str
-							// 	let calcStr= that.onceStr
-							// 	let str2= calcStr.substr(5, 100)
-							// 	if(str2.length==100) {
-							// 	  that.dataUx[that.pakgeNum-1].push(str2)
-							// 	  that.pakgeNum += 1
-							// 	  that.onceStr =''
-							// 	}
-							// }
+								
+								 }
+								}
+								
+								// else {
+								// 	console.info(str)
+								// 	console.info(that.onceStr)
+								// 	that.onceStr += str
+								// 	let calcStr= that.onceStr
+								// 	let str2= calcStr.substr(6, 100)
+								// 	if(str2.length==100) {
+								// 	  that.dataUx[that.pakgeNum-1].push(str2)
+								// 	  that.pakgeNum += 1
+								// 	  that.onceStr =''
+								// 	}
+								// }
 							}
 			
 						})
@@ -605,7 +654,7 @@
 							position: 'bottom'
 						});
 					});
-				}, 2000)
+				}, (that.pakgeNum==1)?2000:300)
 
 				//	},300)
 

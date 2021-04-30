@@ -8,8 +8,8 @@ export const addsweatsugar= (data) => {
 	return request.post('/v1/tpackage', data)
 }
 
-export const addbloodsugar= (data) => {
-	return request.post('/v1/sweatsugar', data)
+export const addsweatsugarpkg= (data) => {
+	return request.post('/v1/tsweatsugar', data)
 }
 /**
  * 获取信息
