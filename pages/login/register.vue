@@ -213,7 +213,7 @@
 			goLogin() {
 				console.log("跳转到登录页面")
 				uni.navigateTo({
-					url: '/pages/Check/CheckAdd',
+					url: '/pages/login/login',
 				});
 			},
 		}

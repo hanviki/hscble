@@ -76,8 +76,9 @@
 						<text class="text-black  text-sl">{{sweetSugar_1.Value}}</text>
 					</view>
 					<view>
-						 <text class="text-white text-sm">第一次数据{{!isShow&&opIndex==1?'生成中...':''}}</text> 
-						<button class="cu-btn text-green" v-if="isShow" @tap="uploadData">第一次数据</button>
+						<text class="text-white text-sm">第一次数据{{!isShow&&opIndex==1?'生成中...':''}}</text>
+						<button class="cu-btn text-green" v-if="isShow"
+							@tap="uploadData('0110100400020400030001002F',1)">第一次数据</button>
 					</view>
 				</view>
 				<view class="flex-sub text-center">
@@ -86,7 +87,8 @@
 					</view>
 					<view>
 						<text class="text-white text-sm">第二次数据{{!isShow&&opIndex==2?'生成中...':''}}</text>
-						<button class="cu-btn text-green" v-if="isShow" @tap="uploadData2">第二次数据</button>
+						<button class="cu-btn text-green" v-if="isShow"
+							@tap="uploadData('01101004000204000300020030',2)">第二次数据</button>
 					</view>
 				</view>
 				<view class="flex-sub text-center">
@@ -95,13 +97,14 @@
 					</view>
 					<view>
 						<text class="text-white text-sm">第三次数据{{!isShow&&opIndex==3?'生成中...':''}}</text>
-						<button class="cu-btn text-green" v-if="isShow" @tap="uploadData3">第三次数据</button>
+						<button class="cu-btn text-green" v-if="isShow"
+							@tap="uploadData('01101004000204000300030031',3)">第三次数据</button>
 					</view>
 				</view>
 			</view>
 		</view>
 		<view class="bg-white ">
-			<text class="text-sm margin-left">注意：每次血糖检测需要间隔2小时以上</text>
+			<text class="text-sm margin-left">注意：汗糖检测与血糖检测间隔需在15分钟以内</text>
 		</view>
 		<view class=" bg-white margin-top-sm">
 			<view class=" text-lg ">
@@ -252,11 +255,11 @@
 				if (newValue > 81) {
 					//console.info('jieshu')
 					//console.info(that.dataUx.toString())
-					if(newValue==82){
-					that.loadDataToserver()
+					if (newValue == 82) {
+						that.loadDataToserver()
 					}
 				} else {
-					
+
 					setTimeout(() => {
 						that.readManufacturerReadData(that.cmdArr[newValue - 1])
 					}, 100)
@@ -301,20 +304,20 @@
 				let userInfo = that.$store.getters['user/getUserInfo']
 				let strU = that.dataUx.join(",")
 				that.$api.check.addsweatsugarpkg({
-					User_id: userInfo.Id,
-					pkg: strU.replace(/,/g,'')
+					user_id: userInfo.Id,
+					pkg: strU.replace(/,/g, '')
 				}).then(res => {
 					console.info(res)
 					this.isShow = true
 					if (res.Code == "1") {
 						if (that.opIndex == 1) {
-							that.sweetSugar_1.Value =parseInt(parseFloat(res.CalVal))
+							that.sweetSugar_1.Value = parseInt(parseFloat(res.CalVal))
 						}
-						if (that.opIndex == 2) { 
-							that.sweetSugar_2.Value =parseInt(parseFloat(res.CalVal))
+						if (that.opIndex == 2) {
+							that.sweetSugar_2.Value = parseInt(parseFloat(res.CalVal))
 						}
 						if (that.opIndex == 3) {
-							that.sweetSugar_3.Value =parseInt(parseFloat(res.CalVal))
+							that.sweetSugar_3.Value = parseInt(parseFloat(res.CalVal))
 						}
 					}
 				})
@@ -330,57 +333,57 @@
 						let data = res.Data
 						console.info(data)
 						let SweetSugarData = data.DailyData
-						let monthlyData =data.MonthlyData
-						let weeklyData =data.WeeklyDat
-						let threeData =data.Top3DailyData
-						if(threeData!=null) {
-							for (let i=0;i<threeData.length;i++) {
-								
-								if(i==0){
-									this.sweetSugar_1.Value=  threeData[i].SweetSugarData
+						let monthlyData = data.MonthlyData
+						let weeklyData = data.WeeklyData
+						let threeData = data.Top3DailyData
+						if (threeData != null) {
+							for (let i = 0; i < threeData.length; i++) {
+
+								if (i == 0) {
+									this.sweetSugar_1.Value = threeData[i].SweetSugarData
 									this.bloodSugar_1.Value = threeData[i].BloodSugarData
 								}
-								if(i==1){
-									this.sweetSugar_2.Value=  threeData[i].SweetSugarData
+								if (i == 1) {
+									this.sweetSugar_2.Value = threeData[i].SweetSugarData
 									this.bloodSugar_2.Value = threeData[i].BloodSugarData
 								}
-								if(i==2){
-									this.sweetSugar_3.Value=  threeData[i].SweetSugarData
+								if (i == 2) {
+									this.sweetSugar_3.Value = threeData[i].SweetSugarData
 									this.bloodSugar_3.Value = threeData[i].BloodSugarData
 								}
-								
-								
+
+
 							}
+						}
+
+						if (SweetSugarData != null) {
+							for (let i = 0; i < SweetSugarData.length; i++) {
+								that.$set(that.chartDataDay.categories, i, SweetSugarData[i].Point)
+
+								that.$set(that.chartDataDay.series[0].data, i, SweetSugarData[i].SweetSugarData)
+								that.$set(that.chartDataDay.series[1].data, i, SweetSugarData[i].BloodSugarData)
 							}
-						
-						if(SweetSugarData!=null){
-						for (let i=0;i<SweetSugarData.length;i++) {
-							that.$set(that.chartDataDay.categories, i, SweetSugarData[i].Point)
-							
-							that.$set(that.chartDataDay.series[0].data, i, SweetSugarData[i].SweetSugarData)
-							that.$set(that.chartDataDay.series[1].data, i, SweetSugarData[i].BloodSugarData)
 						}
+						if (monthlyData != null) {
+							for (let i = 0; i < monthlyData.length; i++) {
+								that.$set(that.chartDataMonth.categories, i, monthlyData[i].Point)
+
+								that.$set(that.chartDataMonth.series[0].data, i, monthlyData[i].SweetSugarData)
+								that.$set(that.chartDataMonth.series[1].data, i, monthlyData[i].BloodSugarData)
+							}
 						}
-						if(monthlyData!=null) {
-						for (let i=0;i<monthlyData.length;i++) {
-							that.$set(that.chartDataMonth.categories, i, monthlyData[i].Point)
-							
-							that.$set(that.chartDataMonth.series[0].data, i, monthlyData[i].SweetSugarData)
-							that.$set(that.chartDataMonth.series[1].data, i, monthlyData[i].BloodSugarData)
-						}
-						}
-						if(weeklyData!=null) {
-						for (let i=0;i<weeklyData.length;i++) {
-							that.$set(that.chartDataWeek.categories, i, weeklyData[i].Point)
-							
-							that.$set(that.chartDataWeek.series[0].data, i, weeklyData[i].SweetSugarData)
-							that.$set(that.chartDataWeek.series[1].data, i, weeklyData[i].BloodSugarData)
-						}
+						if (weeklyData != null) {
+							for (let i = 0; i < weeklyData.length; i++) {
+								that.$set(that.chartDataWeek.categories, i, weeklyData[i].Point)
+
+								that.$set(that.chartDataWeek.series[0].data, i, weeklyData[i].SweetSugarData)
+								that.$set(that.chartDataWeek.series[1].data, i, weeklyData[i].BloodSugarData)
+							}
 						}
 						//that.chartDataDay = that.chartData
 						//this.checkCount = SweetSugarData.length
 
-						                                                                                                                                                                                                         
+
 					} else {
 						uni.showToast({
 							icon: "none",
@@ -389,90 +392,100 @@
 					}
 				})
 			},
-			async uploadData() {
-				this.isShow =false
-				this.opIndex = 1
-				//console.info('88888')
+			async uploadData(writeCode, indexo) {
+				
 				let that = this
-				that.pakgeNum = 0
-				that.dataUx = []
-				let manufacturer = that.manufacturer
-				let item = that.paired[0]
-				await bluetooth.notifyBLECharacteristicValueChange(item.deviceId, manufacturer[0].serviceId,
-						manufacturer[0].characteristicId)
-					.then(res => {
-						//console.info(manufacturer[0].characteristicId)
-						uni.onBLECharacteristicValueChange(function(res) {
-							//console.info(3222)
+				console.info(that.paired)
+				if (that.paired.length>0&&that.paired[0].status) {
+					this.isShow = false
+					this.opIndex = indexo
+					//console.info('88888')
 
-							let str = bluetooth.ab2hex(res.value)
-							//	console.info(str)
-							// 数组组数
-							// let str_h ='0x'+ bluetooth.ab2hex(res.value).substr(6,2)	
-							// let str_l = '0x' + bluetooth.ab2hex(res.value).substr(8,2)
-							// console.info(str_h)
-							// let str2= parseInt(str_h,16)*256 + parseInt(str_l,16)
+					that.pakgeNum = 0
+					that.dataUx = []
+					let manufacturer = that.manufacturer
+					let item = that.paired[0]
+					await bluetooth.notifyBLECharacteristicValueChange(item.deviceId, manufacturer[0].serviceId,
+							manufacturer[0].characteristicId)
+						.then(res => {
+							//console.info(manufacturer[0].characteristicId)
+							uni.onBLECharacteristicValueChange(function(res) {
+								//console.info(3222)
 
-							if (str.indexOf('01101004') == 0) {
-								that.pakgeNum = 1
-								that.dataUx = []
-							} else {
-								that.onceStr += str
-								if(that.pakgeNum==81) {
-									setTimeout(() => {
-										console.info(that.onceStr)
-										let le=parseInt(that.onceStr.length)
-									that.dataUx.push(that.onceStr.substr(6,le-10))
-									that.pakgeNum += 1
-									}, 500)
+								let str = bluetooth.ab2hex(res.value)
+								//	console.info(str)
+								// 数组组数
+								// let str_h ='0x'+ bluetooth.ab2hex(res.value).substr(6,2)	
+								// let str_l = '0x' + bluetooth.ab2hex(res.value).substr(8,2)
+								// console.info(str_h)
+								// let str2= parseInt(str_h,16)*256 + parseInt(str_l,16)
+
+								if (str.indexOf('01101004') == 0) {
+									that.pakgeNum = 1
+									that.dataUx = []
+								} else {
+									that.onceStr += str
+									if (that.pakgeNum == 81) {
+										setTimeout(() => {
+											console.info(that.onceStr)
+											let le = parseInt(that.onceStr.length)
+											that.dataUx.push(that.onceStr.substr(6, le - 10))
+											that.pakgeNum += 1
+										}, 500)
+									} else {
+										if (str.indexOf('010364') == 0) {
+											setTimeout(() => {
+												that.dataUx.push(that.onceStr.substr(6, 200))
+												that.pakgeNum += 1
+											}, 500)
+
+
+										}
+									}
+
+									// else {
+									// 	console.info(str)
+									// 	console.info(that.onceStr)
+									// 	that.onceStr += str
+									// 	let calcStr= that.onceStr
+									// 	let str2= calcStr.substr(6, 100)
+									// 	if(str2.length==100) {
+									// 	  that.dataUx[that.pakgeNum-1].push(str2)
+									// 	  that.pakgeNum += 1
+									// 	  that.onceStr =''
+									// 	}
+									// }
 								}
-								else {
-								if (str.indexOf('010364') == 0) {
-									setTimeout(() => {
-										that.dataUx.push(that.onceStr.substr(6, 200))
-										that.pakgeNum += 1
-									}, 500)
-								
-								
-								 }
-								}
-								
-								// else {
-								// 	console.info(str)
-								// 	console.info(that.onceStr)
-								// 	that.onceStr += str
-								// 	let calcStr= that.onceStr
-								// 	let str2= calcStr.substr(6, 100)
-								// 	if(str2.length==100) {
-								// 	  that.dataUx[that.pakgeNum-1].push(str2)
-								// 	  that.pakgeNum += 1
-								// 	  that.onceStr =''
-								// 	}
-								// }
-							}
 
-						})
-					});
-				setTimeout(() => {
-					//装在数据
-					that.$store.dispatch('writeManufacturer', {
-						item: that.paired[0],
-						manufacturer: manufacturer[1],
-						writeCode: '0110100400020400030001002F',
-						index: 0
-					}).then(res => {
-						uni.showToast({
-							title: res.errMsg,
-							icon: 'none',
-							position: 'bottom'
+							})
 						});
+					setTimeout(() => {
+						//装在数据
+						that.$store.dispatch('writeManufacturer', {
+							item: that.paired[0],
+							manufacturer: manufacturer[1],
+							writeCode: writeCode,
+							index: 0
+						}).then(res => {
+							uni.showToast({
+								title: res.errMsg,
+								icon: 'none',
+								position: 'bottom'
+							});
+						});
+					}, 2000)
+
+				}
+				else {
+				uni.showToast({
+						title: '蓝牙连接已断开，请重新连接',
+						icon: 'none',
+						position: 'bottom'
 					});
-				}, 2000)
-
-
+				} 
 			},
 			async uploadData2() {
-				this.isShow =false
+				this.isShow = false
 				this.opIndex = 2
 				//console.info('88888')
 				let that = this
@@ -486,7 +499,7 @@
 						//console.info(manufacturer[0].characteristicId)
 						uni.onBLECharacteristicValueChange(function(res) {
 							//console.info(3222)
-			
+
 							let str = bluetooth.ab2hex(res.value)
 							//	console.info(str)
 							// 数组组数
@@ -494,31 +507,30 @@
 							// let str_l = '0x' + bluetooth.ab2hex(res.value).substr(8,2)
 							// console.info(str_h)
 							// let str2= parseInt(str_h,16)*256 + parseInt(str_l,16)
-			
+
 							if (str.indexOf('01101004') == 0) {
 								that.pakgeNum = 1
 								that.dataUx = []
 							} else {
 								that.onceStr += str
-								if(that.pakgeNum==81) {
+								if (that.pakgeNum == 81) {
 									setTimeout(() => {
 										console.info(that.onceStr)
-										let le=parseInt(that.onceStr.length)
-									that.dataUx.push(that.onceStr.substr(6,le-10))
-									that.pakgeNum += 1
-									}, 500)
-								}
-								else {
-								if (str.indexOf('010364') == 0) {
-									setTimeout(() => {
-										that.dataUx.push(that.onceStr.substr(6, 200))
+										let le = parseInt(that.onceStr.length)
+										that.dataUx.push(that.onceStr.substr(6, le - 10))
 										that.pakgeNum += 1
 									}, 500)
-								
-								
-								 }
+								} else {
+									if (str.indexOf('010364') == 0) {
+										setTimeout(() => {
+											that.dataUx.push(that.onceStr.substr(6, 200))
+											that.pakgeNum += 1
+										}, 500)
+
+
+									}
 								}
-								
+
 								// else {
 								// 	console.info(str)
 								// 	console.info(that.onceStr)
@@ -532,7 +544,7 @@
 								// 	}
 								// }
 							}
-			
+
 						})
 					});
 				setTimeout(() => {
@@ -550,11 +562,11 @@
 						});
 					});
 				}, 2000)
-			
-			
+
+
 			},
 			async uploadData3() {
-				this.isShow =false
+				this.isShow = false
 				this.opIndex = 3
 				//console.info('88888')
 				let that = this
@@ -568,7 +580,7 @@
 						//console.info(manufacturer[0].characteristicId)
 						uni.onBLECharacteristicValueChange(function(res) {
 							//console.info(3222)
-			
+
 							let str = bluetooth.ab2hex(res.value)
 							//	console.info(str)
 							// 数组组数
@@ -576,31 +588,30 @@
 							// let str_l = '0x' + bluetooth.ab2hex(res.value).substr(8,2)
 							// console.info(str_h)
 							// let str2= parseInt(str_h,16)*256 + parseInt(str_l,16)
-			
+
 							if (str.indexOf('01101004') == 0) {
 								that.pakgeNum = 1
 								that.dataUx = []
 							} else {
 								that.onceStr += str
-								if(that.pakgeNum==81) {
+								if (that.pakgeNum == 81) {
 									setTimeout(() => {
 										console.info(that.onceStr)
-										let le=parseInt(that.onceStr.length)
-									that.dataUx.push(that.onceStr.substr(6,le-10))
-									that.pakgeNum += 1
-									}, 500)
-								}
-								else {
-								if (str.indexOf('010364') == 0) {
-									setTimeout(() => {
-										that.dataUx.push(that.onceStr.substr(6, 200))
+										let le = parseInt(that.onceStr.length)
+										that.dataUx.push(that.onceStr.substr(6, le - 10))
 										that.pakgeNum += 1
 									}, 500)
-								
-								
-								 }
+								} else {
+									if (str.indexOf('010364') == 0) {
+										setTimeout(() => {
+											that.dataUx.push(that.onceStr.substr(6, 200))
+											that.pakgeNum += 1
+										}, 500)
+
+
+									}
 								}
-								
+
 								// else {
 								// 	console.info(str)
 								// 	console.info(that.onceStr)
@@ -614,7 +625,7 @@
 								// 	}
 								// }
 							}
-			
+
 						})
 					});
 				setTimeout(() => {
@@ -632,10 +643,10 @@
 						});
 					});
 				}, 2000)
-			
-			
+
+
 			},
-			
+
 			readManufacturerReadData(num16) { // 读取包数 当前包数+1
 				let that = this
 				let item = that.paired[0]
@@ -669,7 +680,7 @@
 							position: 'bottom'
 						});
 					});
-				}, (that.pakgeNum==1)?2000:300)
+				}, (that.pakgeNum == 1) ? 2000 : 300)
 
 				//	},300)
 

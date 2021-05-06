@@ -177,7 +177,7 @@
 
 		</view>
 		<view class="bg-white ">
-			<text class="text-sm margin-left">注意：汗糖检测与血糖检测间隔间隔需在需在15分钟以内</text>
+			<text class="text-sm margin-left">注意：汗糖检测与血糖检测间隔需在15分钟以内</text>
 		</view>
 		
 			<button class="cu-btn block bg-green  lg btm" @tap="submitCheck"> 提交数据 </button>
