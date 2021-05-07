@@ -72,7 +72,7 @@
 		<view class="cu-bar bg-cyan  flex r">
 			<view class="flex-sub flex">
 				<view class="flex-sub text-center">
-					<view class="cuh"> 
+					<view class="cuh">
 						<text class="text-black  text-sl">{{sweetSugar_1.Value}}</text>
 					</view>
 					<view>
@@ -390,16 +390,94 @@
 				})
 			},
 			async uploadData() {
-
 				let that = this
-				console.info(that.paired)
-				uni.showToast({
-					title: that.paired.length,
-					icon: 'none',
-					position: 'bottom'
-				});
-				
-				},
+				if (that.paired.length > 0 && that.paired[0].status) {
+					that.isShow = false
+					that.opIndex = 1
+					//console.info('88888')
+
+					that.pakgeNum = 0
+					that.dataUx = []
+					let manufacturer = that.manufacturer
+					let item = that.paired[0]
+					await bluetooth.notifyBLECharacteristicValueChange(item.deviceId, manufacturer[0].serviceId,
+							manufacturer[0].characteristicId)
+						.then(res => {
+							//console.info(manufacturer[0].characteristicId)
+							uni.onBLECharacteristicValueChange(function(res) {
+								//console.info(3222)
+
+								let str = bluetooth.ab2hex(res.value)
+								//	console.info(str)
+								// 数组组数
+								// let str_h ='0x'+ bluetooth.ab2hex(res.value).substr(6,2)	
+								// let str_l = '0x' + bluetooth.ab2hex(res.value).substr(8,2)
+								// console.info(str_h)
+								// let str2= parseInt(str_h,16)*256 + parseInt(str_l,16)
+
+								if (str.indexOf('01101004') == 0) {
+									that.pakgeNum = 1
+									that.dataUx = []
+								} else {
+									that.onceStr += str
+									if (that.pakgeNum == 81) {
+										setTimeout(() => {
+											console.info(that.onceStr)
+											let le = parseInt(that.onceStr.length)
+											that.dataUx.push(that.onceStr.substr(6, le - 10))
+											that.pakgeNum += 1
+										}, 500)
+									} else {
+										if (str.indexOf('010364') == 0) {
+											setTimeout(() => {
+												that.dataUx.push(that.onceStr.substr(6, 200))
+												that.pakgeNum += 1
+											}, 500)
+
+
+										}
+									}
+
+									// else {
+									// 	console.info(str)
+									// 	console.info(that.onceStr)
+									// 	that.onceStr += str
+									// 	let calcStr= that.onceStr
+									// 	let str2= calcStr.substr(6, 100)
+									// 	if(str2.length==100) {
+									// 	  that.dataUx[that.pakgeNum-1].push(str2)
+									// 	  that.pakgeNum += 1
+									// 	  that.onceStr =''
+									// 	}
+									// }
+								}
+
+							})
+						});
+					setTimeout(() => {
+						//装在数据
+						that.$store.dispatch('writeManufacturer', {
+							item: that.paired[0],
+							manufacturer: manufacturer[1],
+							writeCode: '0110100400020400030001002F',
+							index: 0
+						}).then(res => {
+							uni.showToast({
+								title: res.errMsg,
+								icon: 'none',
+								position: 'bottom'
+							});
+						});
+					}, 2000)
+
+				} else {
+					uni.showToast({
+						title: '蓝牙连接已断开，请重新连接',
+						icon: 'none',
+						position: 'bottom'
+					});
+				}
+			},
 			async uploadData2() {
 
 				//console.info('88888')
