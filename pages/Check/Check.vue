@@ -67,6 +67,7 @@
 				<text class="cuIcon-title  text-green"></text>
 				<text class="text-lg text-black text-bold">今日汗糖</text>
 				<text class="text-sm">(正常值：74-106mg/dL)</text>
+				<button class="cu-btn text-green" @tap="endGenerate">结束生成</button>
 			</view>
 		</view>
 		<view class="cu-bar bg-cyan  flex r">
@@ -76,7 +77,7 @@
 						<text class="text-black  text-sl">{{sweetSugar_1.Value}}</text>
 					</view>
 					<view>
-						<text class="text-white text-sm">第一次数据{{!isShow&&opIndex==1?'生成中...':''}}</text>
+						<text class="text-white text-sm">第一次数据{{pakgeNum}}{{!isShow&&opIndex==1?'生成中...':''}}</text>
 						<button class="cu-btn text-green" v-if="isShow" @tap="uploadData">第一次数据</button>
 					</view>
 				</view>
@@ -85,7 +86,7 @@
 						<text class="text-black  text-sl">{{sweetSugar_2.Value}}</text>
 					</view>
 					<view>
-						<text class="text-white text-sm">第二次数据{{!isShow&&opIndex==2?'生成中...':''}}</text>
+						<text class="text-white text-sm">第二次数据{{pakgeNum}}{{!isShow&&opIndex==2?'生成中...':''}}</text>
 						<button class="cu-btn text-green" v-if="isShow" @tap="uploadData2">第二次数据</button>
 					</view>
 				</view>
@@ -94,7 +95,7 @@
 						<text class="text-black  text-sl">{{sweetSugar_3.Value}}</text>
 					</view>
 					<view>
-						<text class="text-white text-sm">第三次数据{{!isShow&&opIndex==3?'生成中...':''}}</text>
+						<text class="text-white text-sm">第三次数据{{pakgeNum}}{{!isShow&&opIndex==3?'生成中...':''}}</text>
 						<button class="cu-btn text-green" v-if="isShow" @tap="uploadData3">第三次数据</button>
 					</view>
 				</view>
@@ -121,17 +122,16 @@
 					月
 				</view>
 			</view>
+		</view <view class="cu-bar bg-white">
+		<view class="charts-box ">
+			<qiun-data-charts type="column" v-if="TabCur==0" :chartData="chartDataDay" :echartsH5="true"
+				:echartsApp="true" />
+			<qiun-data-charts type="column" v-if="TabCur==1" :chartData="chartDataWeek" :echartsH5="true"
+				:echartsApp="true" />
+			<qiun-data-charts type="line" v-if="TabCur==2" :chartData="chartDataMonth" :echartsH5="true"
+				:echartsApp="true" />
 		</view>
-		<view class="cu-bar bg-white">
-			<view class="charts-box ">
-				<qiun-data-charts type="column" v-if="TabCur==0" :chartData="chartDataDay" :echartsH5="true"
-					:echartsApp="true" />
-				<qiun-data-charts type="column" v-if="TabCur==1" :chartData="chartDataWeek" :echartsH5="true"
-					:echartsApp="true" />
-				<qiun-data-charts type="line" v-if="TabCur==2" :chartData="chartDataMonth" :echartsH5="true"
-					:echartsApp="true" />
-			</view>
-		</view>
+	</view>
 
 	</view>
 </template>
@@ -145,6 +145,7 @@
 				paired: [],
 				manufacturer: this.$store.getters.getManufacturer,
 				isShow: true,
+				isEnd: 1,
 				pakgeNum: 0,
 				onceStr: '', //81 包 ，存储每一包的数据
 				opIndex: 0,
@@ -245,21 +246,55 @@
 				immediate: true,
 				deep: true
 			},
+
 			pakgeNum(newValue) {
 				let that = this
 				that.onceStr = ''
-				console.info(newValue)
-				if (newValue > 81) {
-					//console.info('jieshu')
-					//console.info(that.dataUx.toString())
-					if (newValue == 82) {
-						that.loadDataToserver()
-					}
-				} else {
+				if (newValue > 0) {
+					if (newValue > 202) {
+						//console.info('jieshu')
+						//console.info(that.dataUx.toString())
+						if (newValue == 203) {
+							that.isEnd = 1
+							that.loadDataToserver()
+							// setTimeout(() => {
+							// 	//清空
+							// 	that.$store.dispatch('writeManufacturer', {
+							// 		item: that.paired[0],
+							// 		manufacturer: that.manufacturer[1],
+							// 		writeCode: '0110100400010204D200FE',
+							// 		index: 0
+							// 	}).then(res => {
+							// 		uni.showToast({
+							// 			title: res.errMsg,
+							// 			icon: 'none',
+							// 			position: 'bottom'
+							// 		});
+							// 	});
+							// }, 500)
+							setTimeout(() => {
+								//使能
+								that.$store.dispatch('writeManufacturer', {
+									item: that.paired[0],
+									manufacturer: that.manufacturer[1],
+									writeCode: '01100FD2000102000000F5',
+									index: 0
+								}).then(res => {
+									uni.showToast({
+										title: res.errMsg,
+										icon: 'none',
+										position: 'bottom'
+									});
+								});
+							}, 800)
 
-					setTimeout(() => {
-						that.readManufacturerReadData(that.cmdArr[newValue - 1])
-					}, 100)
+						}
+					} else {
+
+						setTimeout(() => {
+							that.readManufacturerReadData(that.calcCommand(newValue - 1,20))
+						}, 100)
+					}
 				}
 			}
 		},
@@ -275,6 +310,38 @@
 
 		},
 		methods: {
+			calcCommand(Pack_ID, Length) {
+				var Command = [];
+				Command.push('0');
+				Command.push('0');
+				Command.push('0');
+				Command.push('0');
+				Command.push('0');
+				Command.push('0');
+				Command.push('0');
+				Command.push('0');
+				Command[0] = 1;
+				Command[1] = 3;
+				var sum = 0;
+				var Start_Address = Pack_ID * Length;
+				Command[2] = Start_Address >> 8;
+				Command[3] = Start_Address & 0xFF;
+				Command[4] = Length >> 8;
+				Command[5] = Length & 0xFF;
+				for (var j = 0; j < 6; j++) {
+					sum += Command[j];
+				}
+				Command[6] = sum >> 8;
+				Command[7] = sum & 0xFF;
+				//生成完毕，在此执行发送指令
+				var str_cmd = ""
+				for (var i = 0; i < 8; i++) {
+					console.info(Command[i])
+					str_cmd += this.pad(parseInt(Command[i]).toString(16), 2)
+				}
+				console.info(str_cmd)
+				return str_cmd
+			},
 			pad(num, n) {
 				var tbl = [];
 				var len = n - num.toString().length;
@@ -295,6 +362,12 @@
 				uni.reLaunch({
 					url: '/pages/Check/CheckAdd'
 				});
+			},
+			endGenerate() {
+				this.calcCommand(0,20);
+				this.isEnd = 1
+				this.pakgeNum = 0
+				this.isShow = true
 			},
 			loadDataToserver() {
 				let that = this
@@ -391,6 +464,7 @@
 			},
 			async uploadData() {
 				let that = this
+
 				if (that.paired.length > 0 && that.paired[0].status) {
 					that.isShow = false
 					that.opIndex = 1
@@ -415,23 +489,31 @@
 								// console.info(str_h)
 								// let str2= parseInt(str_h,16)*256 + parseInt(str_l,16)
 
-								if (str.indexOf('01101004') == 0) {
+								if (str.indexOf('01101004') == 0 && that.isEnd == 0) {
 									that.pakgeNum = 1
 									that.dataUx = []
 								} else {
-									that.onceStr += str
-									if (that.pakgeNum == 81) {
+									if (that.isEnd == 0) {
+										that.onceStr += str
+									}
+									if (that.pakgeNum == 202) {
 										setTimeout(() => {
-											console.info(that.onceStr)
+
 											let le = parseInt(that.onceStr.length)
 											that.dataUx.push(that.onceStr.substr(6, le - 10))
-											that.pakgeNum += 1
+											if (that.isEnd == 0) {
+												that.pakgeNum += 1
+											}
 										}, 500)
 									} else {
-										if (str.indexOf('010364') == 0) {
+										if (str.indexOf('010328') == 0) {
 											setTimeout(() => {
-												that.dataUx.push(that.onceStr.substr(6, 200))
-												that.pakgeNum += 1
+												console.info(that.onceStr)
+												let le = parseInt(that.onceStr.length)
+												that.dataUx.push(that.onceStr.substr(6, le - 10))
+												if (that.isEnd == 0) {
+													that.pakgeNum += 1
+												}
 											}, 500)
 
 
@@ -455,6 +537,23 @@
 							})
 						});
 					setTimeout(() => {
+						//使能 失能
+						that.$store.dispatch('writeManufacturer', {
+							item: that.paired[0],
+							manufacturer: manufacturer[1],
+							writeCode: '01100FD2000102000100F6',
+							index: 0
+						}).then(res => {
+							uni.showToast({
+								title: res.errMsg,
+								icon: 'none',
+								position: 'bottom'
+							});
+						});
+					}, 500)
+
+					setTimeout(() => {
+						that.isEnd = 0
 						//装在数据
 						that.$store.dispatch('writeManufacturer', {
 							item: that.paired[0],
@@ -468,7 +567,7 @@
 								position: 'bottom'
 							});
 						});
-					}, 2000)
+					}, 2100)
 
 				} else {
 					uni.showToast({
@@ -482,6 +581,7 @@
 
 				//console.info('88888')
 				let that = this
+
 				if (that.paired.length > 0 && that.paired[0].status) {
 
 					that.isShow = false
@@ -505,23 +605,30 @@
 								// console.info(str_h)
 								// let str2= parseInt(str_h,16)*256 + parseInt(str_l,16)
 
-								if (str.indexOf('01101004') == 0) {
+								if (str.indexOf('01101004') == 0 && that.isEnd == 0) {
 									that.pakgeNum = 1
 									that.dataUx = []
 								} else {
-									that.onceStr += str
-									if (that.pakgeNum == 81) {
+									if (that.isEnd == 0) {
+										that.onceStr += str
+									}
+									if (that.pakgeNum == 202) {
 										setTimeout(() => {
 											console.info(that.onceStr)
 											let le = parseInt(that.onceStr.length)
 											that.dataUx.push(that.onceStr.substr(6, le - 10))
-											that.pakgeNum += 1
+											if (that.isEnd == 0) {
+												that.pakgeNum += 1
+											}
 										}, 500)
 									} else {
-										if (str.indexOf('010364') == 0) {
+										if (str.indexOf('010328') == 0) {
 											setTimeout(() => {
-												that.dataUx.push(that.onceStr.substr(6, 200))
-												that.pakgeNum += 1
+												let le = parseInt(that.onceStr.length)
+												that.dataUx.push(that.onceStr.substr(6, le - 10))
+												if (that.isEnd == 0) {
+													that.pakgeNum += 1
+												}
 											}, 500)
 
 
@@ -545,7 +652,23 @@
 							})
 						});
 					setTimeout(() => {
+						//使能 失能
+						that.$store.dispatch('writeManufacturer', {
+							item: that.paired[0],
+							manufacturer: manufacturer[1],
+							writeCode: '01100FD2000102000100F6',
+							index: 0
+						}).then(res => {
+							uni.showToast({
+								title: res.errMsg,
+								icon: 'none',
+								position: 'bottom'
+							});
+						});
+					}, 500)
+					setTimeout(() => {
 						//装在数据
+						that.isEnd = 0
 						that.$store.dispatch('writeManufacturer', {
 							item: that.paired[0],
 							manufacturer: manufacturer[1],
@@ -558,7 +681,7 @@
 								position: 'bottom'
 							});
 						});
-					}, 2000)
+					}, 2100)
 				} else {
 					uni.showToast({
 						title: '蓝牙连接已断开，请重新连接',
@@ -571,6 +694,7 @@
 			},
 			async uploadData3() {
 				let that = this
+
 				if (that.paired.length > 0 && that.paired[0].status) {
 					that.isShow = false
 					that.opIndex = 3
@@ -595,23 +719,31 @@
 								// console.info(str_h)
 								// let str2= parseInt(str_h,16)*256 + parseInt(str_l,16)
 
-								if (str.indexOf('01101004') == 0) {
+								if (str.indexOf('01101004') == 0 && that.isEnd == 0) {
 									that.pakgeNum = 1
 									that.dataUx = []
 								} else {
-									that.onceStr += str
-									if (that.pakgeNum == 81) {
+									if (that.isEnd == 0) {
+										that.onceStr += str
+									}
+									if (that.pakgeNum == 202) {
 										setTimeout(() => {
 											console.info(that.onceStr)
 											let le = parseInt(that.onceStr.length)
 											that.dataUx.push(that.onceStr.substr(6, le - 10))
-											that.pakgeNum += 1
+											if (that.isEnd == 0) {
+												that.pakgeNum += 1
+											}
 										}, 500)
 									} else {
-										if (str.indexOf('010364') == 0) {
+										if (str.indexOf('010328') == 0) {
 											setTimeout(() => {
-												that.dataUx.push(that.onceStr.substr(6, 200))
-												that.pakgeNum += 1
+												console.info(that.onceStr)
+												let le = parseInt(that.onceStr.length)
+												that.dataUx.push(that.onceStr.substr(6, le - 10))
+												if (that.isEnd == 0) {
+													that.pakgeNum += 1
+												}
 											}, 500)
 
 
@@ -635,6 +767,22 @@
 							})
 						});
 					setTimeout(() => {
+						//使能 失能
+						that.$store.dispatch('writeManufacturer', {
+							item: that.paired[0],
+							manufacturer: manufacturer[1],
+							writeCode: '01100FD2000102000100F6',
+							index: 0
+						}).then(res => {
+							uni.showToast({
+								title: res.errMsg,
+								icon: 'none',
+								position: 'bottom'
+							});
+						});
+					}, 500)
+					setTimeout(() => {
+						that.isEnd = 0
 						//装在数据
 						that.$store.dispatch('writeManufacturer', {
 							item: that.paired[0],
@@ -648,7 +796,7 @@
 								position: 'bottom'
 							});
 						});
-					}, 2000)
+					}, 2100)
 
 				} else {
 					uni.showToast({
@@ -692,7 +840,7 @@
 							position: 'bottom'
 						});
 					});
-				}, (that.pakgeNum == 1) ? 2000 : 300)
+				}, (that.pakgeNum == 1) ? 2000 : 150)
 
 				//	},300)
 
