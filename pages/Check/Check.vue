@@ -250,6 +250,7 @@
 			pakgeNum(newValue) {
 				let that = this
 				that.onceStr = ''
+				console.info(newValue)
 				if (newValue > 0) {
 					if (newValue > 202) {
 						//console.info('jieshu')
@@ -336,10 +337,10 @@
 				//生成完毕，在此执行发送指令
 				var str_cmd = ""
 				for (var i = 0; i < 8; i++) {
-					console.info(Command[i])
+					//console.info(Command[i])
 					str_cmd += this.pad(parseInt(Command[i]).toString(16), 2)
 				}
-				console.info(str_cmd)
+				//console.info(str_cmd)
 				return str_cmd
 			},
 			pad(num, n) {
@@ -506,7 +507,7 @@
 											}
 										}, 500)
 									} else {
-										if (str.indexOf('010328') == 0) {
+										if (str.indexOf('010328') == 0 && that.pakgeNum<202) {
 											setTimeout(() => {
 												console.info(that.onceStr)
 												let le = parseInt(that.onceStr.length)
