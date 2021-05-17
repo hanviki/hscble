@@ -252,10 +252,10 @@
 				that.onceStr = ''
 				console.info(newValue)
 				if (newValue > 0) {
-					if (newValue > 202) {
+					if (newValue > 201) {
 						//console.info('jieshu')
 						//console.info(that.dataUx.toString())
-						if (newValue == 203) {
+						if (newValue == 202) {
 							that.isEnd = 1
 							that.loadDataToserver()
 							// setTimeout(() => {
@@ -293,7 +293,12 @@
 					} else {
 
 						setTimeout(() => {
+							if(newValue==201){
+								that.readManufacturerReadData('01030FA0000C00BF')
+							}
+							else {
 							that.readManufacturerReadData(that.calcCommand(newValue - 1,20))
+							}
 						}, 100)
 					}
 				}
@@ -497,17 +502,17 @@
 									if (that.isEnd == 0) {
 										that.onceStr += str
 									}
-									if (that.pakgeNum == 202) {
+									if (that.pakgeNum == 201) {
 										setTimeout(() => {
 
 											let le = parseInt(that.onceStr.length)
-											that.dataUx.push(that.onceStr.substr(6, le - 10))
+											that.dataUx.push(that.onceStr.substr(6, 48))
 											if (that.isEnd == 0) {
 												that.pakgeNum += 1
 											}
 										}, 500)
 									} else {
-										if (str.indexOf('010328') == 0 && that.pakgeNum<202) {
+										if (str.indexOf('010328') == 0 && that.pakgeNum<201) {
 											setTimeout(() => {
 												console.info(that.onceStr)
 												let le = parseInt(that.onceStr.length)
@@ -613,17 +618,17 @@
 									if (that.isEnd == 0) {
 										that.onceStr += str
 									}
-									if (that.pakgeNum == 202) {
+									if (that.pakgeNum == 201) {
 										setTimeout(() => {
 											console.info(that.onceStr)
 											let le = parseInt(that.onceStr.length)
-											that.dataUx.push(that.onceStr.substr(6, le - 10))
+											that.dataUx.push(that.onceStr.substr(6, 48))
 											if (that.isEnd == 0) {
 												that.pakgeNum += 1
 											}
 										}, 500)
 									} else {
-										if (str.indexOf('010328') == 0) {
+										if (str.indexOf('010328') == 0 && that.pakgeNum<201) {
 											setTimeout(() => {
 												let le = parseInt(that.onceStr.length)
 												that.dataUx.push(that.onceStr.substr(6, le - 10))
@@ -727,17 +732,17 @@
 									if (that.isEnd == 0) {
 										that.onceStr += str
 									}
-									if (that.pakgeNum == 202) {
+									if (that.pakgeNum == 201) {
 										setTimeout(() => {
 											console.info(that.onceStr)
 											let le = parseInt(that.onceStr.length)
-											that.dataUx.push(that.onceStr.substr(6, le - 10))
+											that.dataUx.push(that.onceStr.substr(6, 48))
 											if (that.isEnd == 0) {
 												that.pakgeNum += 1
 											}
 										}, 500)
 									} else {
-										if (str.indexOf('010328') == 0) {
+										if (str.indexOf('010328') == 0 && that.pakgeNum<201) {
 											setTimeout(() => {
 												console.info(that.onceStr)
 												let le = parseInt(that.onceStr.length)
