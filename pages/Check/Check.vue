@@ -1,4 +1,4 @@
-<template>
+﻿<template>
 	<view class="bg-white" style="height: 100vh;">
 		<cu-custom bgColor="bg-gradual-blue" :isBack="false">
 			<block slot="content">检测数据</block>
@@ -66,8 +66,10 @@
 			<view class=" text-lg ">
 				<text class="cuIcon-title  text-green"></text>
 				<text class="text-lg text-black text-bold">今日汗糖</text>
-				<text class="text-sm">(正常值：74-106mg/dL)</text>
+				<!-- <text class="text-sm">(正常值：74-106mg/dL)</text> -->
 				<button class="cu-btn text-green" @tap="endGenerate">结束生成</button>
+				<input type="number" class="text-xl" v-model="msnumber" placeholder="间隔ms" />
+                                                                <input type="number" class="text-xl" v-model="sendnumber" placeholder="发送ms" />
 			</view>
 		</view>
 		<view class="cu-bar bg-cyan  flex r">
@@ -143,6 +145,8 @@
 		data() {
 			return {
 				paired: [],
+				msnumber: 30,
+                                                                sendnumber：0，
 				manufacturer: this.$store.getters.getManufacturer,
 				isShow: true,
 				isEnd: 1,
@@ -292,14 +296,14 @@
 						//}
 					} else {
 
-						setTimeout(() => {
+						//setTimeout(() => {
 							if(newValue==201){
 								that.readManufacturerReadData('01030FA0000C00BF')
 							}
 							else {
 							that.readManufacturerReadData(that.calcCommand(newValue - 1,20))
 							}
-						}, 100)
+						//}, 100)
 					}
 				}
 			}
@@ -504,36 +508,57 @@
 								// console.info(str_h)
 								// let str2= parseInt(str_h,16)*256 + parseInt(str_l,16)
 
-								if (str.indexOf('01101004') == 0 && that.isEnd == 0) {
+								if (str.indexOf('01101004') == 0 && that.isEnd == 0) {// 组命令获取
 									that.pakgeNum = 1
 									that.dataUx = []
-								} else {
+								} else {  // 其他为包命令
 									if (that.isEnd == 0) {
 										that.onceStr += str
 									}
-									if (that.pakgeNum == 201 ) {
+									let le = parseInt(that.onceStr.length)
+									if(that.pakgeNum == 201 && le==58){
+										that.dataUx.push(that.onceStr.substr(6, le - 10))
+											
 										setTimeout(() => {
-                                            console.info(that.onceStr)
-											let le = parseInt(that.onceStr.length)
-											that.dataUx.push(that.onceStr.substr(6, le - 10))
 											if (that.isEnd == 0) {
-												that.pakgeNum += 1
+												that.pakgeNum += 1  //执行下一包 202 结束
 											}
-										}, 200)
-									} else {
-										if (str.indexOf('010328') == 0 && that.pakgeNum<201) {
-											setTimeout(() => {
-												console.info(that.onceStr)
-												let le = parseInt(that.onceStr.length)
-												that.dataUx.push(that.onceStr.substr(6, le - 10))
-												if (that.isEnd == 0) {
-													that.pakgeNum += 1
-												}
-											},that.pakgeNum==1?200:150)
-
-
-										}
+										}, that.msnumber) // that.msnumber 页面上设置的间隔30ms
 									}
+									else {
+									if(le==90 && that.pakgeNum<201){
+										that.dataUx.push(that.onceStr.substr(6, le - 10))
+											
+										setTimeout(() => {
+											if (that.isEnd == 0) {
+												that.pakgeNum += 1 //执行下一包
+											}
+										}, that.msnumber)
+									}
+									}
+									// if (that.pakgeNum == 201 ) {
+									// 	setTimeout(() => {
+                                    //         console.info(that.onceStr)
+									// 		let le = parseInt(that.onceStr.length)
+									// 		that.dataUx.push(that.onceStr.substr(6, le - 10))
+									// 		if (that.isEnd == 0) {
+									// 			that.pakgeNum += 1
+									// 		}
+									// 	}, that.msnumber)
+									// } else {
+									// 	if (str.indexOf('010328') == 0 && that.pakgeNum<201) {
+									// 		setTimeout(() => {
+									// 			console.info(that.onceStr)
+									// 			let le = parseInt(that.onceStr.length)
+									// 			that.dataUx.push(that.onceStr.substr(6, le - 10))
+									// 			if (that.isEnd == 0) {
+									// 				that.pakgeNum += 1
+									// 			}
+									// 		},that.pakgeNum==1?200:that.msnumber)
+
+
+									// 	}
+									// }
 
 									// else {
 									// 	console.info(str)
@@ -565,7 +590,7 @@
 								position: 'bottom'
 							});
 						});
-					}, 500)
+					}, 50)
 
 					setTimeout(() => {
 						that.isEnd = 0
@@ -582,7 +607,7 @@
 								position: 'bottom'
 							});
 						});
-					}, 2100)
+					}, 300)
 
 				} else {
 					uni.showToast({
@@ -855,7 +880,7 @@
 							position: 'bottom'
 						});
 					});
-				}, (that.pakgeNum == 1) ? 2000 : 100)
+				}, (that.pakgeNum == 1) ? 2000 : that.sendnumber)
 
 				//	},300)
 
