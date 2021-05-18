@@ -78,7 +78,7 @@
 					</view>
 					<view>
 						<text class="text-white text-sm">第一次数据{{pakgeNum}}{{!isShow&&opIndex==1?'生成中...':''}}</text>
-						<button class="cu-btn text-green" v-if="isShow" @tap="uploadData">第一次数据</button>
+						<button class="cu-btn text-green" v-if="isShow" @tap="first">第一次数据</button>
 					</view>
 				</view>
 				<view class="flex-sub text-center">
@@ -87,7 +87,7 @@
 					</view>
 					<view>
 						<text class="text-white text-sm">第二次数据{{pakgeNum}}{{!isShow&&opIndex==2?'生成中...':''}}</text>
-						<button class="cu-btn text-green" v-if="isShow" @tap="uploadData2">第二次数据</button>
+						<button class="cu-btn text-green" v-if="isShow" @tap="second">第二次数据</button>
 					</view>
 				</view>
 				<view class="flex-sub text-center">
@@ -96,7 +96,7 @@
 					</view>
 					<view>
 						<text class="text-white text-sm">第三次数据{{pakgeNum}}{{!isShow&&opIndex==3?'生成中...':''}}</text>
-						<button class="cu-btn text-green" v-if="isShow" @tap="uploadData3">第三次数据</button>
+						<button class="cu-btn text-green" v-if="isShow" @tap="third">第三次数据</button>
 					</view>
 				</view>
 			</view>
@@ -252,7 +252,7 @@
 				that.onceStr = ''
 				console.info(newValue)
 				if (newValue > 0) {
-					if (newValue > 201) {
+				//	if (newValue > 201) {
 						//console.info('jieshu')
 						//console.info(that.dataUx.toString())
 						if (newValue == 202) {
@@ -289,7 +289,7 @@
 								});
 							}, 800)
 
-						}
+						//}
 					} else {
 
 						setTimeout(() => {
@@ -468,12 +468,21 @@
 					}
 				})
 			},
-			async uploadData() {
+			async first(){
+				this.uploadData('0110100400020400030001002F',1)
+			},
+			async second(){
+				this.uploadData('01101004000204000300020030',2)
+			},
+			async third(){
+				this.uploadData('01101004000204000300030031',3)
+			},
+			async uploadData(writeCode,opIndex) {
 				let that = this
-
+				that.isEnd = 1
 				if (that.paired.length > 0 && that.paired[0].status) {
 					that.isShow = false
-					that.opIndex = 1
+					that.opIndex = opIndex
 					//console.info('88888')
 
 					that.pakgeNum = 0
@@ -502,15 +511,15 @@
 									if (that.isEnd == 0) {
 										that.onceStr += str
 									}
-									if (that.pakgeNum == 201) {
+									if (that.pakgeNum == 201 ) {
 										setTimeout(() => {
-
+                                            console.info(that.onceStr)
 											let le = parseInt(that.onceStr.length)
-											that.dataUx.push(that.onceStr.substr(6, 48))
+											that.dataUx.push(that.onceStr.substr(6, le - 10))
 											if (that.isEnd == 0) {
 												that.pakgeNum += 1
 											}
-										}, 500)
+										}, 200)
 									} else {
 										if (str.indexOf('010328') == 0 && that.pakgeNum<201) {
 											setTimeout(() => {
@@ -520,7 +529,7 @@
 												if (that.isEnd == 0) {
 													that.pakgeNum += 1
 												}
-											}, 500)
+											},that.pakgeNum==1?200:150)
 
 
 										}
@@ -564,7 +573,7 @@
 						that.$store.dispatch('writeManufacturer', {
 							item: that.paired[0],
 							manufacturer: manufacturer[1],
-							writeCode: '0110100400020400030001002F',
+							writeCode: writeCode,
 							index: 0
 						}).then(res => {
 							uni.showToast({
@@ -846,7 +855,7 @@
 							position: 'bottom'
 						});
 					});
-				}, (that.pakgeNum == 1) ? 2000 : 150)
+				}, (that.pakgeNum == 1) ? 2000 : 100)
 
 				//	},300)
 
