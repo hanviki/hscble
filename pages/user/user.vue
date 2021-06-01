@@ -172,7 +172,8 @@
 					Pwd: this.$store.getters.getPwd,
 					Height: this.scrollLeftNow,
 					Weight: this.scrollLeftNow_weight,
-					Birthday: this.pickerDate
+					Birthday: this.pickerDate,
+					Sexy: this.radio
 				}).then(res=>{
 					if(res.Code=='1'){
 						uni.navigateTo({

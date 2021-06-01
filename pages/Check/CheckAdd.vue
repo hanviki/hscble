@@ -78,12 +78,12 @@
 		<view class="bg-white  padding-sm">
 		</view>
 		<view class="cu-bar flex bg-gray  r padding-sm" style="min-height: 81px;">
-			<view class="  flex-sub flex text-center" >
+			<view class="  flex-sub flex text-center">
 				<view class="flex-sub text-sl">
 					<text class="cuIcon-shuidi text-green"></text>
 				</view>
-				<view class="flex-twice flex padding-top-sm" >
-					<view class="flex-sub text-right " >
+				<view class="flex-twice flex padding-top-sm">
+					<view class="flex-sub text-right ">
 						<input type="number" class="text-xxl text-bold" v-model="measureNumber" placeholder="--" />
 					</view>
 					<view class="flex-sub text-left padding-left text-xxl text-gray">
@@ -179,8 +179,7 @@
 		<view class="bg-white ">
 			<text class="text-sm margin-left">注意：汗糖检测与血糖检测间隔需在15分钟以内</text>
 		</view>
-		
-			<button class="cu-btn block bg-green  lg btm" @tap="submitCheck"> 提交数据 </button>
+		<button class="cu-btn block bg-green  lg btm" @tap="submitCheck"> 提交数据 </button>
 	</view>
 </template>
 
@@ -193,11 +192,13 @@
 				sportIndex: 0,
 				sweatIndex: 0,
 				measureNumber: '',
+				comments: '',
+				comments_blood: '',
 				userInfo: this.$store.getters['user/getUserInfo']
 			}
 		},
-		onLoad (){
-		 // this.userInfo= this.$store.getters['user/getUserInfo']
+		onLoad() {
+
 		},
 		// watch: {
 		// 	'$store.state.user.userInfo': {
@@ -208,25 +209,38 @@
 		// 		deep: true
 		// 	}
 		// },
-		computed:{
-			
+		computed: {
+
 		},
 		methods: {
 			selectTimeIndex(index) {
 				this.timeIndex = index
 			},
 			selectFoodIndex(index) {
+				if (index == 2) {
+					uni.navigateTo({
+						url: '/pages/Check/AddBlood',
+						})
+				}
 				this.foodIndex = index
 			},
 			selectSportIndex(index) {
+				if (index == 3) {
+					uni.navigateTo({
+						url: '/pages/Check/AddHan',
+						})
+				}
 				this.sportIndex = index
 			},
 			selectSweatIndex(index) {
 				this.sweatIndex = index
+
+
 			},
+
 			submitCheck() {
 				var that = this
-				
+
 				//console.log("提交表单", this.loginForm)
 				if (that.measureNumber == "") {
 					uni.showToast({
@@ -240,20 +254,21 @@
 						User_id: that.userInfo.Id,
 						time: that.timeIndex.toString(),
 						type: that.foodIndex.toString(),
-						value: parseFloat(that.measureNumber)
+						value: parseFloat(that.measureNumber),
+						Comments: that.comments_blood
 					},
 					Sweat: {
 						User_id: that.userInfo.Id,
 						type: that.sportIndex.toString(),
-						value: that.sweatIndex.toString()
+						value: that.sweatIndex.toString(),
+						Comments: that.comments
 					}
-				}).then(res=>{
-					if(res.Code=='1'){
-					uni.$emit("handleFun");
-					uni.navigateBack();
-					return;
-					}
-					else {
+				}).then(res => {
+					if (res.Code == '1') {
+						uni.$emit("handleFun");
+						uni.navigateBack();
+						return;
+					} else {
 						uni.showToast({
 							icon: "none",
 							title: "提交数据出错，请联系管理员",
@@ -277,11 +292,12 @@
 		padding-left: 0px;
 		padding-right: 0px;
 	}
+
 	.btm {
-		  position: fixed;
-		      width: 96%;
-		      bottom: 10rpx;
-		      z-index: 1024;
-			  margin-left: 2%;
+		position: fixed;
+		width: 96%;
+		bottom: 10rpx;
+		z-index: 1024;
+		margin-left: 2%;
 	}
 </style>

@@ -11,13 +11,15 @@ export default {
 		bledd: false, // 是否启用蓝牙搜索
 		devicesList: [], // 搜索到的可用设备列表
 		manufacturer: manufacturer.data, // 厂商设备
+		pairedIndex: uni.getStorageSync('pairedIndex') || 0
 	},
 	getters: {
 		getIsOpenBle: state => state.isOpenBle,
 		getPaired: state => state.paired,
 		getBledd: state => state.bledd,
 		getDevicesList: state => state.devicesList,
-		getManufacturer: state => state.manufacturer
+		getManufacturer: state => state.manufacturer,
+		getPairedindex: state => state.pairedIndex
 	},
 	mutations: {
 		/**
@@ -36,6 +38,15 @@ export default {
 		 */
 		setBledd(state, bledd) {
 			state.bledd = bledd
+		},
+		
+		/**
+		 * 获取当前连接的设备索引
+		 * @param {Object} state
+		 * @param {Object} index
+		 */
+		setPairedIndex(state, index){
+			state.pairedIndex = index
 		},
 		/**
 		 * 设置devicesList
@@ -230,6 +241,7 @@ export default {
 			commit,
 			state
 		}, item) {
+			
 			uni.showLoading({
 				mask: true,
 				title: `连接${item.name}中...`
@@ -255,6 +267,8 @@ export default {
 					paired.push(item);
 					item.status = true;
 					commit('setPaired', paired)
+					
+					//commit('setPairedIndex', index)
 					// 删除可用设备的对应值
 					var index = devicesList.findIndex(res => {
 						return res.deviceId == item.deviceId;
@@ -268,6 +282,7 @@ export default {
 					});
 					paired[index].status = true
 					commit('setPaired', paired)
+					//commit('setPairedIndex', index)
 				}
 				uni.showToast({
 					title: `${item.name}连接成功`,
@@ -298,16 +313,19 @@ export default {
 						try {
 							var paired = state.paired
 							await bluetooth.closeBLEConnection(item.deviceId);
-							var index = paired.findIndex(res => {
-								return res.deviceId == item.deviceId;
-							});
-							paired[index].status = false
-							commit('setPaired', paired)
-							uni.showToast({
-								title: '断开连接成功',
-								icon: 'none',
-								position: 'bottom'
-							});
+							
+								var index = paired.findIndex(res => {
+									return res.deviceId == item.deviceId;
+								});
+								paired[index].status = false
+								commit('setPaired', paired)
+								uni.showToast({
+									title: '断开连接成功',
+									icon: 'none',
+									position: 'bottom'
+								});
+							
+							
 						} catch (err) {
 							uni.showToast({
 								title: err.errMsg ? `断开连接失败：${err.errMsg}` : '断开连接失败',

@@ -327,5 +327,7 @@
 </script>
 
 <style>
-
+  .cu-item:hover{
+        border:1px green solid;
+		}
 </style>

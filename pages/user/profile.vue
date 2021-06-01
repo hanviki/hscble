@@ -88,4 +88,7 @@
 	      bottom: 0;
 	      z-index: 1024;
   }
+  .cu-item:hover{
+        border:1px green solid;
+  		}
 </style>

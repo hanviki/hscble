@@ -121,9 +121,11 @@ class Bluetooth {
 	 */
 	closeBLEConnection(deviceId) {
 		return new Promise((resolve, reject) => {
+			console.info(deviceId)
 			uni.closeBLEConnection({
 				deviceId,
 				success: async res => {
+					console.info('09999')
 					resolve(true)
 				},
 				fail: err => {

@@ -15,6 +15,9 @@
 
 			<button class="cu-btn block bg-green margin-sm lg" @tap="login"> 登录 </button>
 			<button class="cu-btn block bg-grey margin-sm lg" @tap="goRegister"> 注册账号 </button>
+			<view class="text-green text-right margin-right-xl" @tap="doChang">
+				<text>忘记密码</text>
+			</view>
 		</form>
 		<view class="bg-white">
 			<view class="grid margin-bottom text-center col-3 ">
@@ -33,7 +36,7 @@
 						<text class="cuIcon-zhifubao radius"></text>
 					</button>
 				</view>
-				
+
 			</view>
 		</view>
 	</view>
@@ -64,9 +67,9 @@
 		watch: {},
 		onLoad() {
 			console.info("开始了" + this.$store.getters['user/getHasLogin'])
-			if (this.$store.getters['user/getHasLogin']) {  //注释 登陆过直接登陆
+			if (this.$store.getters['user/getHasLogin']) { //注释 登陆过直接登陆
 				uni.switchTab({
-					url: '/pages/settings/settings'
+					url: '/pages/settings/device'
 				});
 			} else {
 				this.initProvider();
@@ -91,76 +94,99 @@
 					}
 				});
 			},
-
+			doChang() {
+				console.info(22)
+				uni.navigateTo({
+					url: '/pages/login/changePassword'
+				});
+			},
 			appLogin(loginType) {
 				var that = this
-				if(loginType=='zhifubao'){
+				if (loginType == 'zhifubao') {
 					this.loginByAlipay()
-				}
-				else {
-				uni.getProvider({
-					service: 'oauth',
-					success: function(res) {
-						console.log(res.provider);
-						//支持微信、qq和微博等
-						if (~res.provider.indexOf('weixin') || ~res.provider.indexOf('qq') || ~res.provider.indexOf('sinaweibo')) {
+				} else {
+					uni.getProvider({
+						service: 'oauth',
+						success: function(res) {
+							console.log(res.provider);
+							//支持微信、qq和微博等
+							if (~res.provider.indexOf('weixin') || ~res.provider.indexOf('qq') || ~res.provider
+								.indexOf('sinaweibo')) {
 
-							uni.login({
-								provider: loginType,
-								success: res => {
-									var access_token = '';
-									access_token = res.authResult.access_token;
-									// 3 授权登录成功以后，获取用户的信息
-									uni.getUserInfo({
-										provider: loginType,
-										success: function(infoRes) {
-											let formdata = {};
-											if (loginType == "weixin") {
-												formdata = {
-													nickname: infoRes.userInfo.nickName,
-													sexy: infoRes.userInfo.gender=1?'1':'2',
-													photo: infoRes.userInfo.avatarUrl,
-													openId: infoRes.userInfo.openId,
-													unionId: infoRes.userInfo.unionId,
-													access_token: access_token,
-													appLoginType: 'WEIXIN',
-													source: 'wx'+infoRes.userInfo.openId,
-													sourcetype: '1'
-												};
-											} else if (loginType == "qq") {
-												formdata = {
-													Nickname: infoRes.userInfo.nickname,
-													Sexy: infoRes.userInfo.gender == '男' ? 1 : 2,
-													Photo: infoRes.userInfo.figureurl_qq_2,
-													openId: infoRes.userInfo.openId,
-													unionId: '',
-													access_token: access_token,
-													appLoginType: 'QQ'
-												};
-											} else if (loginType == "sinaweibo") {
-												formdata = {
-													nickname: infoRes.userInfo.nickname,
-													sexy: infoRes.userInfo.gender == 'm' ? '1' : '2',
-													photo: infoRes.userInfo.avatar_large,
-													openId: infoRes.userInfo.id,
-													unionId: '',
-													access_token: access_token,
-													appLoginType: 'SINAWEIBO',
-													source: 'sina'+infoRes.userInfo.id,
-													sourcetype: '2'
-												};
+								uni.login({
+									provider: loginType,
+									success: res => {
+										var access_token = '';
+										access_token = res.authResult.access_token;
+										// 3 授权登录成功以后，获取用户的信息
+										uni.getUserInfo({
+											provider: loginType,
+											success: function(infoRes) {
+												let formdata = {};
+												if (loginType == "weixin") {
+													formdata = {
+														nickname: infoRes.userInfo
+															.nickName,
+														sexy: infoRes.userInfo
+															.gender = 1 ? '1' :
+															'2',
+														photo: infoRes.userInfo
+															.avatarUrl,
+														openId: infoRes.userInfo
+															.openId,
+														unionId: infoRes.userInfo
+															.unionId,
+														access_token: access_token,
+														appLoginType: 'WEIXIN',
+														source: 'wx' + infoRes
+															.userInfo.openId,
+														sourcetype: '1'
+													};
+												} else if (loginType == "qq") {
+													formdata = {
+														Nickname: infoRes.userInfo
+															.nickname,
+														Sexy: infoRes.userInfo
+															.gender == '男' ? 1 : 2,
+														Photo: infoRes.userInfo
+															.figureurl_qq_2,
+														openId: infoRes.userInfo
+															.openId,
+														unionId: '',
+														access_token: access_token,
+														appLoginType: 'QQ'
+													};
+												} else if (loginType == "sinaweibo") {
+													formdata = {
+														nickname: infoRes.userInfo
+															.nickname,
+														sexy: infoRes.userInfo
+															.gender == 'm' ? '1' :
+															'2',
+														photo: infoRes.userInfo
+															.avatar_large,
+														openId: infoRes.userInfo
+															.id,
+														unionId: '',
+														access_token: access_token,
+														appLoginType: 'SINAWEIBO',
+														source: 'sina' + infoRes
+															.userInfo.id,
+														sourcetype: '2'
+													};
+												}
+
+												that.$store.dispatch('user/thirdLogin',
+													formdata)
 											}
-											
-											that.$store.dispatch('user/thirdLogin', formdata)
-										}
 
-									})
-								}
-							});
+										})
+									}
+								});
 
+							}
 						}
-					}
-				})
+					})
 				}
 			},
 			loginByAlipay() {
@@ -202,7 +228,8 @@
 				var that = this
 				//这边是前端自己去调微信用户信息的接口，根据接口需要请求，如果不需要前端去获取的话就交给后端，可省去次操作
 				uni.request({
-					url: "https://api.weixin.qq.com/sns/userinfo?access_token=" + data.authResult.access_token + "&openid=" +
+					url: "https://api.weixin.qq.com/sns/userinfo?access_token=" + data.authResult.access_token +
+						"&openid=" +
 						data.authResult
 						.openid,
 					method: 'GET',

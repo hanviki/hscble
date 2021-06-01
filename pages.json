@@ -67,6 +67,15 @@
             }
             
         }
+		,{
+		    "path" : "pages/Check/AddHan",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		}
         
         ,{
             "path" : "pages/user/userInfo",
@@ -77,6 +86,24 @@
             }
             
         }
+		,{
+		    "path" : "pages/settings/addDevice",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		},
+		{
+		    "path" : "pages/settings/device",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		}
         ,{
             "path" : "pages/user/nickname",
             "style" :                                                                                    
@@ -106,6 +133,24 @@
         }
         ,{
             "path" : "pages/login/conduct",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/login/changePassword",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/Check/AddBlood",
             "style" :                                                                                    
             {
                 "navigationBarTitleText": "",
