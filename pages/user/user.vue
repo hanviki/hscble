@@ -173,7 +173,7 @@
 					Height: this.scrollLeftNow,
 					Weight: this.scrollLeftNow_weight,
 					Birthday: this.pickerDate,
-					Sexy: this.radio
+					Sexy: this.radio.toString()
 				}).then(res=>{
 					if(res.Code=='1'){
 						uni.navigateTo({

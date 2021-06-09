@@ -15,10 +15,12 @@
 							{{item.name}}
 						</view>
 						<view class="flex margin-top-sm">
-							<view class="flex-sub text-gray" >
-								{{item.status?'已连接':'已断开'}}</view>
+							<view class="flex-sub text-gray">
+								{{item.status?'已连接':'已断开'}}
+							</view>
 							<view class="flex-sub" v-if="!item.status">
-								<text class="text-green" @tap.stop="dispatch('createBLEConnection', item)">重新连接</text>
+							
+								 <text class="text-green" @tap.stop="dispatch('createBLEConnection', item)">重新连接</text>
 							</view>
 							<view class="flex-sub" v-if="item.status">
 								<text class="text-green" @tap.stop="dispatch('disconnect', item)">断开</text>
@@ -27,6 +29,9 @@
 								<text class="text-green" @tap.stop="dispatch('delpaired', item)">移除设备</text>
 							</view>
 						</view>
+					   <view class="text-gray margin-top-sm">
+							电量:{{item.elect==undefined?'':item.elect}}
+						</view>
 					</view>
 				</view>
 			</view>
@@ -34,12 +39,14 @@
 		</scroll-view>
 
 		<view class="text-center">
-			<text class="text-green" @tap="openAdd">添加设备</text>
+			<text class="text-green" @tap.stop="openAdd">添加设备</text>
 		</view>
 	</view>
 </template>
 
 <script>
+	import Bluetooth from '@/common/bluetooth.js';
+	let bluetooth = new Bluetooth();
 	export default {
 		name: 'bluetooth',
 		data() {
@@ -56,14 +63,34 @@
 				type: String
 			}
 		},
+		created() {
+			uni.$on('handleElec',(item)=>{
+				setTimeout(() => {
+				this.getElectic(item)
+				},2000);
+			});
+		},
 		watch: {
 			'$store.state.bluetooth': {
 				handler(e) {
-					console.info('33333333')
+					console.info('6666')
 					this.isOpenBle = e.isOpenBle;
 					this.paired = e.paired;
 					this.bledd = e.bledd;
 					this.devicesList = e.devicesList;
+					let that = this
+
+					if (e.paired != null && e.paired.length > 0) {
+						for (var i = 0; i < e.paired.length; i++) {
+							if (e.paired[i].status) {
+								var item = that.paired[i]
+								setTimeout(() => {
+									uni.$emit('handleElec',item)
+									//that.getElectic(item)
+								}, 200)
+							}
+						}
+					}
 				},
 				immediate: true,
 				deep: true
@@ -94,8 +121,48 @@
 				uni.navigateTo({
 					url: '/pages/settings/addDevice'
 				})
+			},
+			 getElectic(item) {
+				console.info(item)
+				let that = this
+                that.electricStr=''
+				let manufacturer = that.manufacturer
+				console.info(manufacturer)
+			    bluetooth.notifyBLECharacteristicValueChange(item.deviceId, manufacturer[0].serviceId,
+						manufacturer[0].characteristicId).then((res2) => {
+						console.info(344232323)
+						uni.onBLECharacteristicValueChange(function(res) {
+								console.info(44444444444)
+								let str = bluetooth.ab2hex(res.value)
+								//01 03 0F D1 00 01 00 E5
+								if (str.indexOf('01030200') == 0) { // 组命令获取
+									that.electricStr += str
+									setTimeout(() => {
+										var elcStr = that.electricStr.substr(8, 2)
+										that.$set(item, 'elect',  parseInt(elcStr, 16) +
+											'%');
+										//that.paired[that.pairedIndex]["elect"] = 
+									}, 300)
+								}
+							
+							});
+						
+					});
+					setTimeout(() => {
+                	console.info(manufacturer[1])
+                	that.$store.dispatch('writeManufacturer', {
+                		item,
+                		manufacturer: manufacturer[1],
+                		writeCode: '01030FD1000100E5',
+                		index: 0
+                	}).then(res => {
+                		console.info('0000')
+                	});
+                }, 500);
 			}
 		}
+
+
 	};
 </script>
 

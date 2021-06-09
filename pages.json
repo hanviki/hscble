@@ -67,15 +67,6 @@
             }
             
         }
-		,{
-		    "path" : "pages/Check/AddHan",
-		    "style" :                                                                                    
-		    {
-		        "navigationBarTitleText": "",
-		        "enablePullDownRefresh": false
-		    }
-		    
-		}
         
         ,{
             "path" : "pages/user/userInfo",
@@ -86,24 +77,6 @@
             }
             
         }
-		,{
-		    "path" : "pages/settings/addDevice",
-		    "style" :                                                                                    
-		    {
-		        "navigationBarTitleText": "",
-		        "enablePullDownRefresh": false
-		    }
-		    
-		},
-		{
-		    "path" : "pages/settings/device",
-		    "style" :                                                                                    
-		    {
-		        "navigationBarTitleText": "",
-		        "enablePullDownRefresh": false
-		    }
-		    
-		}
         ,{
             "path" : "pages/user/nickname",
             "style" :                                                                                    
@@ -141,7 +114,25 @@
             
         }
         ,{
-            "path" : "pages/login/changePassword",
+            "path" : "pages/settings/device",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/settings/addDevice",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/Check/AddHan",
             "style" :                                                                                    
             {
                 "navigationBarTitleText": "",
@@ -151,6 +142,15 @@
         }
         ,{
             "path" : "pages/Check/AddBlood",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/login/changePassword",
             "style" :                                                                                    
             {
                 "navigationBarTitleText": "",
@@ -170,7 +170,7 @@
 		"selectedColor": "#0faeff",
 		"backgroundColor": "#ffffff",
 		"list": [{
-			"pagePath": "pages/settings/settings",
+			"pagePath": "pages/settings/device",
 			"text": "检测",
 			"iconPath": "static/tabbar/basics.png",
 			"selectedIconPath": "static/tabbar/basics_cur.png"

@@ -25,7 +25,7 @@
 			var pages = getCurrentPages(); //当前页
 			var beforePage = pages[pages.length - 2];
 			
-		    this.chuhan = beforePage.comments
+		    this.chuhan = beforePage.$vm.getCom();
 			
 		},
 		methods: {
@@ -35,7 +35,8 @@
 			addChuHan() {
 				var pages = getCurrentPages(); //当前页
 				var beforePage = pages[pages.length - 2];
-			    beforePage.comments = this.chuhan
+				//console.info(beforePage.options)
+			   beforePage.$vm.setCom(this.chuhan);
 				uni.navigateBack()
 			}
 		}

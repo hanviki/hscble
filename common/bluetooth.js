@@ -212,8 +212,6 @@ class Bluetooth {
 	 */
 	notifyBLECharacteristicValueChange(deviceId, serviceId, characteristicId) {
 		return new Promise((resolve, reject) => {
-			console.info('55555555')
-			console.info(serviceId)
 			uni.notifyBLECharacteristicValueChange({
 				state: true, // 启用 notify 功能
 				deviceId,
@@ -223,6 +221,7 @@ class Bluetooth {
 					resolve(true)
 				},
 				fail(err) {
+					console.info(err)
 					reject(err)
 				}
 			});

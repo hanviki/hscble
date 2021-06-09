@@ -100,6 +100,10 @@
 					if (this.currentParied.status) {
 						clearInterval(this.s2)
 						this.isMatch =true
+						setTimeout(() => {
+							uni.$emit('handleElec',this.currentParied)
+							//that.getElectic(item)
+						}, 200)
 					}
 
 				},

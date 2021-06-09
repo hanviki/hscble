@@ -19,7 +19,7 @@
 				<text>忘记密码</text>
 			</view>
 		</form>
-		<view class="bg-white">
+		<view class="bg-white margin-top-xl">
 			<view class="grid margin-bottom text-center col-3 ">
 				<view class="flex flex-wrap align-center">
 					<button class="flex-sub  bg-white cu-btn cuIcon text-xxl text-green" @tap="appLogin('weixin')">

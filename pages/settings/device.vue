@@ -5,11 +5,11 @@
 		</cu-custom>
 		<view class="bg-gray text-black padding-xl">
 			<subDevice @longpress="longpress" @openSetting="openSetting" />
-			<bluetoothSettings :setting="setting" :index="sindex" @hide="hideSetting" />
-			<view class="cu-modal bottom-modal" :class="lgshow ? 'show' : ''" @tap="hideLgshow">
-				<view class="cu-dialog" style="background-color: transparent;bottom: 50rpx;" @tap.stop="">
-					<view class="margin"><button style="width: 80%;" class="cu-btn bg-orange lg" @tap="dispatch('disconnect', lgitem)">关闭连接</button></view>
-					<view class="margin"><button style="width: 80%;" class="cu-btn bg-red lg" @tap="dispatch('delpaired', lgitem)">删除设备</button></view>
+			<!-- <bluetoothSettings :setting="setting" :index="sindex" @hide="hideSetting" /> -->
+			<view class="cu-modal bottom-modal" :class="lgshow ? 'show' : ''" @tap.stop="hideLgshow">
+				<view class="cu-dialog" style="background-color: transparent;bottom: 50rpx;" >
+					<view class="margin"><button style="width: 80%;" class="cu-btn bg-orange lg" @tap.stop="dispatch('disconnect', lgitem)">关闭连接</button></view>
+					<view class="margin"><button style="width: 80%;" class="cu-btn bg-red lg" @tap.stop="dispatch('delpaired', lgitem)">删除设备</button></view>
 				</view>
 			</view>
 		</view>
@@ -42,21 +42,27 @@ export default {
 			  that.$store.dispatch('closeBluetoothAdapter')
 		  }
 		})
-		// uni.onBLEConnectionStateChange(function (res) {
-		//   // 该方法回调中可以用于处理连接意外断开等异常情况
-		//   if(!res.connected)
-		//   {
-		// 	  if(that.$store.getters.getPaired.length>0){
-		// 		  for (let item in that.$store.getters.getPaired) {
-		// 		  	if(item.deviceId==res.deviceId){
-		// 				if(item.status){
-		// 					that.$store.dispatch('disconnect', item)
-		// 				}
-		// 			}
-		// 		  }
-		// 	  }
-		//   }
-		// })
+		uni.onBLEConnectionStateChange(function (res) {
+		  // 该方法回调中可以用于处理连接意外断开等异常情况
+		  if(!res.connected)
+		  {
+			  console.info(res.deviceId)
+			  if(that.$store.getters.getPaired.length>0){
+				  console.info(88888)
+				 // console.info(that.$store.getters.getPaired)
+				  var paired= that.$store.getters.getPaired;
+				 // console
+				  var index = paired.findIndex(item => {
+				  	return item.deviceId == res.deviceId;
+				  });
+				  console.info(index)
+				  if(paired[index].status){
+					  console.info(233322222222)
+					  that.dispatch('disconnectAuto', paired[index])
+				  }
+			  }
+		  }
+		})
 	},
 	props: {
 		show: {

@@ -162,6 +162,10 @@
 					.then(res => {
 						console.info(res)
 						if (res.Code == '1') {
+							uni.showToast({
+								icon: "none",
+								title: "密码修改成功,请重新登陆"
+							})
 							uni.navigateBack()
 						} else {
 							uni.showToast({

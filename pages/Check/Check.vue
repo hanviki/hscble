@@ -19,7 +19,7 @@
 				<view class="flex-sub text-sl ">
 					<text class="cuIcon-sunfilling" :class="checkCount>=3?'text-green':'text-gray'"></text>
 				</view>
-				<view class="flex-sub text-sl" @tap="showAdd">
+				<view class="flex-sub text-sl" @tap.stop="showAdd">
 					<text class="cuIcon-roundadd" :class="checkCount>=3?'text-gray':'text-green'"></text>
 				</view>
 			</view>
@@ -28,14 +28,14 @@
 			<view class=" text-lg">
 				<text class="cuIcon-title  text-green"></text>
 				<text class="text-lg text-black text-bold">今日血糖</text>
-				<text class="text-xs">(正常值：74-106mg/dL)</text>
+				<text class="text-xs"></text>
 			</view>
 		</view>
 		<view class="cu-bar bg-cuorange  flex  r">
 			<view class="flex-sub flex">
 				<view class="flex-sub text-center">
 					<view class="cuh">
-						<text class="text-black  text-sl">{{bloodSugar_1.Value}}</text>
+						<text class="text-black  text-sl">{{bloodSugar_1.Value=='0'?'':bloodSugar_1.Value}}</text>
 					</view>
 					<view>
 						<text class="text-white text-sm">第一次数据</text>
@@ -43,7 +43,7 @@
 				</view>
 				<view class="flex-sub text-center">
 					<view class="cuh">
-						<text class="text-black  text-sl">{{bloodSugar_2.Value}}</text>
+						<text class="text-black  text-sl">{{bloodSugar_2.Value=='0'?'':bloodSugar_2.Value}}</text>
 					</view>
 					<view>
 						<text class="text-white text-sm">第二次数据</text>
@@ -51,7 +51,7 @@
 				</view>
 				<view class="flex-sub text-center">
 					<view class="cuh">
-						<text class="text-black  text-sl">{{bloodSugar_3.Value}}</text>
+						<text class="text-black  text-sl">{{bloodSugar_3.Value=='0'?'':bloodSugar_3.Value}}</text>
 					</view>
 					<view>
 						<text class="text-white text-sm">第三次数据</text>
@@ -65,46 +65,49 @@
 		<view class=" bg-white margin-top-sm">
 			<view class=" text-lg flex">
 				<view class="flex-sub"><text class="cuIcon-title  text-green"></text>
-				<text class="text-lg text-black text-bold">今日汗糖</text></view>
+					<text class="text-lg text-black text-bold">今日汗糖</text>
+				</view>
 				<!-- <text class="text-sm">(正常值：74-106mg/dL)</text> -->
-				<view class="flex-sub"><button class="cu-btn  text-green" @tap="endGenerate">结束生成</button></view>
-				<view class="flex-sub"><input type="number" class="text-xl sm-border" style="border:1rpx  #4CD964 solid; " v-model="msnumber" placeholder="间隔ms" /></view>
-                <view class="flex-sub"><input type="number" class="text-xl sm-border" style="border:1rpx  #4CD964 solid;" v-model="sendnumber" placeholder="发送ms" /></view>
+				<view class="flex-sub"><button class="cu-btn  text-green" @tap.stop="endGenerate">结束生成</button></view>
+				<view class="flex-sub"><input type="number" class="text-xl sm-border"
+						style="border:1rpx  #4CD964 solid; " v-model="msnumber" placeholder="间隔ms" /></view>
+				<view class="flex-sub"><input type="number" class="text-xl sm-border"
+						style="border:1rpx  #4CD964 solid;" v-model="sendnumber" placeholder="发送ms" /></view>
 			</view>
 		</view>
 		<view class="cu-bar bg-cyan  flex r">
 			<view class="flex-sub flex">
 				<view class="flex-sub text-center">
-					<view class="cuh margin-top-sm">
-						<text class="text-black " style="font-size: 40rpx;">{{sweetSugar_1.Value}}μmol</text>
+					<view class="cuh2 margin-top-sm">
+						<text class="text-black " style="font-size: 40rpx;">{{sweetSugar_1.Value=='0.0'?'':sweetSugar_1.Value+'μmol'}}</text>
 					</view>
 					<view>
-						<text class="text-white text-sm">第一次数据{{pakgeNum}}{{!isShow&&opIndex==1?'生成中...':''}}</text>
-						<button class="cu-btn text-green" v-if="isShow" @tap="first">第一次数据</button>
+						<text class="text-white text-sm">第一次数据{{!isShow&&opIndex==1?pakgeNum+'生成中...':''}}</text>
+						<button class="cu-btn text-green" v-if="isShow" @tap.stop="first">第一次数据</button>
 					</view>
 				</view>
 				<view class="flex-sub text-center">
-					<view class="cuh margin-top-sm">
-						<text class="text-black" style="font-size: 40rpx;">{{sweetSugar_2.Value}}μmol</text>
+					<view class="cuh2 margin-top-sm">
+						<text class="text-black" style="font-size: 40rpx;">{{sweetSugar_2.Value=='0.0'?'':sweetSugar_2.Value+'μmol'}}</text>
 					</view>
 					<view>
-						<text class="text-white text-sm">第二次数据{{pakgeNum}}{{!isShow&&opIndex==2?'生成中...':''}}</text>
-						<button class="cu-btn text-green" v-if="isShow" @tap="second">第二次数据</button>
+						<text class="text-white text-sm">第二次数据{{!isShow&&opIndex==2?pakgeNum+'生成中...':''}}</text>
+						<button class="cu-btn text-green" v-if="isShow" @tap.stop="second">第二次数据</button>
 					</view>
 				</view>
 				<view class="flex-sub text-center ">
-					<view class="cuh margin-top-sm">
-						<text class="text-black " style="font-size: 40rpx;">{{sweetSugar_3.Value}}μmol</text>
+					<view class="cuh2 margin-top-sm">
+						<text class="text-black " style="font-size: 40rpx;">{{sweetSugar_3.Value=='0.0'?'':sweetSugar_3.Value+'μmol'}}</text>
 					</view>
 					<view>
-						<text class="text-white text-sm">第三次数据{{pakgeNum}}{{!isShow&&opIndex==3?'生成中...':''}}</text>
-						<button class="cu-btn text-green" v-if="isShow" @tap="third">第三次数据</button>
+						<text class="text-white text-sm">第三次数据{{!isShow&&opIndex==3?pakgeNum+'生成中...':''}}</text>
+						<button class="cu-btn text-green" v-if="isShow" @tap.stop="third">第三次数据</button>
 					</view>
 				</view>
 			</view>
 		</view>
 		<view class="bg-white ">
-			<text class="text-sm margin-left">注意：{{pairedIndex}}汗糖检测与血糖检测间隔需在15分钟以内</text>
+			<text class="text-sm margin-left">注意：汗糖检测与血糖检测间隔需在15分钟以内</text>
 		</view>
 		<view class=" bg-white margin-top-sm">
 			<view class=" text-lg ">
@@ -114,27 +117,27 @@
 		</view>
 		<view class="bg-white flex">
 			<view class="bg-white nav text-center flex-sub">
-				<view class="cu-item" :class="0==TabCur?'text-blue cur':''" :data-id="0" @tap="tabSelect">
+				<view class="cu-item" :class="0==TabCur?'text-blue cur':''" :data-id="0" @tap.stop="tabSelect">
 					日
 				</view>
-				<view class="cu-item" :class="1==TabCur?'text-blue cur':''" :data-id="1" @tap="tabSelect">
+				<view class="cu-item" :class="1==TabCur?'text-blue cur':''" :data-id="1" @tap.stop="tabSelect">
 					周
 				</view>
-				<view class="cu-item" :class="2==TabCur?'text-blue cur':''" :data-id="2" @tap="tabSelect">
+				<view class="cu-item" :class="2==TabCur?'text-blue cur':''" :data-id="2" @tap.stop="tabSelect">
 					月
 				</view>
 			</view>
 		</view>
-			<view class="cu-bar bg-white">
-		<view class="charts-box ">
-			<qiun-data-charts type="column" v-if="TabCur==0" :chartData="chartDataDay" :echartsH5="true"
-				:echartsApp="true" />
-			<qiun-data-charts type="column" v-if="TabCur==1" :chartData="chartDataWeek" :echartsH5="true"
-				:echartsApp="true" />
-			<qiun-data-charts type="line" v-if="TabCur==2" :chartData="chartDataMonth" :echartsH5="true"
-				:echartsApp="true" />
+		<view class="cu-bar bg-white">
+			<view class="charts-box ">
+				<qiun-data-charts type="column" v-if="TabCur==0" :chartData="chartDataDay" :echartsH5="true"
+					:echartsApp="true" />
+				<qiun-data-charts type="column" v-if="TabCur==1" :chartData="chartDataWeek" :echartsH5="true"
+					:echartsApp="true" />
+				<qiun-data-charts type="line" v-if="TabCur==2" :chartData="chartDataMonth" :echartsH5="true"
+					:echartsApp="true" />
+			</view>
 		</view>
-	</view>
 
 	</view>
 </template>
@@ -148,13 +151,14 @@
 				paired: [],
 				pairedIndex: 0,
 				msnumber: 30,
-                sendnumber: 0,
+				sendnumber: 0,
 				manufacturer: this.$store.getters.getManufacturer,
 				isShow: true,
 				isEnd: 1,
 				pakgeNum: 0,
 				onceStr: '', //81 包 ，存储每一包的数据
 				opIndex: 0,
+				electricStr: '',
 				dataUx: [], //存放返回的字符串
 				cmdArr: [
 					'0103000000320036', '0103003200320068', '010300640032009A', '01030096003200CC', '010300C8003200FE',
@@ -245,72 +249,77 @@
 			'$store.state.bluetooth.paired': {
 				handler(e) {
 					this.paired = e;
-					if(e!=null&&e.length>0){
+					var flag = 0;
+					if (e != null && e.length > 0) {
 						for (var i = 0; i < e.length; i++) {
-							if(e[i].status){
-								this.pairedIndex= i
+							if (e[i].status) {
+								flag = 1
+								this.pairedIndex = i
 								break
 							}
 						}
+					}
+					if (flag == 0) {
+						this.endGenerate() //没有连接状态的设备 停止获取数据
 					}
 				},
 				immediate: true,
 				deep: true
 			},
-			
+
 
 			pakgeNum(newValue) {
 				let that = this
 				that.onceStr = ''
 				console.info(newValue)
 				if (newValue > 0) {
-				//	if (newValue > 201) {
-						//console.info('jieshu')
-						//console.info(that.dataUx.toString())
-						if (newValue == 202) {
-							that.isEnd = 1
-							that.loadDataToserver()
-							setTimeout(() => {
-								//清空
-								that.$store.dispatch('writeManufacturer', {
-									item: that.paired[that.pairedIndex],
-									manufacturer: that.manufacturer[1],
-									writeCode: '0110100400010204D200FE',
-									index: 0
-								}).then(res => {
-									uni.showToast({
-										title: res.errMsg,
-										icon: 'none',
-										position: 'bottom'
-									});
+					//	if (newValue > 201) {
+					//console.info('jieshu')
+					//console.info(that.dataUx.toString())
+					if (newValue == 202) {
+						that.isEnd = 1
+						that.loadDataToserver()
+						
+						setTimeout(() => {
+							//清空
+							that.$store.dispatch('writeManufacturer', {
+								item: that.paired[that.pairedIndex],
+								manufacturer: that.manufacturer[1],
+								writeCode: '0110100400010204D200FE',
+								index: 0
+							}).then(res => {
+								uni.showToast({
+									title: res.errMsg,
+									icon: 'none',
+									position: 'bottom'
 								});
-							}, 400)
-							setTimeout(() => {
-								//使能
-								that.$store.dispatch('writeManufacturer', {
-									item: that.paired[that.pairedIndex],
-									manufacturer: that.manufacturer[1],
-									writeCode: '01100FD2000102000000F5',
-									index: 0
-								}).then(res => {
-									uni.showToast({
-										title: res.errMsg,
-										icon: 'none',
-										position: 'bottom'
-									});
+							});
+						}, 400)
+						setTimeout(() => {
+							//使能
+							that.$store.dispatch('writeManufacturer', {
+								item: that.paired[that.pairedIndex],
+								manufacturer: that.manufacturer[1],
+								writeCode: '01100FD2000102000000F5',
+								index: 0
+							}).then(res => {
+								uni.showToast({
+									title: res.errMsg,
+									icon: 'none',
+									position: 'bottom'
 								});
-							}, 800)
+							});
+						}, 800)
 
 						//}
 					} else {
 
 						//setTimeout(() => {
-							if(newValue==201){
-								that.readManufacturerReadData('01030FA0000C00BF')
-							}
-							else {
-							that.readManufacturerReadData(that.calcCommand(newValue - 1,20))
-							}
+						if (newValue == 201) {
+							that.readManufacturerReadData('01030FA0000C00BF')
+						} else {
+							that.readManufacturerReadData(that.calcCommand(newValue - 1, 20))
+						}
 						//}, 100)
 					}
 				}
@@ -382,7 +391,7 @@
 				});
 			},
 			endGenerate() {
-				this.calcCommand(0,20);
+				this.calcCommand(0, 20);
 				this.isEnd = 1
 				this.pakgeNum = 0
 				this.isShow = true
@@ -399,13 +408,13 @@
 					this.isShow = true
 					if (res.Code == "1") {
 						if (that.opIndex == 1) {
-							that.sweetSugar_1.Value = parseFloat(res.CalVal).toFixed(1)
+							that.sweetSugar_1.Value = that.fomatFloat(parseFloat(res.CalVal),1)
 						}
 						if (that.opIndex == 2) {
-							that.sweetSugar_2.Value = parseFloat(res.CalVal).toFixed(1)
+							that.sweetSugar_2.Value = that.fomatFloat(parseFloat(res.CalVal),1)
 						}
 						if (that.opIndex == 3) {
-							that.sweetSugar_3.Value = parseFloat(res.CalVal).toFixed(1)
+							that.sweetSugar_3.Value = that.fomatFloat(parseFloat(res.CalVal),1)
 						}
 					}
 				})
@@ -429,24 +438,24 @@
 							for (let i = 0; i < threeData.length; i++) {
 
 								if (i == 0) {
-									this.sweetSugar_1.Value = threeData[i].SweetSugarData
+									this.sweetSugar_1.Value = this.fomatFloat(parseFloat(threeData[i].SweetSugarData),1)
 									this.bloodSugar_1.Value = threeData[i].BloodSugarData
-									if(parseFloat(threeData[i].BloodSugarData)>0){
-										this.checkCount+=1
+									if (parseFloat(threeData[i].BloodSugarData) > 0) {
+										this.checkCount += 1
 									}
 								}
 								if (i == 1) {
-									this.sweetSugar_2.Value = threeData[i].SweetSugarData
+									this.sweetSugar_2.Value = this.fomatFloat(parseFloat(threeData[i].SweetSugarData),1)
 									this.bloodSugar_2.Value = threeData[i].BloodSugarData
-									if(parseFloat(threeData[i].BloodSugarData)>0){
-										this.checkCount+=1
+									if (parseFloat(threeData[i].BloodSugarData) > 0) {
+										this.checkCount += 1
 									}
 								}
 								if (i == 2) {
-									this.sweetSugar_3.Value = threeData[i].SweetSugarData
+									this.sweetSugar_3.Value = this.fomatFloat(parseFloat(threeData[i].SweetSugarData),1)
 									this.bloodSugar_3.Value = threeData[i].BloodSugarData
-									if(parseFloat(threeData[i].BloodSugarData)>0){
-										this.checkCount+=1
+									if (parseFloat(threeData[i].BloodSugarData) > 0) {
+										this.checkCount += 1
 									}
 								}
 
@@ -479,7 +488,7 @@
 							}
 						}
 						//that.chartDataDay = that.chartData
-						
+
 
 
 					} else {
@@ -490,16 +499,28 @@
 					}
 				})
 			},
-			async first(){
-				this.uploadData('0110100400020400030001002F',1)
+			async first() {
+				this.uploadData('0110100400020400030001002F', 1)
 			},
-			async second(){
-				this.uploadData('01101004000204000300020030',2)
+			async second() {
+				this.uploadData('01101004000204000300020030', 2)
 			},
-			async third(){
-				this.uploadData('01101004000204000300030031',3)
+			async third() {
+				this.uploadData('01101004000204000300030031', 3)
 			},
-			async uploadData(writeCode,opIndex) {
+			fomatFloat (value, n) {
+			var f = Math.round(value*Math.pow(10,n))/Math.pow(10,n);
+			var s = f.toString();
+			var rs = s.indexOf('.');   
+			if (rs < 0) {     
+			    s += '.';   
+			} 
+			for(var i = s.length - s.indexOf('.'); i <= n; i++){
+			  s += "0";
+			}
+			return s;
+			},
+			async uploadData(writeCode, opIndex) {
 				let that = this
 				that.isEnd = 1
 				if (that.paired.length > 0 && that.paired[that.pairedIndex].status) {
@@ -526,37 +547,37 @@
 								// console.info(str_h)
 								// let str2= parseInt(str_h,16)*256 + parseInt(str_l,16)
 
-								if (str.indexOf('01101004') == 0 && that.isEnd == 0) {// 组命令获取
+								if (str.indexOf('01101004') == 0 && that.isEnd == 0) { // 组命令获取
 									that.pakgeNum = 1
 									that.dataUx = []
-								} else {  // 其他为包命令
+								} else { // 其他为包命令
 									if (that.isEnd == 0) {
 										that.onceStr += str
 									}
 									let le = parseInt(that.onceStr.length)
-									if(that.pakgeNum == 201 && le==58){
+									if (that.pakgeNum == 201 && le == 58) {
 										that.dataUx.push(that.onceStr.substr(6, le - 10))
-											
+
 										setTimeout(() => {
-											if (that.isEnd == 0) {
-												that.pakgeNum += 1  //执行下一包 202 结束
-											}
-										}, (that.msnumber==''?0:that.msnumber)) // that.msnumber 页面上设置的间隔30ms
-									}
-									else {
-									if(le==90 && that.pakgeNum<201){
-										that.dataUx.push(that.onceStr.substr(6, le - 10))
-											
-										setTimeout(() => {
-											if (that.isEnd == 0) {
-												that.pakgeNum += 1 //执行下一包
-											}
-										},  (that.msnumber==''?0:that.msnumber))
-									}
+												if (that.isEnd == 0) {
+													that.pakgeNum += 1 //执行下一包 202 结束
+												}
+											}, (that.msnumber == '' ? 0 : that
+											.msnumber)) // that.msnumber 页面上设置的间隔30ms
+									} else {
+										if (le == 90 && that.pakgeNum < 201) {
+											that.dataUx.push(that.onceStr.substr(6, le - 10))
+
+											setTimeout(() => {
+												if (that.isEnd == 0) {
+													that.pakgeNum += 1 //执行下一包
+												}
+											}, (that.msnumber == '' ? 0 : that.msnumber))
+										}
 									}
 									// if (that.pakgeNum == 201 ) {
 									// 	setTimeout(() => {
-                                    //         console.info(that.onceStr)
+									//         console.info(that.onceStr)
 									// 		let le = parseInt(that.onceStr.length)
 									// 		that.dataUx.push(that.onceStr.substr(6, le - 10))
 									// 		if (that.isEnd == 0) {
@@ -668,7 +689,7 @@
 							position: 'bottom'
 						});
 					});
-				}, (that.pakgeNum == 1) ? 2000 : (that.sendnumber==''?0:that.sendnumber))
+				}, (that.pakgeNum == 1) ? 2000 : (that.sendnumber == '' ? 0 : that.sendnumber))
 
 				//	},300)
 
@@ -698,6 +719,9 @@
 	}
 
 	.cuh {
+		min-height: 45px;
+	}
+	.cuh2 {
 		min-height: 30px;
 	}
 </style>

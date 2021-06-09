@@ -67,7 +67,7 @@
 				<view class="flex-sub">
 					<view class="text-sl">
 						<button class="cu-btn cuIcon-roundadd " :class="foodIndex==2?'text-green':'text-gray'"
-							@tap="selectFoodIndex(2)" />
+							@tap.stop="selectFoodIndex(2)" />
 					</view>
 					<view>
 						<text class="text-sm">其他</text>
@@ -213,6 +213,18 @@
 
 		},
 		methods: {
+			getCom(){
+				return this.comments
+			},
+			getBlood() {
+				return this.comments_blood
+			},
+			setCom(data){
+				this.comments =data
+			},
+			setBlood(data) {
+				this.comments_blood =data
+			},
 			selectTimeIndex(index) {
 				this.timeIndex = index
 			},
@@ -255,13 +267,13 @@
 						time: that.timeIndex.toString(),
 						type: that.foodIndex.toString(),
 						value: parseFloat(that.measureNumber),
-						Comments: that.comments_blood
+						comments: that.comments_blood
 					},
 					Sweat: {
 						User_id: that.userInfo.Id,
 						type: that.sportIndex.toString(),
 						value: that.sweatIndex.toString(),
-						Comments: that.comments
+						comments: that.comments
 					}
 				}).then(res => {
 					if (res.Code == '1') {

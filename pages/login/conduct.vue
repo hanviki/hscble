@@ -78,4 +78,7 @@
 	.cuH {
 		height: 67px;
 	}
+	.cu-item:hover{
+	      border:1px green solid;
+			}
 </style>

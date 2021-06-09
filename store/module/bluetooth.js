@@ -39,13 +39,13 @@ export default {
 		setBledd(state, bledd) {
 			state.bledd = bledd
 		},
-		
+
 		/**
 		 * 获取当前连接的设备索引
 		 * @param {Object} state
 		 * @param {Object} index
 		 */
-		setPairedIndex(state, index){
+		setPairedIndex(state, index) {
 			state.pairedIndex = index
 		},
 		/**
@@ -166,7 +166,7 @@ export default {
 			var bledd = state.bledd
 			// 开启搜索
 			if (!bledd) {
-				if(!state.isOpenBle) {
+				if (!state.isOpenBle) {
 					uni.showToast({
 						title: '请先打开蓝牙',
 						icon: 'none',
@@ -241,7 +241,7 @@ export default {
 			commit,
 			state
 		}, item) {
-			
+
 			uni.showLoading({
 				mask: true,
 				title: `连接${item.name}中...`
@@ -267,7 +267,7 @@ export default {
 					paired.push(item);
 					item.status = true;
 					commit('setPaired', paired)
-					
+
 					//commit('setPairedIndex', index)
 					// 删除可用设备的对应值
 					var index = devicesList.findIndex(res => {
@@ -313,19 +313,20 @@ export default {
 						try {
 							var paired = state.paired
 							await bluetooth.closeBLEConnection(item.deviceId);
-							
-								var index = paired.findIndex(res => {
-									return res.deviceId == item.deviceId;
-								});
-								paired[index].status = false
-								commit('setPaired', paired)
-								uni.showToast({
-									title: '断开连接成功',
-									icon: 'none',
-									position: 'bottom'
-								});
-							
-							
+
+							var index = paired.findIndex(res => {
+								return res.deviceId == item.deviceId;
+							});
+							console.info(index)
+							paired[index].status = false
+							commit('setPaired', paired)
+							uni.showToast({
+								title: '断开连接成功',
+								icon: 'none',
+								position: 'bottom'
+							});
+
+
 						} catch (err) {
 							uni.showToast({
 								title: err.errMsg ? `断开连接失败：${err.errMsg}` : '断开连接失败',
@@ -336,6 +337,39 @@ export default {
 					}
 				}
 			});
+		},
+		/**
+		 * 断开连接 意外断开
+		 * @param {Object} item
+		 */
+		disconnectAuto({
+			commit,
+			state
+		}, item) {
+			try {
+				var paired = state.paired
+			   bluetooth.closeBLEConnection(item.deviceId);
+
+				var index = paired.findIndex(res => {
+					return res.deviceId == item.deviceId;
+				});
+				paired[index].status = false
+				commit('setPaired', paired)
+				uni.showToast({
+					title: '蓝牙意外断开,请重连',
+					icon: 'none',
+					position: 'bottom'
+				});
+			} catch (err) {
+				uni.showToast({
+					title: err.errMsg ? `断开连接失败：${err.errMsg}` : '断开连接失败',
+					icon: 'none',
+					position: 'bottom'
+				});
+			}
+
+
+
 		},
 		/**
 		 * 删除配对设备
@@ -384,7 +418,8 @@ export default {
 				try {
 					var paired = state.paired
 					await bluetooth.getBLEDeviceServices(item.deviceId, manufacturer.serviceId);
-					await bluetooth.getBLEDeviceCharacteristics(item.deviceId, manufacturer.serviceId, manufacturer.characteristicId);
+					await bluetooth.getBLEDeviceCharacteristics(item.deviceId, manufacturer.serviceId,
+						manufacturer.characteristicId);
 					item.serviceId = manufacturer.serviceId;
 					item.characteristicId = manufacturer.characteristicId;
 					item.type = manufacturer.type || 'unknown';
@@ -403,33 +438,34 @@ export default {
 		/**
 		 * 蓝牙设备发送命令或字符
 		 */
-	    writeManufacturer({
-	        	commit,
-	        	state
-	        }, {
-	        	item,
-	        	manufacturer,
-	    		writeCode,
-				index
-	        }) {
-				console.info(writeCode)
-	    		 
-				 console.info(manufacturer)
-	    		 let buffer= bluetooth.string2buffer(writeCode)
-				 if(index==0){
-					 buffer= bluetooth.stringbuffer(writeCode)
-				 }
-	    		console.info(buffer)
-	        	return new Promise(async (resolve, reject) => {
-	        		try {
-	        			//var paired = state.paired
-	        			await bluetooth.writeBLECharacteristicValue(item.deviceId, manufacturer.serviceId, manufacturer.characteristicId, buffer)
-	        			resolve(true)
-	        		} catch (err) {
-	        			reject(err)
-	        		}
-	        	})
-	        }
-	    
+		writeManufacturer({
+			commit,
+			state
+		}, {
+			item,
+			manufacturer,
+			writeCode,
+			index
+		}) {
+			console.info(writeCode)
+
+			console.info(manufacturer)
+			let buffer = bluetooth.string2buffer(writeCode)
+			if (index == 0) {
+				buffer = bluetooth.stringbuffer(writeCode)
+			}
+			console.info(buffer)
+			return new Promise(async (resolve, reject) => {
+				try {
+					//var paired = state.paired
+					await bluetooth.writeBLECharacteristicValue(item.deviceId, manufacturer.serviceId,
+						manufacturer.characteristicId, buffer)
+					resolve(true)
+				} catch (err) {
+					reject(err)
+				}
+			})
+		}
+
 	}
 }
