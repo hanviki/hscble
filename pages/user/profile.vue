@@ -1,6 +1,10 @@
 <template name="basics">
 	<view style="height: 100vh;" class="bg-white">
-		<view class="bg-cyan text-center">
+		<cu-custom bgColor="bg-cyan" :isBack="false">
+			<block slot="backText"></block>
+			<block slot="content">个人资料</block>
+		</cu-custom>
+		<view class="text-center">
 			<view class="padding-xl"></view>
 			<view class="cu-avatar-group">
 				<view class="cu-avatar round xl"  :style="[{ backgroundImage:'url(' + userInfo.Photo+ ')' }]"></view>
@@ -20,7 +24,7 @@
 					<text class="text-grey">我的数据</text>
 				</view>
 			</view>
-			<view class="cu-item" :class="menuArrow?'arrow':''">
+			<view class="cu-item" :class="menuArrow?'arrow':''" @tap.stop="open">
 				<navigator class="content" hover-class="none" url="../user/userInfo" open-type="navigate">
 					<text class="cuIcon-myfill text-orange"></text>
 					<text class="text-grey">个人资料</text>
@@ -65,6 +69,7 @@
 		onLoad() {
 			this.pic =this.userInfo.Photo
 		},
+		
 		methods: {
 			bindLogout() {
 				 this.$store.dispatch('user/logout');
@@ -76,7 +81,12 @@
 					// 	url: '../login/login'
 					// });
 				
-			}
+			},
+			open () {
+				uni.navigateTo({
+					url: '/pages/user/userInfo'
+				})
+			},
 		}
 	}
 </script>
@@ -88,7 +98,8 @@
 	      bottom: 0;
 	      z-index: 1024;
   }
-  .cu-item:hover{
-        border:1px green solid;
+  .cu-list.menu>.cu-item:hover{
+        background-color:#91CB74
   		}
+		
 </style>

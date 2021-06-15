@@ -158,6 +158,24 @@
             }
             
         }
+        ,{
+            "path" : "pages/settings/newDevice",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/user/userNext",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"navigationBarBackgroundColor": "#0081ff",
@@ -170,7 +188,7 @@
 		"selectedColor": "#0faeff",
 		"backgroundColor": "#ffffff",
 		"list": [{
-			"pagePath": "pages/settings/device",
+			"pagePath": "pages/settings/newDevice",
 			"text": "检测",
 			"iconPath": "static/tabbar/basics.png",
 			"selectedIconPath": "static/tabbar/basics_cur.png"

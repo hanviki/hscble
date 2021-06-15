@@ -3,57 +3,11 @@
 		<cu-custom bgColor="bg-white" :isBack="true">
 			<block slot="backText"></block>
 			<block slot="content">个人资料</block>
-			<block slot="right"><view class="margin-right-sm text-xl"><text class="cuIcon-right" @tap.stop="redirectNext"></text></view></block>
 		</cu-custom>
 		<form>
-			<view class="cu-form-group text-center flex">
-				<view class="text-center flex-sub">
-					<text class="text-center text-bold">您的性别是?</text>
-				</view>
-			</view>
-			<radio-group class="block" @change="RadioChange">
-				<view class=" flex">
-					<view class="flex-sub flex">
-						<view class="flex-sub text-center">
-							<!-- style="background-image:url(../../static/image/man.png);background-repeat: no-repeat;background-position: center;background-size: contain;-->
-							<view class="bg-white  margin-right-sm flex justify-center" style="width: 100%;height:150px;background-image:url(../../static/image/man.png);background-repeat: no-repeat;background-position: center;background-size: contain;">
-									
-							</view>
-							<radio class='flex-sub margin-top-xl  radio text-left' :class="radio=='1'?'checked':''" :checked="radio=='1'?true:false" value="1"></radio>
-						</view>
-					</view>
-					<view class="flex-sub flex">
-						<view class="flex-sub text-center">
-							<!-- style="background-image:url(../../static/image/man.png);background-repeat: no-repeat;background-position: center;background-size: contain;-->
-							<view class="bg-white  margin-right-sm flex justify-center" style="width: 100%;height:150px;background-image:url(../../static/image/woman.png);background-repeat: no-repeat;background-position: center;background-size: contain;">
-									
-							</view>
-							<radio class='flex-sub  margin-top-xl  radio text-left' :class="radio=='2'?'checked':''" :checked="radio=='2'?true:false" value="2"></radio>
-						</view>
-					</view>
-<!-- 
-					<view class="flex-sub flex">
-						<view class="flex-sub text-center ">
-							<radio class='flex-sub  radio text-left' :class="radio=='2'?'checked':''" :checked="radio=='2'?true:false" value="2"></radio>
-							<view class=" lg  bg-white margin-right margin-left-sm" style="background-image:url(../../static/image/woman.png);height: 100upx;"></view>
-						</view>
-					</view> -->
-
-				</view>
-			</radio-group>
 			<view class="cu-form-group text-center flex padding-xl">
 				<view class="text-center flex-sub">
-					<text class="text-center text-bold">您的身高是?</text>
-				</view>
-			</view>
-			<view class="cu-form-group text-center flex">
-				<view class="text-center flex-sub">
-					<scroll-height @scroll="scroll"></scroll-height>
-				</view>
-			</view>
-			<!-- <view class="cu-form-group text-center flex padding-xl">
-				<view class="text-center flex-sub">
-					<text class="text-center text-xxl">您的体重是：{{this.scrollLeftNow_weight}} KG</text>
+					<text class="text-center text-bold">您的体重是?</text>
 				</view>
 			</view>
 			<view class="cu-form-group text-center flex">
@@ -63,7 +17,7 @@
 			</view>
 			<view class="cu-form-group text-center flex padding-xl">
 				<view class="text-center flex-sub">
-					<text class="text-center text-xxl">您的生日是:{{pickerDate}}</text>
+					<text class="text-center text-bold">您的生日是?</text>
 				</view>
 			</view>
 			<view class="cu-form-group text-center flex" @tap="openBirModal">
@@ -71,7 +25,9 @@
 					{{pickerDate}}
 				</view>
 			</view>
-			<button class="cu-btn block bg-green margin-sm lg" @tap="submitUser"> 提交数据 </button> -->
+			<view  style="margin-top: 40px;">
+			<button style="background-color: #1CBBB4;" class="cu-btn block margin-left-sm margin-right-sm text-white lg" @tap="submitUser"> 提交数据 </button>
+			</view>
 		</form>
      <view class="cu-modal bottom-modal padding-bottom-xl" style="height: 100vh;" :class="birthShow?'show':''">
 		   <gpp-date-picker  @onCancel="onCancel" @onConfirm="onConfirm" :startDate="startDate"
@@ -120,13 +76,14 @@
 		created() {
 
 		},
+		onLoad(e) {
+			var pages = getCurrentPages(); //当前页
+			var beforePage = pages[pages.length - 2];
+			
+		    this.scrollLeftNow = beforePage.$vm.getHeight();
+			this.radio = beforePage.$vm.getSex();
+		},
 		methods: {
-			getHeight(){
-				return this.scrollLeftNow
-			},
-			getSex() {
-				return this.radio
-			},
 			getCurrentDate() {
 				var date = new Date();
 			
@@ -137,11 +94,6 @@
 			},
 			RadioChange(e) {
 				this.radio = e.detail.value
-			},
-			redirectNext() {
-				uni.navigateTo({
-					url: '/pages/user/userNext'
-				})
 			},
 			endEvent(val) {
 				console.log(val)

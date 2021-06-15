@@ -87,7 +87,7 @@ const store = {
 							token: loginResult.Message
 						})
 						uni.reLaunch({
-							url: "/pages/Check/Check"
+							url: "/pages/settings/newDevice"
 						})
 						// setUserInfo(userInfo.data)
 					} else {

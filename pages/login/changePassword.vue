@@ -1,6 +1,6 @@
 <template name="basics">
 	<view class="bg-white" style="height: 100vh;">
-		<cu-custom bgColor="bg-gradual-blue" :isBack="true">
+		<cu-custom bgColor="bg-white" :isBack="true">
 			<block slot="backText"></block>
 			<block slot="content">忘记密码</block>
 		</cu-custom>
@@ -22,8 +22,8 @@
 							:isPassword="false" class="activation-code" type="line">
 						</verification-code>
 					</view>
-					<view class="basis-cu2 text-center "><button class="cu-btn bg-green round text-sm"
-							@tap="sendSms()">发送注册码</button> </view>
+					<view class="basis-cu2 text-center "><button class="cu-btn bg-gray  round text-sm"
+							@tap="sendSms()">获取注册码</button> </view>
 				</view>
 
 			</view>
@@ -49,8 +49,8 @@
 			</view>
 
 
-			<button class="cu-btn block bg-green margin-sm lg" @tap="updatePassWord"> 提交 </button>
-			<button class="cu-btn block bg-grey margin-sm lg" @tap="goLogin"> 返回登录 </button>
+			<button class="cu-btn block  margin-sm lg text-white" @tap="updatePassWord" style="background-color: #1CBBB4;"> 提交 </button>
+			<!-- <button class="cu-btn block  margin-sm lg" @tap="goLogin"> 返回登录 </button> -->
 		</form>
 		<view class="bg-img padding-top-xl flex align-end "
 			style="background-image: url('../../static/image/login.jpg');height: 440upx; width: 100%; ">

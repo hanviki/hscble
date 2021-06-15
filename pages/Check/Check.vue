@@ -1,6 +1,6 @@
 <template>
 	<view class="bg-white" style="height: 100vh;">
-		<cu-custom bgColor="bg-gradual-blue" :isBack="false">
+		<cu-custom bgColor="bg-cyan" :isBack="false">
 			<block slot="content">检测数据</block>
 		</cu-custom>
 		<view class="bg-white margin-top-sm">
@@ -68,11 +68,11 @@
 					<text class="text-lg text-black text-bold">今日汗糖</text>
 				</view>
 				<!-- <text class="text-sm">(正常值：74-106mg/dL)</text> -->
-				<view class="flex-sub"><button class="cu-btn  text-green" @tap.stop="endGenerate">结束生成</button></view>
+				<!-- <view class="flex-sub"><button class="cu-btn  text-green" @tap.stop="endGenerate">结束生成</button></view>
 				<view class="flex-sub"><input type="number" class="text-xl sm-border"
 						style="border:1rpx  #4CD964 solid; " v-model="msnumber" placeholder="间隔ms" /></view>
 				<view class="flex-sub"><input type="number" class="text-xl sm-border"
-						style="border:1rpx  #4CD964 solid;" v-model="sendnumber" placeholder="发送ms" /></view>
+						style="border:1rpx  #4CD964 solid;" v-model="sendnumber" placeholder="发送ms" /></view> -->
 			</view>
 		</view>
 		<view class="cu-bar bg-cyan  flex r">

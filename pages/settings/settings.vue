@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<cu-custom bgColor="bg-gradual-blue" :isBack="false">
+		<cu-custom bgColor="bg-cyan" :isBack="false">
 			<block slot="content">蓝牙设置</block>
 		</cu-custom>
 		<view class="bg-gray text-black padding-xl">

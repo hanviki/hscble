@@ -1,17 +1,17 @@
 <template>
 	<view>
-		<cu-custom bgColor="bg-gradual-blue" :isBack="false">
+		<cu-custom bgColor="bg-cyan" :isBack="false">
 			<block slot="content">设备</block>
 		</cu-custom>
 		<view class="bg-gray text-black padding-xl">
-			<subDevice @longpress="longpress" @openSetting="openSetting" />
+			<subDevice  />
 			<!-- <bluetoothSettings :setting="setting" :index="sindex" @hide="hideSetting" /> -->
-			<view class="cu-modal bottom-modal" :class="lgshow ? 'show' : ''" @tap.stop="hideLgshow">
+			<!-- <view class="cu-modal bottom-modal" :class="lgshow ? 'show' : ''" @tap.stop="hideLgshow">
 				<view class="cu-dialog" style="background-color: transparent;bottom: 50rpx;" >
 					<view class="margin"><button style="width: 80%;" class="cu-btn bg-orange lg" @tap.stop="dispatch('disconnect', lgitem)">关闭连接</button></view>
 					<view class="margin"><button style="width: 80%;" class="cu-btn bg-red lg" @tap.stop="dispatch('delpaired', lgitem)">删除设备</button></view>
 				</view>
-			</view>
+			</view> -->
 		</view>
 	</view>
 </template>
@@ -31,6 +31,15 @@ export default {
 	components: {
 		bluetoothSettings, subDevice
 	},
+	onShow(){
+			setTimeout(()=>{
+				uni.$emit('timerEmit')
+				},500)
+		},
+		onHide(){
+			console.info('hide')
+				uni.$emit('timerCancel')
+			},
 	onLoad() {
 		let that= this
 		/**
@@ -97,6 +106,6 @@ export default {
 
 <style>
 .r {
-	border-radius: 20rpx;
+	border-radius: 30rpx;
 }
 </style>

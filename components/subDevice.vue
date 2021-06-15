@@ -18,7 +18,7 @@
 							<view class="flex-sub text-gray">
 								{{item.status?'已连接':'已断开'}}
 							</view>
-							<view class="flex-sub" v-if="!item.status">
+							<view class="flex-sub" v-if="!item.status && statusOnlyFlag">
 							
 								 <text class="text-green" @tap.stop="dispatch('createBLEConnection', item)">重新连接</text>
 							</view>
@@ -29,8 +29,8 @@
 								<text class="text-green" @tap.stop="dispatch('delpaired', item)">移除设备</text>
 							</view>
 						</view>
-					   <view class="text-gray margin-top-sm">
-							电量:{{item.elect==undefined?'':item.elect}}
+					   <view class="text-gray margin-top-sm" v-if="item.status">
+							电量:{{electStr}}
 						</view>
 					</view>
 				</view>
@@ -39,18 +39,22 @@
 		</scroll-view>
 
 		<view class="text-center">
-			<text class="text-green" @tap.stop="openAdd">添加设备</text>
+			<text class="text-green" v-if="statusOnlyFlag" @tap.stop="openAdd">添加设备</text>
 		</view>
 	</view>
 </template>
 
 <script>
+	var _this;
 	import Bluetooth from '@/common/bluetooth.js';
 	let bluetooth = new Bluetooth();
 	export default {
 		name: 'bluetooth',
 		data() {
 			return {
+				electStr: '',
+				statusOnlyFlag: true, //当前只有一个设备是处在链接状态 true 可连接
+				timerStart : false,//是否开启计时器
 				isOpenBle: this.$store.getters.getIsOpenBle, // 是否开启蓝牙
 				paired: this.$store.getters.getPaired, // 已配对设备列表
 				bledd: this.$store.getters.getBledd, // 是否启用蓝牙搜索
@@ -63,34 +67,48 @@
 				type: String
 			}
 		},
-		created() {
-			uni.$on('handleElec',(item)=>{
-				setTimeout(() => {
-				this.getElectic(item)
-				},2000);
+		mounted() {
+			console.info(5555)
+			_this = this;
+			uni.$on('timerEmit',function (){
+				console.info('execTimer')
+				_this.execTimer()
+			})
+			//_this.execTimer()
+			//_this.execTimer();
+			uni.$on('timerCancel',function(){
+				console.info('timecancel')
+				_this.cancleTimer()
 			});
 		},
+		created() {
+			
+			
+		},
+		onHide() {
+			console.info("sub_hide")
+		},
 		watch: {
-			'$store.state.bluetooth': {
+			'$store.state.bluetooth.paired': {
 				handler(e) {
-					console.info('6666')
-					this.isOpenBle = e.isOpenBle;
-					this.paired = e.paired;
-					this.bledd = e.bledd;
-					this.devicesList = e.devicesList;
+					this.statusOnlyFlag = true
+					this.paired = e;
 					let that = this
 
-					if (e.paired != null && e.paired.length > 0) {
-						for (var i = 0; i < e.paired.length; i++) {
-							if (e.paired[i].status) {
-								var item = that.paired[i]
-								setTimeout(() => {
-									uni.$emit('handleElec',item)
-									//that.getElectic(item)
-								}, 200)
+					if (e != null && e.length > 0) {
+						for (var i = 0; i < e.length; i++) {
+							if (e[i].status) {
+								this.statusOnlyFlag = false //不能做其他设备的搜索和链接
 							}
 						}
 					}
+				},
+				immediate: true,
+				deep: true
+			},
+			'$store.state.bluetooth.isOpenBle': {
+				handler(e) {
+					this.isOpenBle = e;
 				},
 				immediate: true,
 				deep: true
@@ -122,10 +140,34 @@
 					url: '/pages/settings/addDevice'
 				})
 			},
-			 getElectic(item) {
+			execTimer (){
+				console.info(9999)
+				_this.timerStart = true;
+			    _this.timer= setTimeout(_this.refresh(), 10000); //一分钟一次 循环获取
+			},
+			cancleTimer () {
+				console.info('cancel')
+				_this.timerStart = false;
+				if(_this.timer){
+					clearTimeout(_this.timer);
+				}
+			},
+			refresh () {
+				if(_this.timerStart){
+				for (var s = 0; s < _this.paired.length; s++) {
+					if(_this.paired[s].status){
+						_this.getElectic(_this.paired[s]);
+						break;
+					}
+				}
+				   _this.timer = setTimeout(_this.refresh,10000);
+				}
+				return _this.refresh;
+		    },
+			getElectic(item) {
 				console.info(item)
 				let that = this
-                that.electricStr=''
+               
 				let manufacturer = that.manufacturer
 				console.info(manufacturer)
 			    bluetooth.notifyBLECharacteristicValueChange(item.deviceId, manufacturer[0].serviceId,
@@ -136,13 +178,8 @@
 								let str = bluetooth.ab2hex(res.value)
 								//01 03 0F D1 00 01 00 E5
 								if (str.indexOf('01030200') == 0) { // 组命令获取
-									that.electricStr += str
-									setTimeout(() => {
-										var elcStr = that.electricStr.substr(8, 2)
-										that.$set(item, 'elect',  parseInt(elcStr, 16) +
-											'%');
-										//that.paired[that.pairedIndex]["elect"] = 
-									}, 300)
+								    var el = str.substr(8, 2)
+									that.electStr = parseInt(el, 16) +'%';
 								}
 							
 							});

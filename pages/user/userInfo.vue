@@ -1,6 +1,6 @@
 <template>
 	<view >
-		<cu-custom bgColor="bg-gradual-blue" :isBack="true">
+		<cu-custom bgColor="bg-cyan" :isBack="true">
 			<block slot="backText"></block>
 			<block slot="content">个人信息</block>
 		</cu-custom>
@@ -327,7 +327,8 @@
 </script>
 
 <style>
-  .cu-item:hover{
-        border:1px green solid;
+  .cu-list.menu>.cu-item:hover{
+        background-color:#91CB74
 		}
+		
 </style>

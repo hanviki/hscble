@@ -1,7 +1,9 @@
 <template name="basics">
 	<view class="bg-white" style="height: 100vh;">
 
-		<view class="UCenter-bg bg-img" style="background-image: url('../../static/image/login.jpg');height: 440upx;">
+		<view class="margin-top-xl" >
+		    <view class="UCenter-bg" style="background-image: url('../../static/image/login.jpg');height: 500upx;">
+			</view>
 		</view>
 
 		<form>
@@ -13,9 +15,11 @@
 				<input password="" placeholder="请输入密码" v-model="loginForm.password"></input>
 			</view>
 
-			<button class="cu-btn block bg-green margin-sm lg" @tap="login"> 登录 </button>
-			<button class="cu-btn block bg-grey margin-sm lg" @tap="goRegister"> 注册账号 </button>
-			<view class="text-green text-right margin-right-xl" @tap="doChang">
+			<button class="cu-btn block  margin-sm lg text-white" style="background-color: #1CBBB4;"  @tap="login"> 登录 </button>
+			<view class=" text-center " style="color: #1CBBB4;" @tap.stop="goRegister">
+				<text >注册账号</text>
+			</view>
+			<view class="text-green text-right margin-right-xl" @tap.stop="doChang">
 				<text>忘记密码</text>
 			</view>
 		</form>
@@ -69,12 +73,13 @@
 			console.info("开始了" + this.$store.getters['user/getHasLogin'])
 			if (this.$store.getters['user/getHasLogin']) { //注释 登陆过直接登陆
 				uni.switchTab({
-					url: '/pages/settings/device'
+					url: '/pages/settings/newDevice'
 				});
-			} else {
-				this.initProvider();
-			}
-			this.initProvider();
+			} 
+			// else {
+			// 	this.initProvider();
+			// }
+			// this.initProvider();
 		},
 		methods: {
 			includesArr(arr, val) {
@@ -289,13 +294,12 @@
 		height: 100vh;
 	}
 
-	.UCenter-bg {
-		/* background-image: url(../../static/images/bg.jpg); */
+	 .UCenter-bg {
 		background-size: cover;
 		height: 350rpx;
 		display: flex;
 		justify-content: center;
-		padding-top: 40rpx;
+		margin-top: 40rpx;
 		overflow: hidden;
 		position: relative;
 		flex-direction: column;
@@ -324,17 +328,5 @@
 		height: 100rpx;
 	}
 
-	map,
-	.mapBox {
-		left: 0;
-		z-index: 99;
-		mix-blend-mode: screen;
-		height: 100rpx;
-	}
-
-	map,
-	.mapBox {
-		width: 750rpx;
-		height: 300rpx;
-	}
+	
 </style>

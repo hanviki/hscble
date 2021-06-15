@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<cu-custom bgColor="bg-blue" :isBack="true">
+		<cu-custom bgColor="bg-cyan" :isBack="true">
 			<block slot="backText"></block>
 			<block slot="content">修改体重</block>
 			<block slot="right"><view style="float: right;"><button class="cu-btn bg-blue" @tap="updateUserWeight" >确定</button></view></block>

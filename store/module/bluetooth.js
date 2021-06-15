@@ -63,6 +63,7 @@ export default {
 		 */
 		setPaired(state, paired) {
 			state.paired = paired
+			
 			uni.setStorageSync('paired', paired)
 		}
 	},
@@ -301,24 +302,25 @@ export default {
 		 * 断开连接
 		 * @param {Object} item
 		 */
-		disconnect({
+		async disconnect({
 			commit,
 			state
 		}, item) {
-			uni.showModal({
-				title: '警告',
-				content: '您正在执行断开该设备蓝牙操作，请问是否继续',
-				success: async res => {
-					if (res.confirm) {
+			// uni.showModal({
+			// 	title: '警告',
+			// 	content: '您正在执行断开该设备蓝牙操作，请问是否继续',
+			// 	success: async res => {
+			// 		if (res.confirm) {
 						try {
 							var paired = state.paired
-							await bluetooth.closeBLEConnection(item.deviceId);
+							 bluetooth.closeBLEConnection(item.deviceId);
 
 							var index = paired.findIndex(res => {
 								return res.deviceId == item.deviceId;
 							});
 							console.info(index)
 							paired[index].status = false
+							console.info(paired)
 							commit('setPaired', paired)
 							uni.showToast({
 								title: '断开连接成功',
@@ -334,9 +336,9 @@ export default {
 								position: 'bottom'
 							});
 						}
-					}
-				}
-			});
+			// 		}
+			// 	}
+			// });
 		},
 		/**
 		 * 断开连接 意外断开

@@ -1,17 +1,17 @@
 <template>
 	<view class="bg-white" style="height: 100vh;">
-		<cu-custom bgColor="bg-gradual-blue" :isBack="true">
+		<cu-custom bgColor="bg-white" :isBack="true">
 			<block slot="backText"></block>
 			<block slot="content">健康档案</block>
 		</cu-custom>
-		<view class="cu-card bg-white">
-			<view class="bg-gray cu-item" @tap.stop="redirect">
+		<view class="cu-card bg-white" style="margin-left: 30px; margin-right: 30px;margin-top: 50px;">
+			<view class="bg-gray cu-item " @tap.stop="redirect">
 				<view class="cu-list  menu-avatar">
 					<view class="shadow bg-gray cu-item" style="background-color: #F0F0F0;">
 						<view class="cu-avatar cu-icon cuIcon-my round lg">
 
 						</view>
-						<view class="content flex" style=" height: 67px; ">
+						<view class="content flex" style=" height: 50px; ">
 							<view class="text-gray flex-sub flex justify-center align-center text-center"
 								style="font-size: 21px;">
 								基本信息
@@ -25,7 +25,7 @@
 					<view class="shadow bg-gray cu-item" style="background-color: #F0F0F0;">
 						<view class="cu-avatar round lg">
 						</view>
-						<view class="content flex" style=" height: 67px; ">
+						<view class="content flex" style=" height: 50px; ">
 							<view class="text-gray flex-sub flex justify-center align-center text-center"
 								style="font-size: 21px;">
 
@@ -39,7 +39,7 @@
 					<view class="shadow bg-gray cu-item" style="background-color: #F0F0F0;">
 						<view class="cu-avatar round lg">
 						</view>
-						<view class="content flex" style=" height: 67px; ">
+						<view class="content flex" style=" height: 50px; ">
 							<view class="text-gray flex-sub flex justify-center align-center text-center"
 								style="font-size: 21px;">
 
@@ -50,7 +50,7 @@
 			</view>
 
 		</view>
-	     <view class="bg-img padding-top-xl flex align-end " style="background-image: url('../../static/image/register.jpg');height: 440upx;">
+	     <view class="bg-img padding-top-xl flex align-end " style="background-image: url('../../static/image/register.jpg');height: 400upx;">
 	     	<view class="bg-shadeBottom padding padding-top-xl flex-sub">
 	     	</view>
 	     </view>

@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<cu-custom bgColor="bg-blue" :isBack="true">
+		<cu-custom bgColor="bg-cyan" :isBack="true">
 			<block slot="backText"></block>
 			<block slot="content">修改身高</block>
 			<block slot="right"><view style="float: right;"><button class="cu-btn bg-blue" @tap="updateUserHeight" >确定</button></view></block>
@@ -40,9 +40,7 @@
 							if (res.Code == '1') {
 							//	uInfo.Height = that.height
 								that.$store.dispatch('user/updateUser', uInfo)
-								uni.reLaunch({
-									url:'/pages/user/userInfo'
-								})
+								uni.navigateBack()
 							} else {
 								uInfo.Height =ht
 								uni.showToast({

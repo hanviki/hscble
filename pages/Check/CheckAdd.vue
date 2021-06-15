@@ -1,6 +1,6 @@
 <template name="basics">
 	<view class="bg-white" style="height: 100vh;">
-		<cu-custom bgColor="bg-gradual-blue" :isBack="true">
+		<cu-custom bgColor="bg-cyan" :isBack="true">
 			<block slot="backText"></block>
 			<block slot="content">添加数据</block>
 		</cu-custom>
@@ -87,7 +87,7 @@
 						<input type="number" class="text-xxl text-bold" v-model="measureNumber" placeholder="--" />
 					</view>
 					<view class="flex-sub text-left padding-left text-xxl text-gray">
-						mg/dL
+						mmol/L
 					</view>
 				</view>
 			</view>
